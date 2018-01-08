@@ -1,0 +1,21 @@
+{
+  "name": "btybug.hook/blog",
+  "description": "Blog package description",
+  "type": "plugin",
+  "authors": [
+    {
+      "name": "terakyan",
+      "email": "edo.terakyan@gmail.com"
+    }
+  ],
+  "route": "blog",
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "BtyBugHook\\Blog\\": "src/"
+    },
+    "files": [
+      "src/index.php"
+    ]
+  }
+}
