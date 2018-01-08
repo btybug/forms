@@ -9,7 +9,8 @@
  *
  */
 
-namespace BtyBugHook\Blog\Providers;
+namespace BtyBugHook\Forms\Providers;
+
 use Btybug\btybug\Models\Routes;
 use Illuminate\Support\ServiceProvider;
 
@@ -28,47 +29,29 @@ class ModuleServiceProvider extends ServiceProvider
         $this->loadTranslationsFrom(__DIR__ . '/../views', 'blog');
         $this->loadViewsFrom(__DIR__ . '/../views', 'blog');
         \Eventy::action('admin.menus', [
-            "title" => "Blog",
+            "title" => "Forms",
             "custom-link" => "#",
             "icon" => "fa fa-anchor",
             "is_core" => "yes",
             "children" => [
                 [
-                    "title" => "Posts",
-                    "custom-link" => "/admin/blog/posts",
+                    "title" => "Fields",
+                    "custom-link" => "/admin/forms/fields",
                     "icon" => "fa fa-angle-right",
                     "is_core" => "yes"
-                ],[
-                    "title" => "New post",
-                    "custom-link" => "/admin/blog/new-post",
+                ], [
+                    "title" => "Forms",
+                    "custom-link" => "/admin/forms",
                     "icon" => "fa fa-angle-right",
                     "is_core" => "yes"
-                ],[
+                ], [
                     "title" => "Settings",
-                    "custom-link" => "/admin/blog/settings",
+                    "custom-link" => "/admin/forms/settings",
                     "icon" => "fa fa-angle-right",
                     "is_core" => "yes"
                 ]
             ]]);
-        $tubs = [
-            'blog_pages' => [
-                [
-                    'title' => 'General',
-                    'url' => '/admin/blog/settings',
-                ], [
-                    'title' => 'Form List',
-                    'url' => '/admin/blog/form-list',
-                ],
-            ]
-        ];
-        \Eventy::action('my.tab', $tubs);
-        \Config::set('painter.PAINTERSPATHS',array_merge( \Config::get('painter.PAINTERSPATHS'),['app'.DS.'Plugins'.DS.'vendor'.DS.'btybug.hook'.DS.'blog'.DS.'src'.DS.'Config'.DS.'Gears'.DS.'FrontGears'.DS.'Units']));
-        \Eventy::action('shortcode.except.url', [
-            'admin/blog/form-list'
-        ]);
-
-
-        Routes::registerPages('btybug.hook/blog');
+        Routes::registerPages('sahak.avatar/forms');
     }
 
 

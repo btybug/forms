@@ -1,18 +1,18 @@
 {
-  "name": "btybug.hook/blog",
-  "description": "Blog package description",
+  "name": "sahak.avatar/forms",
+  "description": "Forms package description",
   "type": "plugin",
   "authors": [
     {
-      "name": "terakyan",
-      "email": "edo.terakyan@gmail.com"
+      "name": "Hakobyan",
+      "email": "hakobyan.sahak88@gmail.com"
     }
   ],
-  "route": "blog",
+  "route": "forms",
   "require": {},
   "autoload": {
     "psr-4": {
-      "BtyBugHook\\Blog\\": "src/"
+      "BtyBugHook\\Forms\\": "src/"
     },
     "files": [
       "src/index.php"

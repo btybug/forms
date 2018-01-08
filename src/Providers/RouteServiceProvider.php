@@ -9,7 +9,7 @@
  *
  */
 
-namespace BtyBugHook\Blog\Providers;
+namespace BtyBugHook\Forms\Providers;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
@@ -23,7 +23,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    protected $namespace = 'BtyBugHook\Blog\Http\Controllers';
+    protected $namespace = 'BtyBugHook\Forms\Http\Controllers';
 
     /**
      * Define your route model bindings, pattern filters, etc.
@@ -66,7 +66,7 @@ class RouteServiceProvider extends ServiceProvider
         ], function ($router) {
             Route::group([
                 'middleware' => ['admin:Users'],
-                'prefix' => 'admin/blog',
+                'prefix' => 'admin/forms',
                 'namespace' => $this->namespace,
             ], function ($router) {
                 //TODO fix path when done
