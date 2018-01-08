@@ -1,0 +1,66 @@
+.ui-sortable-handle:hover, .ui-sortable > div:hover {
+  outline: 2px dashed #e2e2e2;
+  outline-offset: 5px;
+  cursor: move; }
+
+[data-toggle="tooltip"] {
+  cursor: help; }
+
+a.bb-form-layout {
+  margin-right: 30px;
+  text-decoration: none; }
+
+.bb-form-header {
+  background: #464646;
+  color: #fff;
+  padding: 10px 15px; }
+
+input.form-name {
+  margin-left: 10px;
+  text-indent: 5px;
+  border: none;
+  padding: 5px;
+  width: 200px;
+  color: #000; }
+
+button.form-save {
+  background: #e4d700;
+  color: #524e02;
+  border: none;
+  font-weight: bold;
+  padding: 5px 30px;
+  text-transform: uppercase; }
+
+.bb-form-options {
+  background: #848484;
+  padding: 10px 15px;
+  display: table;
+  width: 100%; }
+
+.form-layout {
+  width: 360px; }
+
+.form-style {
+  margin-right: 10px; }
+
+.bb-form-container {
+  padding: 10px 20px; }
+
+.form-preview {
+  background: #464646;
+  color: #fff;
+  font-size: 17px;
+  padding: 10px;
+  text-transform: uppercase;
+  text-align: center;
+  top: 5px;
+  position: relative; }
+
+/* Unit Iframe */
+#unit-iframe {
+  width: 100%;
+  border: none;
+  height: calc(100vh - 153px);
+  margin-top: 10px; }
+
+/*# sourceMappingURL=form-builder.css.map */

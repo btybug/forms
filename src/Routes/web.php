@@ -21,3 +21,4 @@
 */
 //Routes
 Route::get('/', 'IndexConroller@getIndex',true);
+Route::get('/create', 'IndexConroller@getFormBulder',true)->name("forms_builder_form");

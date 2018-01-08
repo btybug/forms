@@ -27,4 +27,9 @@ class IndexConroller extends Controller
     {
         return view('forms::index');
     }
+    public function getFormBulder()
+    {
+        $form=null;
+        return view('forms::form_bulder',compact('form'));
+    }
 }
