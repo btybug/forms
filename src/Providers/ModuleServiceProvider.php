@@ -26,8 +26,8 @@ class ModuleServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadTranslationsFrom(__DIR__ . '/../views', 'blog');
-        $this->loadViewsFrom(__DIR__ . '/../views', 'blog');
+        $this->loadTranslationsFrom(__DIR__ . '/../views', 'forms');
+        $this->loadViewsFrom(__DIR__ . '/../views', 'forms');
         \Eventy::action('admin.menus', [
             "title" => "Forms",
             "custom-link" => "#",

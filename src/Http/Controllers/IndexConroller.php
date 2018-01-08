@@ -1,6 +1,6 @@
 <?php
 
-namespace BtyBugHook\Blog\Http\Controllers;
+namespace BtyBugHook\Forms\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Btybug\Console\Models\Forms;
