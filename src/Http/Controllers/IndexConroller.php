@@ -70,4 +70,14 @@ class IndexConroller extends Controller
         }
         return \Response::json(['message' => "Fields are invalid", 'error' => true]);
     }
+
+    public function getFields()
+    {
+         return view('forms::fields.index');
+    }
+
+    public function getSettings()
+    {
+        return view('forms::settings');
+    }
 }
