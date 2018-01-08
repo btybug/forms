@@ -1,6 +1,4 @@
-@php
-    $page = \Btybug\btybug\Services\RenderService::getPageByURL();
-@endphp
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,8 +25,8 @@
     {!! BBstyle(plugins_path("vendor/sahak.avatar/forms/src/Assets/css/form-builder.css")) !!}
     {!! BBscript(plugins_path("vendor/sahak.avatar/forms/src/Assets/js/form-builder.js")) !!}
 
-    {!! HTML::style('public-x/custom/css/'.str_replace(' ','-',$page->slug).'.css', ["id"=>"custom_css"]) !!}
-    {!! HTML::script('public-x/custom/js/'.str_replace(' ','-',$page->slug).'.js') !!}
+    {!! HTML::style('public-x/custom/css/formBuilder.css', ["id"=>"custom_css"]) !!}
+    {!! HTML::script('public-x/custom/js/formBuilder.js') !!}
 </head>
 <body>
 
