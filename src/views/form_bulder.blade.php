@@ -1,7 +1,7 @@
 @php
     $page = \Btybug\btybug\Services\RenderService::getPageByURL();
 @endphp
-<!DOCTYPE html>
+        <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -12,7 +12,7 @@
     {!! HTML::style('public/css/admin.css') !!}
     {!! HTML::style('public/css/cms.css') !!}
     {!! HTML::style('public/css/menus.css?v='.rand(1111,9999)) !!}
-    {!! BBstyle(plugins_path("vendor/btybug.hook/blog/src/Assets/css/blog-form.css")) !!}
+    {!! BBstyle(plugins_path("vendor/sahak.avatar/forms/src/Assets/css/forms-form.css")) !!}
 
     {!! HTML::script('public/js/jquery-2.1.4.min.js') !!}
 
@@ -22,10 +22,10 @@
     {!! HTML::script('public/css/font-awesome/js/fontawesome-iconpicker.min.js') !!}
     {!! HTML::script('public/js/jquery-ui/jquery-ui.min.js') !!}
     {!! HTML::script("/public/js/UiElements/bb_styles.js?v.5") !!}
-    {!! BBscript(plugins_path("vendor/btybug.hook/blog/src/Assets/js/blog-fields.js")) !!}
+    {!! BBscript(plugins_path("vendor/sahak.avatar/forms/src/Assets/js/forms-fields.js")) !!}
 
-    {!! BBstyle(plugins_path("vendor/btybug.hook/blog/src/Assets/css/form-builder.css")) !!}
-    {!! BBscript(plugins_path("vendor/btybug.hook/blog/src/Assets/js/form-builder.js")) !!}
+    {!! BBstyle(plugins_path("vendor/sahak.avatar/forms/src/Assets/css/form-builder.css")) !!}
+    {!! BBscript(plugins_path("vendor/sahak.avatar/forms/src/Assets/js/form-builder.js")) !!}
 
     {!! HTML::style('public-x/custom/css/'.str_replace(' ','-',$page->slug).'.css', ["id"=>"custom_css"]) !!}
     {!! HTML::script('public-x/custom/js/'.str_replace(' ','-',$page->slug).'.js') !!}
@@ -164,7 +164,7 @@
     <label><i class="fa {icon}"></i> {label}</label>
     <i class="fa {tooltip_icon}" data-toggle="tooltip" data-placement="top" title="{help}"></i>
     {field}
-</div></script>
+    </div></script>
 
 <!-- Actions Buttons Template -->
 <script type="template/html" id="actions-template">
@@ -283,7 +283,7 @@
     $(document).ready(function () {
 
         $("body")
-            // Select field
+        // Select field
             .on("click", ".select-field", function () {
                 var table = "posts";
                 var fields = $("#existing-fields").val();
@@ -299,7 +299,7 @@
                 }
 
                 $.ajax({
-                    url: "{!! url('admin/blog/get-fields') !!}",
+                    url: "{!! url('admin/forms/get-fields') !!}",
                     data: {table: table, fields: JSON.stringify(existingFields)},
                     headers: {
                         'X-CSRF-TOKEN': $("input[name='_token']").val()
@@ -317,7 +317,7 @@
             .on("click", ".add-to-form", function () {
                 var data = $("#selected-fields").serialize();
                 $.ajax({
-                    url: "{!! url('admin/blog/render-unit') !!}",
+                    url: "{!! url('admin/forms/render-unit') !!}",
                     data: data + '&existings=' + $("#existing-fields").val(),
                     headers: {
                         'X-CSRF-TOKEN': $("input[name='_token']").val()
@@ -487,7 +487,7 @@
                     }
 
                     $.ajax({
-                        url: "{!! url('admin/blog/get-fields') !!}",
+                        url: "{!! url('admin/forms/get-fields') !!}",
                         data: {table: table, fields: JSON.stringify(existingFields)},
                         headers: {
                             'X-CSRF-TOKEN': $("input[name='_token']").val()
