@@ -22,3 +22,5 @@
 //Routes
 Route::get('/', 'IndexConroller@getIndex',true);
 Route::get('/create', 'IndexConroller@getFormBulder',true)->name("forms_builder_form");
+Route::post('/create', 'IndexConroller@postFormBulder')->name('add_or_update_form_builder');
+
