@@ -1,7 +1,7 @@
 @php
     $page = \Btybug\btybug\Services\RenderService::getPageByURL();
 @endphp
-        <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
