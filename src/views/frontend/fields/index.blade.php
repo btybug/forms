@@ -16,7 +16,7 @@
                                        alt=""></span>
                             <div class="{{ 'custom_div_for_tags'}}">
                                 <ul>
-                                    <li><a href=" {{url('field-types/settings',$type->id)}}"><i
+                                    <li><a href=" {{url('field-types',[$type->slug,'settings'])}}"><i
                                                     class="fa fa-cog" aria-hidden="true"></i> </a></li>
                                 </ul>
                                 <div>
