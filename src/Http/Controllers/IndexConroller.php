@@ -77,6 +77,14 @@ class IndexConroller extends Controller
          return view('forms::fields.index');
     }
 
+    public function getEditField(
+        $id
+    )
+    {
+        $field = null;
+        return view('forms::fields.edit',compact('field'));
+    }
+
     public function getSettings()
     {
         return view('forms::settings');

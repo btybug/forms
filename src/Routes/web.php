@@ -27,6 +27,7 @@ Route::post('/create', 'IndexConroller@postFormBulder')->name('add_or_update_for
 Route::post('/get-fields', 'IndexConroller@getFieldsByTable');
 Route::post('/render-unit', 'IndexConroller@unitRenderWithFields');
 Route::get('/fields', 'IndexConroller@getFields',true);
+Route::get('/fields/{id}', 'IndexConroller@getEditField',true);
 Route::get('/settings', 'IndexConroller@getSettings',true);
 Route::post('/render-field-types', 'IndexConroller@postRenderFieldTypes');
 
