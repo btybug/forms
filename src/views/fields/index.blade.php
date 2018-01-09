@@ -28,7 +28,7 @@
                     },{
                         text: 'Create New',
                         action: function ( e, dt, node, config ) {
-                           
+
                         }
                     }
                 ],
