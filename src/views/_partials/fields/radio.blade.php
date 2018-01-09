@@ -1,20 +1,64 @@
-<div class="bty-more-input-radio">
-    <div>
-        <label>{!! $field['label'] !!}</label>
+<div class="row">
+    <div class="col-md-6">
+        <label class="col-md-3">Field Name</label>
+        <div class="col-md-9">
+            {!! Form::text('name',null,['class' => 'form-control ']) !!}
+        </div>
     </div>
-    <div>
-
-        @if(count(get_field_data($field['id'])))
-            @foreach(get_field_data($field['id']) as $key => $item)
-                <div class="bty-new-input-radio">
-                    <input name="{!! $field['column_name'] !!}"  value="{{ $key }}" type="radio" id="bty-new-gender-{{ $key }}">
-                    <label for="bty-new-gender-{{ $key }}">{{ $item }}</label>
+</div>
+<div class="row  visibility-box">
+    <div class="panel panel-default p-0">
+        <div class="panel-heading">Input Setting</div>
+        <div class="panel-body">
+            <div class="form-group col-md-12 m-b-10">
+                <div class="col-md-6">
+                    <label for="lablename" class="col-sm-3 p-l-0 control-label m-0  text-left">Label
+                        name</label>
+                    <div class="col-sm-8">
+                        {!! Form::text('label',null,['class' => 'form-control']) !!}
+                    </div>
                 </div>
-            @endforeach
-        @endif
+                <div class="col-md-6">
+                    <label for="placeholder" class="col-sm-3 control-label m-0 text-left ">Placeholder</label>
+                    <div class="col-sm-8">
+                        {!! Form::text('placeholder',null,['class' => 'form-control']) !!}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group col-md-12 m-b-10">
+                <div class="col-md-6">
+                    <label for="fieldicon" class="col-sm-3 p-l-0 control-label m-0 text-left">Field Icon</label>
+                    <div class="col-sm-8">
+                        {!!Form::text('icon',null,['class' => 'form-control icp','readonly'])  !!}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="tooltip-icon" class="col-sm-3 m-0 control-label text-left">Tooltip Icon</label>
+                    <div class="col-sm-8">
+                        {!!Form::text('tooltip_icon',null,['class' => 'form-control icp','readonly','id'=>'tooltip-icon'])  !!}
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="form-group col-md-12 m-b-10">
+                <div class="col-md-6">
+                    <label for="help" class="col-sm-3 m-0 control-label text-left">help</label>
+                    <div class="col-sm-8">
+                        {!! Form::textarea('help',null,['class'=>'form-control','id'=>'help']) !!}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-md-12 m-b-10">
+                <div class="form-group col-md-6 m-b-10">
+                    <label  for='validation_message' class="col-sm-3 m-0 control-label text-left">Error Message</label>
+                    <div class="col-sm-8">
+                        {!! Form::textarea('validation_message',null,['class' => 'form-control','id'=>'validation_message']) !!}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div>
-        <p>Lorem ipsum Lorem</p>
-        <span><i class="fa fa-question" aria-hidden="true"></i></span>
-    </div>
+
 </div>

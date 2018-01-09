@@ -1,6 +1,8 @@
 @extends('btybug::layouts.admin')
 @section('content')
-    {!! $slug !!}
+   <div class="col-md-12">
+        @include("forms::_partials.fields.".$slug)
+   </div>
 @endsection
 @section('CSS')
     {!! HTML::style('public/css/bootstrap/css/bootstrap-switch.min.css') !!}
