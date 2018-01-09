@@ -12,7 +12,9 @@
     {!! HTML::style('public-x/custom/css/'.str_replace(' ','-',$page->slug).'.css') !!}
 </head>
 <body>
+{!! BBheader() !!}
 @yield('content')
+
 {!! HTML::script('public-x/custom/js/'.str_replace(' ','-',$page->slug).'.js ') !!}
 @yield('JS')
 </body>
