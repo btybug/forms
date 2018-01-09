@@ -85,6 +85,13 @@ class IndexConroller extends Controller
         return view('forms::fields.edit',compact('field'));
     }
 
+    public function getTypeSettings(
+        $slug
+    )
+    {
+        return view('forms::fields.type-settings',compact('slug'));
+    }
+
     public function getSettings()
     {
         return view('forms::settings');

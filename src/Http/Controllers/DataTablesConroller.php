@@ -12,7 +12,9 @@ class DataTablesConroller extends Controller
     {
         return DataTables::of(FieldTypes::query())->addColumn('actions', function ($post) {
             $url= url("admin/forms/fields",$post->id);
-            return "<a href='$url' class='btn btn-warning'><i class='fa fa-edit'></i></a>";
+            $settings_url= url("admin/forms/type-settings",$post->title);
+            return "<a href='$url' class='btn btn-warning'><i class='fa fa-edit'></i></a>
+                    <a href='$settings_url' class='btn btn-primary'><i class='fa fa-eye'></i></a>";
         },2)->addColumn('author', function ($post) {
 
             return BBGetUser($post->author_id);
