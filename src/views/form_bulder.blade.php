@@ -141,7 +141,7 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title" style="font-size: 32px;
     font-family: fantasy;
-    text-align: center;">Select Fields</h4>
+    text-align: center;">Select Field Types</h4>
             </div>
             <div class="modal-body" style="min-height: 300px;">
 
