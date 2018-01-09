@@ -62,3 +62,26 @@
     </div>
 
 </div>
+
+<div class="row  visibility-box">
+    <div class="panel panel-default p-0">
+        <div class="panel-heading">Radio input source</div>
+        <div class="panel-body">
+            <div class="form-group">
+                <label class="col-xs-4 col-md-4 control-label" for="name">Data Source</label>
+                <div class="col-xs-8 col-md-8">
+                    <!-- check if Data source is data-source -->
+                    {!! Form::select('data_source',[
+                     ''=>'-- Select Data source --',
+                     'manual'=>'Manual',
+                     'api'=>'From api',
+                     'related'=>'Related',
+                     'bb'=>'BB Functions',
+                     'file'=>'File'], null,['class'=>'form-control','id'=>'data_source']) !!}
+                </div>
+            </div>
+            <div class="select_op_box">
+            </div>
+        </div>
+    </div>
+</div>

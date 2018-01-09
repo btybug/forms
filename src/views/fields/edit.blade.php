@@ -127,7 +127,7 @@
                        </div>
                        <div class="col-md-6">
                            <div class="row m-b-10 mapping-column">
-                               {{--@include("console::structure.developers._partials.mapping-column")--}}
+                               @include("console::structure.developers._partials.mapping-column")
                            </div>
                        </div>
                        <div class="form-group col-md-6 m-b-10">
