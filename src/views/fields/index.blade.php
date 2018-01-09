@@ -18,7 +18,20 @@
     <script>
         $(function () {
             $('#fields-table').DataTable({
-
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'excel', 'pdf',{
+                        text: 'Reload',
+                        action: function ( e, dt, node, config ) {
+                            dt.ajax.reload();
+                        }
+                    },{
+                        text: 'Create New',
+                        action: function ( e, dt, node, config ) {
+                           
+                        }
+                    }
+                ],
 
                 ajax: '{!! route('field_types_dt') !!}',
                 columns: [
