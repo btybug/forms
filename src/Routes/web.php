@@ -28,3 +28,7 @@ Route::post('/render-unit', 'IndexConroller@unitRenderWithFields');
 Route::get('/fields', 'IndexConroller@getFields',true);
 Route::get('/settings', 'IndexConroller@getSettings',true);
 
+Route::group(['prefix'=>'datatable'],function (){
+    Route::get('get-field-types','DataTablesConroller@getFieldTypes')->name('field_types_dt');
+});
+
