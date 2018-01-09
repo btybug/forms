@@ -3,7 +3,7 @@
     <div class="main_lay_cont">
       {!! 'Index' !!}
     </div>
-
+    Test
 @stop
 @section('CSS')
 @stop
