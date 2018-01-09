@@ -9,7 +9,6 @@
                        {!! Form::text('name',null,['class' => 'form-control ']) !!}
                    </div>
                </div>
-               <div class="col-md-6">  {!! Form::submit('Save',['class' => 'btn btn-success pull-right m-r-25']) !!}</div>
            </div>
            <div class="row">
                <div class="panel panel-default p-0">
