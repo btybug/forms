@@ -12,6 +12,8 @@
 {!! BBscript(base_path('public'.DS.'js'.DS.'DataTables'.DS.'Buttons-1.5.1'.DS.'js'.DS.'buttons.bootstrap.js')) !!}
 @stop
 @section('CSS')
+    {!! Html::style('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css') !!}
+    {!! Html::style('public/css/font-awesome/css/font-awesome.min.css') !!}
     {!! Html::style('public/js/DataTables/Buttons-1.5.1/css/buttons.bootstrap.css') !!}
 @stop
 
@@ -28,11 +30,6 @@
                         text: 'Reload',
                         action: function ( e, dt, node, config ) {
                             dt.ajax.reload();
-                        }
-                    },{
-                        text: 'Create New',
-                        action: function ( e, dt, node, config ) {
-
                         }
                     }
                 ],

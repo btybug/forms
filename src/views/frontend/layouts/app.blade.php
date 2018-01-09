@@ -8,6 +8,7 @@
 <html>
 <head>
     @yield('CSS')
+
     {!! HTML::style('public-x/custom/css/'.str_replace(' ','-',$page->slug).'.css') !!}
 </head>
 <body>
