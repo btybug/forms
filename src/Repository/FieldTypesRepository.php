@@ -1,5 +1,5 @@
 <?php
-namespace BtyBugHook\Blog\Repository;
+namespace BtyBugHook\Forms\Repository;
 
 use Btybug\btybug\Repositories\GeneralRepository;
 use BtyBugHook\Forms\Models\FieldTypes;
