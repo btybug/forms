@@ -5,6 +5,7 @@ namespace BtyBugHook\Forms\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Btybug\btybug\Repositories\AdminsettingRepository;
 use Btybug\Console\Repository\FieldsRepository;
+use BtyBugHook\Forms\Repository\FieldTypesRepository;
 use BtyBugHook\Forms\Services\FieldService;
 use Btybug\Console\Services\FormService;
 use Illuminate\Http\Request;
@@ -79,5 +80,16 @@ class IndexConroller extends Controller
     public function getSettings()
     {
         return view('forms::settings');
+    }
+
+    public function postRenderFieldTypes(
+        Request $request,
+        FieldTypesRepository $typesRepository
+    )
+    {
+        $types = $typesRepository->getAll();
+        $html = \View("forms::_partials.types-list",compact('types'))->render();
+
+        return \Response::json(['html' => $html]);
     }
 }

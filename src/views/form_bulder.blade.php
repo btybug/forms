@@ -485,7 +485,7 @@
                     }
 
                     $.ajax({
-                        url: "{!! url('admin/forms/get-fields') !!}",
+                        url: "{!! url('admin/forms/render-field-types') !!}",
                         data: {table: table, fields: JSON.stringify(existingFields)},
                         headers: {
                             'X-CSRF-TOKEN': $("input[name='_token']").val()
