@@ -2,53 +2,43 @@
 @section('content')
     <section>
         <div class="col-md-12">
-            <div class="col-md-3"></div>
-            <div class="col-md-6">
-                <table id="fields-table" class="table table-striped table-bordered" cellspacing="0" width="100%">
-                    <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Title</th>
-                        <th>Actions</th>
-                    </thead>
-                </table>
+            <div class="col-md-2"></div>
+            <div class="col-md-8 custom_html_for_filter">
+                @foreach($types as $type)
+                    <div class="bty-unit-2">
+                        <div class="custom_margin_5">
+                            <div>
+                                <span>{!! BBgetDateFormat($type->created_at,"d") !!}</span>
+                                <span>{!! BBgetDateFormat($type->created_at,"M") !!}</span>
+                                <span>{!! BBgetDateFormat($type->created_at,"Y") !!}</span>
+                            </div>
+                            <span><img src="http://blog.mcafeeinstitute.com/wp-content/uploads/2015/10/rain_wallpaper_good_2023_high_definition.jpg"
+                                       alt=""></span>
+                            <div class="{{ 'custom_div_for_tags'}}">
+                                <ul>
+                                    <li><a href=" {{url('field-types/settings',$type->id)}}"><i
+                                                    class="fa fa-cog" aria-hidden="true"></i> </a></li>
+                                </ul>
+                                <div>
+                                    <div class="bty-unit-2-title">
+                                        <span><i class="fa fa-user" aria-hidden="true"></i> {!! $type->title !!}</span>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
             </div>
-            <div class="col-md-3"></div>
+            <div class="col-md-2"></div>
         </div>
     </section>
-    {!! BBscript(base_path('public'.DS.'js'.DS.'DataTables'.DS.'datatables.js')) !!}
-    {!! BBscript(base_path('public'.DS.'js'.DS.'DataTables'.DS.'Buttons-1.5.1'.DS.'js'.DS.'buttons.bootstrap.js')) !!}
+
 @stop
 @section('CSS')
-    {!! Html::style('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css') !!}
-    {!! Html::style('public/css/font-awesome/css/font-awesome.min.css') !!}
-    {!! Html::style('public/js/DataTables/Buttons-1.5.1/css/buttons.bootstrap.css') !!}
+
 @stop
 
 @section('JS')
-    {!! Html::script('public/js/jquery-2.1.4.min.js') !!}
-    {!! Html::script('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js') !!}
-    {!! Html::script('public/js/DataTables/datatables.js') !!}
-    <script>
-        $(function () {
-            $('#fields-table').DataTable({
-                dom: 'Bfrtip',
-                buttons: [
-                    'copy', 'excel', 'pdf', {
-                        text: 'Reload',
-                        action: function (e, dt, node, config) {
-                            dt.ajax.reload();
-                        }
-                    }
-                ],
 
-                ajax: '{!! route('field_types_dt') !!}',
-                columns: [
-                    {data: 'id', name: 'id',},
-                    {data: 'title', name: 'title'},
-                    {data: 'actions', name: 'actions'}
-                ]
-            });
-        });
-    </script>
 @stop
