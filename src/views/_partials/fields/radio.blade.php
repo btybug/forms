@@ -85,3 +85,22 @@
         </div>
     </div>
 </div>
+
+<div class="row  visibility-box">
+    <div class="panel panel-default p-0">
+        <div class="panel-heading">Validation</div>
+        <div class="panel-body">
+            <div class="form-group col-md-12">
+                <div class="col-md-6">
+                    <label class="col-sm-3 p-l-0">Required</label>
+                    <div class="col-md-6">
+                        {!! Form::select('required',['No', 'Yes'],null,['class' => 'form-control']) !!}
+                    </div>
+                </div>
+                <div class="col-md-6">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
