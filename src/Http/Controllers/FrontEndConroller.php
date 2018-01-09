@@ -9,7 +9,14 @@
 namespace BtyBugHook\Forms\Http\Controllers;
 
 
-class FrontEndConroller
-{
+use Illuminate\Routing\Controller;
 
+//FrontEndConroller@getFieldTypes
+
+class FrontEndConroller extends Controller
+{
+    public function getFieldTypes()
+    {
+        return view('forms::frontend.fields.index');
+    }
 }
