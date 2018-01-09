@@ -1,4 +1,6 @@
-<?php
+<?php namespace BtyBugHook\Forms\Models;
+use Illuminate\Database\Eloquent\Model;
+
 /**
  * Created by PhpStorm.
  * User: sahak
@@ -6,7 +8,9 @@
  * Time: 23:10
  */
 
-class FieldTypes
+class FieldTypes extends Model
 {
+    protected $table='fbp_field_types';
 
+    protected $guarded=['id'];
 }
