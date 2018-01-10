@@ -49,8 +49,7 @@
                         {!! Form::textarea('help',null,['class'=>'form-control','id'=>'help']) !!}
                     </div>
                 </div>
-            </div>
-            <div class="form-group col-md-12 m-b-10">
+
                 <div class="form-group col-md-6 m-b-10">
                     <label  for='validation_message' class="col-sm-3 m-0 control-label text-left">Error Message</label>
                     <div class="col-sm-8">
@@ -58,6 +57,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 

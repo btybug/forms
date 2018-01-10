@@ -107,4 +107,19 @@ class IndexConroller extends Controller
 
         return \Response::json(['html' => $html]);
     }
+
+    public function fieldHtml(
+        Request $request
+    )
+    {
+        $html = null;
+        $value = $request->get('value');
+        $options = $request->get('options', []);
+
+        if(\View::exists('forms::_partials.fields.defaults.'.$value)){
+            $html = view('forms::_partials.fields.defaults.'.$value)->with('data',$options)->render();
+        }
+
+        return \Response::json(['html'=>$html]);
+    }
 }

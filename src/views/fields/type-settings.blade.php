@@ -1,7 +1,13 @@
 @extends('btybug::layouts.admin')
 @section('content')
-   <div class="col-md-12">
+   <div class="col-md-6 m-t-15">
         @include("forms::_partials.fields.".$slug)
+   </div>
+   <div class="col-md-6 m-t-15">
+        <h2>Live Preview</h2>
+       <div class="live-preview">
+
+       </div>
    </div>
 @endsection
 @section('CSS')
@@ -358,10 +364,10 @@
             function getoptiondata(noajax) {
                 var optiondata = {};
                 optiondata['options'] = {}
-                $('[data-role="optionsetting"] select[name], [data-role="optionsetting"] input[name], [data-role="optionsetting"] textarea[name]').each(function () {
+                $('select[name],input[name],textarea[name]').each(function () {
                     var name = $(this).attr('name');
                     if ($(this).is('[type="radio"]')) {
-                        var value = $('[data-role="optionsetting"] input[name="' + name + '"][type="radio"]:checked').val();
+                        var value = $('input[name="' + name + '"][type="radio"]:checked').val();
                     } else {
                         var value = $(this).val();
                     }
@@ -369,10 +375,10 @@
                 })
 
 
-                optiondata['value'] = $('select[name="unit"]').val();
+                optiondata['value'] = "{{ $slug }}";
                 $('[name="settings"]').val(JSON.stringify(optiondata['options']));
                 if (!noajax) {
-                    sendajaxvar('/admin/console/bburl/get-field-unit', optiondata, function (d) {
+                    sendajaxvar('/admin/forms/get-field-html', optiondata, function (d) {
                         if (d) {
                             htmlsdata['field'] = d.html;
                             htmlpreview()
@@ -381,12 +387,14 @@
                 }
             }
 
-            $('[data-role="optionsetting"]').on('change', 'select,   [type="checkbox"], [type="radio"]', function () {
+            $('body').on('change', 'select,   [type="checkbox"], [type="radio"]', function () {
                 getoptiondata()
 
             }).on('keyup', 'input, textarea', function () {
                 getoptiondata()
 
+            }).on('click', 'input.iconpicker-input', function () {
+                getoptiondata()
             })
 
 
@@ -467,7 +475,7 @@
                             "type": 'textarea',
                             "id": 'data_source_manual',
                             "placeholder": 'Type options separated with ,',
-                            "name": 'json_data[manual]'
+                            "name": 'json_data_manual'
                         });
 
                         data_group.append(textarea);
@@ -526,7 +534,7 @@
                         var data_group_BB_input = $('<input/>', {
                             "class": 'form-control input-md',
                             "type": 'text',
-                            "name": 'json_data[bb]'
+                            "name": 'json_data_bb'
                         });
 
                         data_group_col.append(data_group_BB_input);
@@ -543,7 +551,7 @@
                             "type": 'text',
                             "id": 'data_source_api',
                             "placeholder": 'Put Api Url ...',
-                            "name": 'json_data["api"]'
+                            "name": 'json_data_api'
                         });
 
                         data_group.append(textarea);
@@ -574,7 +582,7 @@
                                     var data_source_related = $('<select/>', {
                                         "class": 'form-control',
                                         "id": 'data_source_table_name',
-                                        "name": "json_data[data_source_table_name]"
+                                        "name": "data_source_table_name"
                                     });
 
                                     data_source_related.append($('<option>', {value: '', text: 'Select Table Name'}));
@@ -642,7 +650,7 @@
                             var data_source_type_key = $('<select/>', {
                                 "class": 'form-control',
                                 "id": 'data_source_type_key',
-                                "name": "json_data[data_source_type_key]"
+                                "name": "data_source_type_key"
                             });
 
                             form_group_col.append(data_source_type_key);
@@ -662,7 +670,7 @@
                             var data_source_type_val = $('<select/>', {
                                 "class": 'form-control',
                                 "id": 'data_source_type_val',
-                                "name": "json_data[data_source_type_val]",
+                                "name": "data_source_type_val",
                                 "option": {'': "select"}
                             });
 
@@ -715,7 +723,7 @@
                         var data_source_related = $('<select/>', {
                             "class": 'form-control',
                             "id": 'table_column',
-                            "name": "json_data[data_source_columns]"
+                            "name": "data_source_columns"
                         });
 
                         data_source_related.append($('<option>', {value: '', text: 'Select Column'}));
@@ -755,7 +763,7 @@
                         var data_source_type_default = $('<select/>', {
                             "class": 'form-control',
                             "id": 'data_source_type_default',
-                            "name": "json_data[data_source_type_default]"
+                            "name": "data_source_type_default"
                         });
 
                         form_group_col.append(data_source_type_default);
