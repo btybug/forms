@@ -6,7 +6,7 @@
                 <label style="    display: block;">
                     <div class="col-md-4 field-item">
                         {!! $type->title !!}
-                        {!! Form::checkbox('types['.$type->title.']',1,null) !!}
+                        {!! Form::checkbox('types',$type->slug,null) !!}
                     </div>
                 </label>
             @endforeach
