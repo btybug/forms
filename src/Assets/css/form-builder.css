@@ -63,12 +63,14 @@ button.form-save {
   height: calc(100vh - 153px);
   margin-top: 10px; }
 
-div#select-fields {
+.select-fields-container {
   position: absolute;
   width: 40%;
   right: 0;
   top: 104px;
   bottom: 0;
-  background: #fff; }
+  background: #eaeaea;
+  padding: 0 30px;
+  box-shadow: 0 0 1px 1px #00000047; }
 
 /*# sourceMappingURL=form-builder.css.map */

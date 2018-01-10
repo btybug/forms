@@ -18,6 +18,12 @@ function reload_css(href) {
 
 $(document).ready(function () {
     $("body")
+        // Save field settings
+        .on("click", ".save-field-settings", function () {
+            var iframe = getIframeContent();
+            $("#field-settings").addClass("hidden");
+            iframe.find('.previewcontent').addClass('activeprevew');
+        })
         // Add field to form
         .on("click", ".add-to-form", function () {
             var fields = [];
@@ -167,12 +173,17 @@ $(document).ready(function () {
                     },
                     dataType: 'json',
                     success: function (data) {
-                        $("#select-fields").removeClass("hidden")
+                        $("#select-fields").removeClass("hidden");
                         $("#select-fields .fields-container").html(data.html);
                         iframe.find('.previewcontent').removeClass('activeprevew');
                     },
                     type: 'POST'
                 });
+            })
+            // Field settings
+            .on('click', '.field-settings', function (){
+                $("#field-settings").removeClass("hidden");
+                iframe.find('.previewcontent').removeClass('activeprevew');
             })
             // Remove field
             .on("click", ".delete-field", function (e) {

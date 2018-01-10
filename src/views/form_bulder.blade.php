@@ -148,6 +148,12 @@
     <button class="btn btn-primary add-to-form">Add to form</button>
 </div>
 
+<div class="select-fields-container hidden" id="field-settings">
+    <h3>Field Settings</h3>
+    <div class="fields-container"></div>
+    <button class="btn btn-primary save-field-settings">Save Settings</button>
+</div>
+
 <!-- Field Container Template -->
 <script type="template/html" id="field-template"><div class="form-group" data-field-id="{id}">
     <label><i class="fa {icon}"></i> {label}</label>
@@ -158,6 +164,9 @@
 <!-- Actions Buttons Template -->
 <script type="template/html" id="actions-template">
     <div class="bb-field-actions">
+        <button class="btn btn-xs btn-warning field-settings" data-id="{id}">
+            <i class="fa fa-gear"></i>
+        </button>
         <button class="btn btn-xs btn-danger delete-field" data-id="{id}">
             <i class="fa fa-trash"></i>
         </button>
