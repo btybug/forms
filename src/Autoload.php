@@ -1,6 +1,8 @@
 <?php
 
 namespace BtyBugHook\Blog;
+use BtyBugHook\Forms\Services\CommonService;
+
 /**
  * Created by PhpStorm.
  * User: Edo
@@ -16,6 +18,7 @@ class Autoload
     	// Testing commits
 //        Test::migrate();
 //        Test::seed();
+        CommonService::registerFrontendPages();
     }
     // this function will called only uninstall time
     public function down($config){

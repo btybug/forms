@@ -27,4 +27,14 @@ class FrontEndConroller extends Controller
         $type=$fieldTypes->findBy('slug',$param);
         return view('forms::frontend.fields.settings',compact('types'));
     }
+
+    public function myFields()
+    {
+        return view('forms::frontend.fields.my_fields');
+    }
+
+    public function myForms()
+    {
+        return view('forms::frontend.my_forms');
+    }
 }
