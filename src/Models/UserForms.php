@@ -6,5 +6,5 @@ class UserForms extends Model
 {
   protected $table = 'fbp_user_forms';
 
-  protected $guarded = 'id';
+  protected $guarded = ['id'];
 }

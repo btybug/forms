@@ -5,7 +5,9 @@ namespace BtyBugHook\Forms\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Btybug\btybug\Repositories\AdminsettingRepository;
 use Btybug\Console\Repository\FieldsRepository;
+use BtyBugHook\Forms\Http\Requests\FieldCreateRequest;
 use BtyBugHook\Forms\Repository\FieldTypesRepository;
+use BtyBugHook\Forms\Repository\UserFieldRepository;
 use BtyBugHook\Forms\Services\FieldService;
 use Btybug\Console\Services\FormService;
 use Illuminate\Http\Request;
@@ -74,7 +76,7 @@ class IndexConroller extends Controller
 
     public function getFields()
     {
-         return view('forms::fields.index');
+        return view('forms::fields.index');
     }
 
     public function getEditField(
@@ -82,14 +84,14 @@ class IndexConroller extends Controller
     )
     {
         $field = null;
-        return view('forms::fields.edit',compact('field'));
+        return view('forms::fields.edit', compact('field'));
     }
 
     public function getTypeSettings(
         $slug
     )
     {
-        return view('forms::fields.type-settings',compact('slug'));
+        return view('forms::fields.type-settings', compact('slug'));
     }
 
     public function getSettings()
@@ -103,7 +105,7 @@ class IndexConroller extends Controller
     )
     {
         $types = $typesRepository->getAll();
-        $html = \View("forms::_partials.types-list",compact('types'))->render();
+        $html = \View("forms::_partials.types-list", compact('types'))->render();
 
         return \Response::json(['html' => $html]);
     }
@@ -116,10 +118,25 @@ class IndexConroller extends Controller
         $value = $request->get('value');
         $options = $request->get('options', []);
 
-        if(\View::exists('forms::_partials.fields.defaults.'.$value)){
-            $html = view('forms::_partials.fields.defaults.'.$value)->with('data',$options)->render();
+        if (\View::exists('forms::_partials.fields.defaults.' . $value)) {
+            $html = view('forms::_partials.fields.defaults.' . $value)->with('data', $options)->render();
         }
 
-        return \Response::json(['html'=>$html]);
+        return \Response::json(['html' => $html]);
+    }
+
+    public function saveField(
+        FieldCreateRequest $request,
+        UserFieldRepository $fieldRepository
+    )
+    {
+        $result = $fieldRepository->create([
+            'user_id' => \Auth::id(),
+            'field_type' => $request->get('field_type'),
+            'json_data' => json_encode($request->except('_token'),true)
+        ]);
+
+        return ($result) ? redirect('my-account/my-fields')
+            ->with("message", 'Field Created Successfully') : back()->with('error', 'Something went wrong');
     }
 }
