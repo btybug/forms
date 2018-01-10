@@ -25,9 +25,9 @@ class DataTablesConroller extends Controller
   public function getMyFields()
     {
         return DataTables::of(UserFields::where('user_id',\Auth::id()))->addColumn('actions', function ($post) {
-            $url= url("admin/forms/fields",$post->id);
-            $settings_url= url("admin/forms/type-settings",$post->slug);
-            $delete_url= url("admin/forms/type-settings",$post->slug);
+            $url= '';//url("admin/forms/fields",$post->id);
+            $settings_url= '';//url("admin/forms/type-settings",$post->slug);
+            $delete_url= '';// url("admin/forms/type-settings",$post->slug);
             return "<a href='$url' class='btn btn-warning'><i class='fa fa-edit'></i></a>
                     <a href='$settings_url' class='btn btn-primary'><i class='fa fa-eye'></i></a>
                     <a href='$delete_url' class='btn btn-danger'><i class='fa fa-trash'></i></a>";
