@@ -31,7 +31,7 @@ class ModuleServiceProvider extends ServiceProvider
         \Eventy::action('admin.menus', [
             "title" => "Forms",
             "custom-link" => "#",
-            "icon" => "fa fa-anchor",
+            "icon" => "fa fa-star",
             "is_core" => "yes",
             "children" => [
                 [
