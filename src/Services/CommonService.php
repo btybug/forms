@@ -34,6 +34,17 @@ class CommonService extends \Btybug\Console\Services\FieldService
                     "file_path" => "\\BtyBugHook\\Forms\\Http\\Controllers\\FrontEndConroller@myForms"
                 ]
             ]
+        ],
+        [
+            'title' => 'Field Edit',
+            'slug' => 'my-field-edit',
+            'url' => '/my-account/my-fields/edit/{param}',
+            'module_id' => 'sahak.avatar/forms',
+            'header' => true,
+            'content_type' => 'special',
+            'settings' => [
+                "file_path" => "\\BtyBugHook\\Forms\\Http\\Controllers\\FrontEndConroller@myFieldEdit"
+            ]
         ]
     ];
 
@@ -47,6 +58,11 @@ class CommonService extends \Btybug\Console\Services\FieldService
                 if($parentPage && count($subPages)){
                     foreach ($subPages as $data){
                         $data['parent_id'] = $parentPage->id;
+                        register_frontend_page($data);
+                    }
+                }else{
+                    foreach ($subPages as $data){
+                        $data['parent_id'] = 0;
                         register_frontend_page($data);
                     }
                 }

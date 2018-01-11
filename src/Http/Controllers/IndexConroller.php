@@ -130,13 +130,32 @@ class IndexConroller extends Controller
         UserFieldRepository $fieldRepository
     )
     {
-        $result = $fieldRepository->create([
-            'user_id' => \Auth::id(),
-            'field_type' => $request->get('field_type'),
-            'json_data' => json_encode($request->except('_token'),true)
-        ]);
+        if($request->get('id')){
+            $result = $fieldRepository->update($request->get('id'),[
+                'user_id' => \Auth::id(),
+                'field_type' => $request->get('field_type'),
+                'json_data' => $request->except('_token')
+            ]);
+        }else{
+            $result = $fieldRepository->create([
+                'user_id' => \Auth::id(),
+                'field_type' => $request->get('field_type'),
+                'json_data' => $request->except('_token')
+            ]);
+        }
 
         return ($result) ? redirect('my-account/my-fields')
-            ->with("message", 'Field Created Successfully') : back()->with('error', 'Something went wrong');
+            ->with("message", 'Field Saved Successfully') : back()->with('error', 'Something went wrong');
+    }
+
+    public function getDeleteFields(
+        $id,
+        UserFieldRepository $fieldRepository
+    )
+    {
+        $field = $fieldRepository->findOneByMultiple(['id' => $id,'user_id'=> \Auth::id()]);
+        if ($field) $field->delete();
+
+        return back();
     }
 }

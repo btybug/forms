@@ -81,6 +81,53 @@
                 </div>
             </div>
             <div class="select_op_box">
+                @if(isset($data['data_source']))
+                    @if($data['data_source'] == 'manual')
+                        <div class="form-group data_source_manual">
+                            {!! Form::textarea('data_source_manual',null,['class' => 'form-control','id' => 'data_source_manual']) !!}
+                        </div>
+                    @endif
+                    @if($data['data_source'] == 'related')
+                        <div class="form-group data-source-box">
+                            <label class="col-md-4 control-label" for="bbfunction">Select Table</label>
+                            <div class="col-md-4">
+                                {!! Form::select('data_source_table_name',['' => 'Select Table'] + BBGetTables(), null,['class' => 'form-control','id' => 'data_source_table_name']) !!}
+                            </div>
+                        </div>
+                        @if(isset($data['data_source_table_name']) && count(BBGetTableColumn($data['data_source_table_name'])))
+                            <div class="form-group columns_list">
+                                <label class="col-md-4 control-label" for="bbfunction">Select Column</label>
+                                <div class="col-md-4">
+                                    {!! Form::select('data_source_columns',['' => 'Select Column'] + BBGetTableColumn($data['data_source_table_name']) , null,['class' => 'form-control','id' => 'table_column']) !!}
+                                </div>
+                            </div>
+                        @endif
+                    @endif
+
+                    @if($data['data_source'] == 'api')
+                        <div class="form-group data_source_api">
+                            {!! Form::text('api',null,['class' => 'btn btn-warning btn-md input-md','id' => 'data_source_api','placeholder' => 'Put Api Url ...']) !!}
+                        </div>
+                    @endif
+
+                    @if($data['data_source'] == 'bb')
+                        <div class="form-group data-source-box">
+                            <label class="col-md-4 control-label" for="bbfunction">Insert BB</label>
+                            <div class="col-md-4">
+                                {!! Form::text('bb',null,['class' => 'btn btn-warning btn-md input-md']) !!}
+                            </div>
+                        </div>
+                    @endif
+
+                    @if($data['data_source'] == 'file')
+                        <div class="form-group">
+                            <label class="col-xs-4 col-md-4 control-label" for="selectbasic">Files</label>
+                            <div class="col-xs-8 col-md-8">
+                                {!! BBbutton('file','file-unit','Select File',['class' => 'form-control input-md','data-type' => 'files','model' =>$data]) !!}
+                            </div>
+                        </div>
+                    @endif
+                @endif
             </div>
         </div>
     </div>

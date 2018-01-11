@@ -10,6 +10,9 @@ class UserFields extends Model
 
     protected $dates = ['created_at', 'updated_at'];
 
+    protected $casts = [
+      'json_data' => 'json'
+    ];
     public function user()
     {
         return $this->belongsTo('Btybug\User\User', 'user_id', 'id');

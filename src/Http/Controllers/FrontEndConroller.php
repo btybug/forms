@@ -30,7 +30,8 @@ class FrontEndConroller extends Controller
     )
     {
         $type = $fieldTypes->findBy('slug', $slug);
-        return view('forms::frontend.fields.settings', compact('types','slug'));
+        $data = null;
+        return view('forms::frontend.fields.settings', compact('types','slug','data'));
     }
 
     public function myFields()
@@ -41,5 +42,16 @@ class FrontEndConroller extends Controller
     public function myForms()
     {
         return view('forms::frontend.my_forms');
+    }
+
+    public function myFieldEdit(
+        UserFieldRepository $fieldRepository,
+        $id
+    )
+    {
+        $field = $fieldRepository->findOneByMultiple(['id'=>$id,'user_id'=>\Auth::id()]);
+        $slug = ($field) ? $field->field_type : null;
+        $data = $field->json_data;
+        return view('forms::frontend.fields.settings',compact(['field','slug','data']));
     }
 }

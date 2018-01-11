@@ -1,10 +1,13 @@
 @extends('forms::frontend.layouts.app')
 @section('content')
     <div class="col-md-12 m-t-15">
-        <h2>Create new {{ $slug }} field</h2>
+        <h2>{!! ($data) ? 'Edit' : 'Create new' !!} {{ $slug }} field</h2>
 
-        {!! Form::open(['route' => 'forms_save_field']) !!}
+        {!! Form::model($data,['route' => 'forms_save_field']) !!}
             {!! Form::hidden('field_type',$slug) !!}
+            @if($data)
+                {!! Form::hidden('id',$field->id) !!}
+            @endif
             <div class="row">
                 {!! Form::submit('Save',['class' => 'btn btn-success pull-right']) !!}
             </div>
