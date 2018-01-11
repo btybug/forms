@@ -1,14 +1,14 @@
 <div class="bty-more-select">
     <div>
-        <label>{!! $field['label'] !!}</label>
+        <label>{!! $data['label'] !!}</label>
     </div>
     <div>
         <div class="bty-new-select">
-            {!! Form::select($field['column_name'],get_field_data($field['id']),null,['placeholder' => $field['placeholder']]) !!}
+            {!! Form::select($data['name'],get_field_data_preview($data),null,['placeholder' => $data['placeholder']]) !!}
         </div>
     </div>
     <div>
-        <p>Lorem ipsum Lorem ipsum ipsum</p>
-        <span><i class="fa fa-question" aria-hidden="true"></i></span>
+        <p> <p>{!! $data['help'] !!}</p>
+        <span><i class="fa {!! $data['tooltip_icon'] or 'fa-question' !!}" aria-hidden="true"></i></span>
     </div>
 </div>

@@ -1,6 +1,6 @@
 <div class="bty-new-input-text">
-    <input type="text" name="{!! $field['column_name'] !!}" placeholder="{!! $field['placeholder'] !!}">
-    <label>{!! $field['label'] !!}</label>
-    <span><i class="fa fa-question" aria-hidden="true"></i></span>
-    <p>Lorem ipsum Lorem</p>
+    <input type="text" name="{!! $data['name'] !!}" placeholder="{!! $data['placeholder'] !!}">
+    <label>{!! $data['label'] !!}</label>
+    <span><i class="fa {!! $data['tooltip_icon'] or 'fa-question' !!}" aria-hidden="true"></i></span>
+    <p>{{ $data['help'] }}</p>
 </div>

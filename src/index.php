@@ -19,4 +19,6 @@ function get_field_data_preview($data){
             }
             break;
     }
+
+    return [];
 }
