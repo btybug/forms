@@ -1,0 +1,20 @@
+{
+  "title": "My fields",
+  "author": "qaq",
+  "site": "http:\/\/bootydev.co.uk",
+  "version": "1.0",
+  "type": "unit",
+  "description": "all fields",
+  "have_setting": 1,
+  "image": "screenshot.png",
+  "slug": "unit_fields",
+  "folder": "unit_fields",
+  "created_at": 1490088665,
+  "is_core": 1,
+  "place": "frontend",
+  "tags": [
+    "forms_my_fields",
+    "frontend"
+  ],
+  "path": "app\/Plugins\/vendor\/sahak.avatar\/forms\/src\/Units\/unit_fields"
+}

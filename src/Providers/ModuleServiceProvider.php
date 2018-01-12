@@ -51,6 +51,8 @@ class ModuleServiceProvider extends ServiceProvider
                     "is_core" => "yes"
                 ]
             ]]);
+
+        \Config::set('painter.PAINTERSPATHS',array_merge( \Config::get('painter.PAINTERSPATHS'),['app'.DS.'Plugins'.DS.'vendor'.DS.'sahak.avatar'.DS.'forms'.DS.'src'.DS.'Units']));
         Routes::registerPages('sahak.avatar/forms');
     }
 
