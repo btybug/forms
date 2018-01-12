@@ -37,6 +37,10 @@ Route::post('/render-field-types', 'IndexConroller@postRenderFieldTypes');
 Route::post('/get-field-html', 'IndexConroller@fieldHtml');
 Route::post('/save-field', 'IndexConroller@saveField')->name('forms_save_field');
 
+Route::group(['prefix'=>'frontend'],function (){
+    Route::get('/my-field-page-settings', 'FrontEndConroller@getMyfieldSettings',true);
+});
+
 Route::group(['prefix'=>'datatable'],function (){
     Route::get('get-field-types','DataTablesConroller@getFieldTypes')->name('field_types_dt');
     Route::get('get-my-fields','DataTablesConroller@getMyFields')->name('my_fields_dt');

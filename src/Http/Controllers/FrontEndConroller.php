@@ -9,6 +9,7 @@
 namespace BtyBugHook\Forms\Http\Controllers;
 
 
+use Btybug\Console\Repository\FrontPagesRepository;
 use BtyBugHook\Forms\Models\FieldTypes;
 use BtyBugHook\Forms\Repository\FieldTypesRepository;
 use BtyBugHook\Forms\Repository\UserFieldRepository;

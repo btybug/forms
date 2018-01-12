@@ -17,11 +17,9 @@ class CommonService extends \Btybug\Console\Services\FieldService
                 'slug' => 'my-fields',
                 'url' => '/my-account/my-fields',
                 'module_id' => 'sahak.avatar/forms',
-                'content_type' => 'special',
+                'content_type' => 'template',
                 'header' => true,
-                'settings' => [
-                    "file_path" => "\\BtyBugHook\\Forms\\Http\\Controllers\\FrontEndConroller@myFields"
-                ]
+                'form_path' => 'forms::frontend.my_fields_page_settings'
             ],
             [
                 'title' => 'My forms',
