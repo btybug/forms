@@ -41,6 +41,27 @@ $(document).ready(function () {
             addFieldsToFormArea(fields);
             $("#select-fields").addClass("hidden");
             iframe.find('.previewcontent').addClass('activeprevew');
+        })
+        // Change field settings
+        .on('change', '[name=settings]', function (){
+            var iframe = getIframeContent();
+
+            var $this = $(this);
+            var settings = JSON.parse($this.val()),
+                selectedField = $('[name=selected-field]').val(),
+                field = iframe.find('[data-field-id='+selectedField+']'),
+                selectedType = field.data('field-type'),
+                fieldTemplate = $('#field-template').html();
+
+            settings = $.extend({}, settings, {
+                fieldType: selectedType,
+                fieldTemplate: fieldTemplate,
+                fieldID: selectedField
+            });
+
+            var newFieldHTML = $.fieldBuilder(settings);
+            field.after(newFieldHTML);
+            field.remove();
         });
 
     // Change layout
@@ -182,8 +203,22 @@ $(document).ready(function () {
             })
             // Field settings
             .on('click', '.field-settings', function (){
-                $("#field-settings").removeClass("hidden");
-                iframe.find('.previewcontent').removeClass('activeprevew');
+                var fieldID = $(this).closest('.form-group').data('field-id');
+                var fieldType = $(this).closest('.form-group').data('field-type');
+                $('[name=selected-field]').val(fieldID);
+
+                $.ajax({
+                    url: ajaxLinks.baseUrl + "ajax-type-settings/" + fieldType,
+                    headers: {
+                        'X-CSRF-TOKEN': $("input[name='_token']").val()
+                    },
+                    success: function (data) {
+                        $('.field-settings-container').html(data);
+                        $("#field-settings").removeClass("hidden");
+                        iframe.find('.previewcontent').removeClass('activeprevew');
+                    },
+                    type: 'POST'
+                });
             })
             // Remove field
             .on("click", ".delete-field", function (e) {

@@ -70,7 +70,8 @@ button.form-save {
   top: 104px;
   bottom: 0;
   background: #eaeaea;
-  padding: 0 30px;
-  box-shadow: 0 0 1px 1px #00000047; }
+  padding: 0 30px 20px;
+  box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.29);
+  overflow: scroll; }
 
 /*# sourceMappingURL=form-builder.css.map */

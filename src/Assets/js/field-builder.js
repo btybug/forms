@@ -15,9 +15,19 @@
         // Override default options with passed-in options.
         var settings = $.extend({}, $.fieldBuilder.options, options);
 
-        var fieldHTML = '';
-
         var ID = settings.fieldType + '_' + Math.random().toString(36).substr(2, 9);
+
+        if(settings.fieldID){
+            ID = settings.fieldID;
+        }
+
+        var fieldHTML = '',
+            fieldName = ID;
+
+        if(settings.name){
+            fieldName = settings.name;
+        }
+
         var fieldTemplate = settings.fieldTemplate;
 
         // Switch types
@@ -40,15 +50,17 @@
                 break;
         }
 
-        fieldHTML = fieldHTML.replace(/{placeholder}/g, "Field Placeholder");
-        fieldHTML = fieldHTML.replace(/{name}/g, ID);
+        fieldHTML = fieldHTML.replace(/{placeholder}/g, settings.placeholder);
+        fieldHTML = fieldHTML.replace(/{name}/g, fieldName);
 
         // Insert into template
-        fieldTemplate = fieldTemplate.replace(/{label}/g, "Field Label");
+        fieldTemplate = fieldTemplate.replace(/{label}/g, settings.label);
         fieldTemplate = fieldTemplate.replace(/{id}/g, ID);
-        // fieldTemplate = fieldTemplate.replace(/{icon}/g, field.icon);
-        // fieldTemplate = fieldTemplate.replace(/{help}/g, field.help);
-        // fieldTemplate = fieldTemplate.replace(/{tooltip_icon}/g, field.tooltip_icon);
+        fieldTemplate = fieldTemplate.replace(/{type}/g, settings.fieldType);
+        fieldTemplate = fieldTemplate.replace(/{icon}/g, settings.icon);
+        fieldTemplate = fieldTemplate.replace(/{help}/g, settings.help);
+        fieldTemplate = fieldTemplate.replace(/{tooltip_icon}/g, settings.tooltip_icon);
+
         fieldTemplate = fieldTemplate.replace(/{field}/g, fieldHTML);
 
         return fieldTemplate;
@@ -58,6 +70,7 @@
     // Default plugin options
     $.fieldBuilder.options = {
         // Default options
+        fieldID: null,
         fieldType	 : 'text',
         label: 'Field Label',
         placeholder: 'Field Placeholder',

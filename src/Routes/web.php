@@ -32,6 +32,7 @@ Route::get('/field-delete/{id}', 'IndexConroller@getDeleteFields');
 Route::get('/fields/{id}', 'IndexConroller@getEditField',true);
 Route::get('/type-settings', 'IndexConroller@getTypeSettings',true);
 Route::get('/type-settings/{slug}', 'IndexConroller@getTypeSettings',true);
+Route::post('/ajax-type-settings/{slug}', 'IndexConroller@getAjaxTypeSettings',true);
 Route::get('/settings', 'IndexConroller@getSettings',true);
 Route::post('/render-field-types', 'IndexConroller@postRenderFieldTypes');
 Route::post('/get-field-html', 'IndexConroller@fieldHtml');

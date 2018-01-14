@@ -23,6 +23,7 @@
 
     <script>
         var ajaxLinks = {
+            baseUrl: "{!! url('admin/forms') !!}/",
             getFields: "{!! url('admin/forms/get-fields') !!}",
             changeLayout: "{!! url("/admin/uploads/gears/settings-iframe/") !!}/",
             renderFields:  "{!! url('admin/forms/render-field-types') !!}"
@@ -149,13 +150,16 @@
 </div>
 
 <div class="select-fields-container hidden" id="field-settings">
-    <h3>Field Settings</h3>
-    <div class="fields-container"></div>
-    <button class="btn btn-primary save-field-settings">Save Settings</button>
+    <h3>Field Settings
+        <button class="btn btn-primary btn-sm save-field-settings pull-right">Close</button>
+    </h3>
+    <div class="field-settings-container"></div>
+    <input type="hidden" name="selected-field">
+    <input type="hidden" name="settings">
 </div>
 
 <!-- Field Container Template -->
-<script type="template/html" id="field-template"><div class="form-group" data-field-id="{id}">
+<script type="template/html" id="field-template"><div class="form-group" data-field-id="{id}" data-field-type="{type}">
     <label><i class="fa {icon}"></i> {label}</label>
     <i class="fa {tooltip_icon}" data-toggle="tooltip" data-placement="top" title="{help}"></i>
     {field}
