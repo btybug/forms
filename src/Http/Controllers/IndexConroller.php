@@ -163,4 +163,29 @@ class IndexConroller extends Controller
 
         return back();
     }
+
+    public function getFromLayout(Request $request){
+
+	    $html = "";
+	    $css = "";
+	    $js = "";
+
+	    return \Response::json([
+	    	'html' => $html,
+		    'css' => $css,
+		    'js' => $js,
+	    ]);
+    }
+
+	public function getRenderAssets(Request $request){
+
+    	$assetsType = $request->get('assets_type');
+    	$assetsFile = $request->get('assets_file');
+
+		$html = "";
+
+		return \Response::json([
+			'type' => $assetsType
+		]);
+	}
 }

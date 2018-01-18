@@ -47,3 +47,8 @@ Route::group(['prefix'=>'datatable'],function (){
     Route::get('get-my-fields','DataTablesConroller@getMyFields')->name('my_fields_dt');
 });
 
+
+// Form Builder
+Route::get('/render-assets', function (){
+	echo "Ok";
+}, true);

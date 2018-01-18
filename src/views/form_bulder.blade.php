@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -60,76 +59,10 @@
 
     <span class="form-preview">FORM PREVIEW</span>
 
-    <div class="form-layout pull-right">
-        {!! BBbutton2('unit','form_layout','form_layout','Select Layout',['class'=>'form-control','model'=>$form]) !!}
-    </div>
-
     <div class="pull-right">
-        <a class="btn btn-danger" style="margin-right: 10px;" data-toggle="modal" data-target="#formSettingsModal">
-            <i class="fa fa-gear"></i> Form Settings
+        <a class="btn btn-warning open-settings-panel">
+            <i class="fa fa-gear"></i> Settings
         </a>
-        <a class="btn btn-warning layout-settings" style="margin-right: 10px;">
-            <i class="fa fa-pencil"></i> Layout settings
-        </a>
-    </div>
-</div>
-
-<!-- Modal -->
-<div class="modal fade" id="formSettingsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Form Settings</h4>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group m-l-0 m-r-0">
-                            <label for="success_message" class="col-sm-4 ">Success Message</label>
-                            <div class="col-sm-8">
-                                <input class="form-control" name="message" type="text">
-                            </div>
-                        </div>
-
-                        <div class="form-group m-l-0 m-r-0">
-                            <label for="success_message" class="col-sm-4 ">Event/Trigger</label>
-                            <div class="col-sm-8">
-                                <select class="form-control" name="event"><option value="" selected="selected">Select Event</option><option value="App\Events\AfterLoginEvent">After Login</option><option value="App\Events\AfterLogOutEvent">After Log out</option><option value="Illuminate\Auth\Events\Registred">on registred</option><option value="App\Events\FormSubmit">on Form Submit</option><option value="App\Events\PageCreateEvent">on Page Create</option></select>
-                            </div>
-                        </div>
-
-                        <div class="form-group m-l-0 m-r-0">
-                            <label for="" class="col-sm-4">Redirect Page</label>
-                            <div class="col-sm-8">
-                                <select id="target" class="form-control" name="redirect_Page" title="Select Target">
-                                    <option value="alert">BB get page</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group m-l-0 m-r-0">
-                            <label for="" class="col-sm-4">Is Ajax</label>
-
-                            <div class="col-sm-8">
-                                <div class="customelement radio-inline">
-                                    <input name="is_ajax" id="is_ajax_yes" value="yes" type="radio">
-                                    <label for="is_ajax_yes">Yes</label>
-                                </div>
-                                <div class="customelement radio-inline">
-                                    <input name="is_ajax" id="is_ajax_no" value="no" type="radio"> <label for="is_ajax_no">No</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group m-l-0 m-r-0">
-                            <button type="submit" class="bty-btn bty-btn-save bty-btn-cl-black bty-btn-size-sm pull-right m-r-10" data-action="save-form"><span>Save</span></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
@@ -143,10 +76,42 @@
 @include('resources::assests.deleteModal')
 @include('resources::assests.magicModal')
 
-<div class="select-fields-container hidden" id="select-fields">
-    <h3>Select Field Type</h3>
-    <div class="fields-container"></div>
-    <button class="btn btn-primary add-to-form">Add to form</button>
+<div class="select-fields-container" id="settings-panel" data-state="open">
+    <div class="setting-nav">
+        Settings
+        <button class="btn btn-danger pull-right close-settings-panel">Close</button>
+    </div>
+
+    <div>
+
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" id="settings-tabs" role="tablist" style="margin-bottom: 10px;">
+            <li role="presentation" class="disabled"><a href="#fields" aria-controls="home" role="tab" data-toggle="tab">Fields</a></li>
+            <li role="presentation" class="disabled"><a href="#fields-style" aria-controls="settings" role="tab" data-toggle="tab">Fields Style</a></li>
+            <li role="presentation" class="active"><a href="#form-settings" aria-controls="profile" role="tab" data-toggle="tab">Form Settings</a></li>
+            <li role="presentation" class="disabled"><a href="#element-settings" aria-controls="messages" role="tab" data-toggle="tab">Element Settings</a></li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane" id="fields">
+                <div class="fields-container"></div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="fields-style">
+                @include('forms::settings.fields_style')
+            </div>
+            <div role="tabpanel" class="tab-pane active" id="form-settings">
+                @include('forms::settings.form_settings')
+            </div>
+            <div role="tabpanel" class="tab-pane" id="element-settings">
+                @include('forms::settings.element_settings')
+            </div>
+        </div>
+
+    </div>
+
+    {{--<div class="fields-container"></div>--}}
+    {{--<button class="btn btn-primary add-to-form">Add to form</button>--}}
 </div>
 
 <div class="select-fields-container hidden" id="field-settings">

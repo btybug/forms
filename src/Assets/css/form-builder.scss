@@ -79,10 +79,26 @@ button.form-save {
   position: absolute;
   width: 40%;
   right: 0;
-  top: 104px;
+  top: 50px;
   bottom: 0;
   background: #eaeaea;
-  padding: 0 30px 20px;
-  box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.29);
+  padding: 10px;
   overflow: scroll;
+}
+
+.setting-nav {
+  background: #565656;
+  color: #fff;
+  padding: 17px;
+  margin: -10px;
+  margin-bottom: 10px;
+
+  button{
+    top: -8px;
+    position: relative;
+  }
+}
+
+.message{
+  padding: 15px;
 }

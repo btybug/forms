@@ -18,6 +18,22 @@ function reload_css(href) {
 
 $(document).ready(function () {
     $("body")
+        // Disabled tabs
+        .on("click", '#settings-tabs>.disabled', function (){
+            return false;
+        })
+        // Open settings panel
+        .on("click", '.open-settings-panel', function (){
+            var iframe = getIframeContent();
+            $('#settings-panel').removeClass("hidden");
+            iframe.find('.previewcontent').removeClass('activeprevew');
+        })
+        // Close settings panel
+        .on("click", '.close-settings-panel', function (){
+            var iframe = getIframeContent();
+            $('#settings-panel').addClass("hidden");
+            iframe.find('.previewcontent').addClass('activeprevew');
+        })
         // Save field settings
         .on("click", ".save-field-settings", function () {
             var iframe = getIframeContent();
@@ -116,6 +132,27 @@ $(document).ready(function () {
         var iframe = getIframeContent();
         iframe.prepend(headHTML);
 
+        // Enable settings tabs
+        $('#settings-tabs>.disabled').removeClass("disabled");
+
+        if($('#settings-panel').data("state") === "open"){
+            iframe.find('.previewcontent').removeClass("activeprevew");
+        }
+
+        // Load fields
+        $.ajax({
+            url: ajaxLinks.renderFields,
+            headers: {
+                'X-CSRF-TOKEN': $("input[name='_token']").val()
+            },
+            dataType: 'json',
+            success: function (data) {
+                $(".fields-container").html(data.html);
+                iframe.find('.previewcontent').removeClass('activeprevew');
+            },
+            type: 'POST'
+        });
+
         // Load saved fields
         if(typeof fieldsJSON !== "undefined"){
             $.each(fieldsJSON, function (index, areaJSON){
@@ -194,8 +231,7 @@ $(document).ready(function () {
                     },
                     dataType: 'json',
                     success: function (data) {
-                        $("#select-fields").removeClass("hidden");
-                        $("#select-fields .fields-container").html(data.html);
+                        $(".fields-container").html(data.html);
                         iframe.find('.previewcontent').removeClass('activeprevew');
                     },
                     type: 'POST'
