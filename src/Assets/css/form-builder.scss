@@ -102,3 +102,27 @@ button.form-save {
 .message{
   padding: 15px;
 }
+
+a.bb-node-edit {
+  float: right;
+  margin-right: 10px;
+  color: #a5a5a5;
+  display: none;
+}
+
+.jstree-default .jstree-anchor {
+  width: 100%
+}
+
+.jstree-default .jstree-anchor:hover a.bb-node-edit{
+  display: block;
+}
+
+div#layers-tree {
+  overflow-y: scroll;
+  height: 100%;
+}
+
+i.jstree-icon.jstree-ocl {
+  display: none;
+}

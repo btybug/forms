@@ -33,6 +33,9 @@
     {!! BBstyle(plugins_path("vendor/sahak.avatar/forms/src/Assets/libs/jstree/themes/default/style.min.css")) !!}
     {!! BBscript(plugins_path("vendor/sahak.avatar/forms/src/Assets/libs/jstree/jstree.min.js")) !!}
 
+    {!! HTML::style("public/libs/jspanel/jspanel.min.css") !!}
+    {!! HTML::script("public/libs/jspanel/jspanel.min.js") !!}
+
     {!! BBstyle(plugins_path("vendor/sahak.avatar/forms/src/Assets/css/form-builder.css")) !!}
     {!! BBscript(plugins_path("vendor/sahak.avatar/forms/src/Assets/js/field-builder.js")) !!}
     {!! BBscript(plugins_path("vendor/sahak.avatar/forms/src/Assets/js/form-builder.js")) !!}
@@ -63,6 +66,9 @@
     <span class="form-preview">FORM PREVIEW</span>
 
     <div class="pull-right">
+        <a class="btn btn-info open-layers-panel">
+            <i class="glyphicon glyphicon-tasks"></i> Layers
+        </a>
         <a class="btn btn-warning open-settings-panel">
             <i class="fa fa-gear"></i> Settings
         </a>
@@ -141,15 +147,6 @@
         </button>
         <button class="btn btn-xs btn-danger delete-field" data-id="{id}">
             <i class="fa fa-trash"></i>
-        </button>
-    </div>
-</script>
-
-<!-- From area controls -->
-<script type="template/html" id="form-actions-template">
-    <div class="bb-form-actions">
-        <button class="btn btn-xs btn-success add-field-trigger" data-id="{id}">
-            <i class="fa fa-plus"></i> ADD FIELD
         </button>
     </div>
 </script>

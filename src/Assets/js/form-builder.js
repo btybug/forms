@@ -1,3 +1,10 @@
+(function ($, undefined) {
+    "use strict";
+    $.jstree.plugins.noclose = function () {
+        this.close_node = $.noop;
+    };
+})(jQuery);
+
 function reload_js(src) {
     $('script[src="' + src + '"]').remove();
     $('<script>').attr('src', src).appendTo('body');
@@ -73,7 +80,7 @@ function DOMtoJSON(node) {
 
     obj.icon = "fa " + nodeIcon;
 
-    obj.text = nodeGroup;
+    obj.text = nodeGroup + '<a href="#" class="bb-node-edit"><i class="fa fa-pencil"></i></a>';
     obj.bbID = DOMCounter;
     obj.state = {
         opened: true
@@ -101,9 +108,72 @@ function DOMtoJSON(node) {
 
 $(document).ready(function () {
     $("body")
-    // Disabled tabs
+        // Disabled tabs
         .on("click", '#settings-tabs>.disabled', function () {
             return false;
+        })
+        // Node edit
+        .on("click", '.bb-node-edit', function () {
+            var editPanel = jsPanel.create({
+                container: 'body',
+                theme: 'primary',
+                headerTitle: 'Edit Layer',
+                position: 'center-center 0 50',
+                contentSize: '450 200',
+                content: '<div id="element-settings"></div>'
+            });
+        })
+        // Open layers panel
+        .on("click", '.open-layers-panel', function () {
+            if($(this).hasClass("disabled")) return;
+
+            jsPanel.create({
+                container: 'body',
+                theme:       'primary',
+                headerTitle: 'Layers',
+                position:    'center-top 0 30',
+                contentSize: '450 250',
+                content:     '<div id="layers-tree"></div>',
+                callback: function () {
+                    $('.open-layers-panel').addClass("disabled");
+
+                    var iframe = getIframeContent();
+
+                    // Load DOM tree
+                    var DOMTree = DOMtoJSON(iframe.find('.previewcontent>div')[0]);
+                    $('#layers-tree')
+                        .jstree({
+                            "core": {
+                                "animation": 0,
+                                "check_callback": true,
+                                "themes": {"stripes": true},
+                                'data': DOMTree
+                            },
+                            "plugins": [
+                                "wholerow", "noclose"
+                            ]
+                        })
+                        .bind("hover_node.jstree", function (e, data) {
+                            // Remove hover effect
+                            iframe.find("[data-bb-hovered]").removeAttr("data-bb-hovered");
+
+                            // Add hover effect for hovered node
+                            var domNode = iframe.find('[data-bb-id="' + data.node.original.bbID + '"]');
+                            domNode.attr("data-bb-hovered", true);
+                        })
+                        .on('open_node.jstree', function(e, data){
+                            var icon = $('#' + data.node.id).find('i.jstree-icon.jstree-ocl').first();
+                            icon.removeClass('fa-caret-right').addClass('fa fa-caret-down');
+                        })
+                        .on('close_node.jstree', function(e, data){
+                            var icon = $('#' + data.node.id).find('i.jstree-icon.jstree-ocl').first();
+                            icon.removeClass('fa-caret-down').addClass('fa-caret-right');
+                        });
+                },
+                onclosed: function (){
+                    $('.open-layers-panel').removeClass("disabled");
+                }
+            });
         })
         // Open settings panel
         .on("click", '.open-settings-panel', function () {
@@ -179,15 +249,6 @@ $(document).ready(function () {
             $(this).attr("data-sortable", i);
         });
 
-        // Add form actions
-        iframe.find('.bb-form-area').each(function () {
-            var formActionsTemplate = $('#form-actions-template').html();
-
-            $(this)
-                .wrap('<div class="bb-form-area-container"></div>')
-                .before(formActionsTemplate);
-        });
-
         // Activate sortable
         activateSortable();
 
@@ -214,37 +275,6 @@ $(document).ready(function () {
         var headHTML = $('#iframe-inject-head').html();
         var iframe = getIframeContent();
         iframe.prepend(headHTML);
-
-        // Load DOM tree
-        var DOMTree = DOMtoJSON(iframe.find('.previewcontent>div')[0]);
-        $('#jstree')
-            .jstree({
-                "core": {
-                    "animation": 0,
-                    "check_callback": true,
-                    "themes": {"stripes": true},
-                    'data': DOMTree
-                },
-                "plugins": [
-                    "wholerow"
-                ]
-            })
-            .bind("hover_node.jstree", function (e, data) {
-                // Remove hover effect
-                iframe.find("[data-bb-hovered]").removeAttr("data-bb-hovered");
-
-                // Add hover effect for hovered node
-                var domNode = iframe.find('[data-bb-id="' + data.node.original.bbID + '"]');
-                domNode.attr("data-bb-hovered", true);
-            })
-            .on('open_node.jstree', function(e, data){
-                var icon = $('#' + data.node.id).find('i.jstree-icon.jstree-ocl').first();
-                icon.removeClass('fa-caret-right').addClass('fa fa-caret-down');
-            })
-            .on('close_node.jstree', function(e, data){
-                var icon = $('#' + data.node.id).find('i.jstree-icon.jstree-ocl').first();
-                icon.removeClass('fa-caret-down').addClass('fa-caret-right');
-            });
 
         // Enable settings tabs
         $('#settings-tabs>.disabled').removeClass("disabled");
@@ -313,43 +343,6 @@ $(document).ready(function () {
                     $(this).addClass("active");
                     $(this).closest('.bb-form-area-container').find('.bb-form-actions').addClass("active");
                 }
-            })
-            .on('click', '.add-field-trigger', function () {
-                iframe.find('.bb-form-area').removeClass("active");
-
-                $(this)
-                    .closest('.bb-form-area-container').find('.bb-form-area')
-                    .addClass('active');
-
-                $(this)
-                    .closest('.bb-form-area-container').find('.bb-form-actions')
-                    .addClass('active');
-
-                // Open modal
-                var table = "posts";
-                var fields = $("#existing-fields").val();
-                var fieldsJSON = JSON.parse(fields);
-                var existingFields = [];
-
-                if (Object.keys(fieldsJSON).length > 0) {
-                    $.each(fieldsJSON, function (index, group) {
-                        existingFields = existingFields.concat(group);
-                    });
-                }
-
-                $.ajax({
-                    url: ajaxLinks.renderFields,
-                    data: {table: table, fields: JSON.stringify(existingFields)},
-                    headers: {
-                        'X-CSRF-TOKEN': $("input[name='_token']").val()
-                    },
-                    dataType: 'json',
-                    success: function (data) {
-                        $(".fields-container").html(data.html);
-                        iframe.find('.previewcontent').removeClass('activeprevew');
-                    },
-                    type: 'POST'
-                });
             })
             // Field settings
             .on('click', '.field-settings', function () {
