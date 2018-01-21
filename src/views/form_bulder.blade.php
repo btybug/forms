@@ -8,6 +8,7 @@
 
     {!! HTML::style('public/css/admin.css') !!}
     {!! HTML::style('public/css/cms.css') !!}
+    {!! HTML::style('public/css/font-awesome/css/font-awesome.min.css') !!}
     {!! HTML::style('public/css/menus.css?v='.rand(1111,9999)) !!}
     {!! BBstyle(plugins_path("vendor/sahak.avatar/forms/src/Assets/css/forms-form.css")) !!}
 
@@ -28,7 +29,9 @@
             renderFields:  "{!! url('admin/forms/render-field-types') !!}"
         };
     </script>
-    {!! BBscript(plugins_path("vendor/sahak.avatar/forms/src/Assets/js/forms-fields.js")) !!}
+
+    {!! BBstyle(plugins_path("vendor/sahak.avatar/forms/src/Assets/libs/jstree/themes/default/style.min.css")) !!}
+    {!! BBscript(plugins_path("vendor/sahak.avatar/forms/src/Assets/libs/jstree/jstree.min.js")) !!}
 
     {!! BBstyle(plugins_path("vendor/sahak.avatar/forms/src/Assets/css/form-builder.css")) !!}
     {!! BBscript(plugins_path("vendor/sahak.avatar/forms/src/Assets/js/field-builder.js")) !!}
@@ -89,7 +92,7 @@
             <li role="presentation" class="disabled"><a href="#fields" aria-controls="home" role="tab" data-toggle="tab">Fields</a></li>
             <li role="presentation" class="disabled"><a href="#fields-style" aria-controls="settings" role="tab" data-toggle="tab">Fields Style</a></li>
             <li role="presentation" class="active"><a href="#form-settings" aria-controls="profile" role="tab" data-toggle="tab">Form Settings</a></li>
-            <li role="presentation" class="disabled"><a href="#element-settings" aria-controls="messages" role="tab" data-toggle="tab">Element Settings</a></li>
+            <li role="presentation" class="disabled"><a href="#element-settings" aria-controls="messages" role="tab" data-toggle="tab">Layers</a></li>
         </ul>
 
         <!-- Tab panes -->
@@ -157,6 +160,10 @@
 <!-- Injected templates to iframe -->
 <script type="template/html" id="iframe-inject-head">
     <style>
+        [data-bb-hovered] {
+            outline: 2px dashed #ff0707;
+        }
+
         .bb-form-area {
             outline: 1px dashed #c0c0c0;
             outline-offset: 5px;

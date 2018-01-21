@@ -11,25 +11,108 @@ function reload_css(href) {
         'media': 'all'
     }).appendTo('head');
 
-    if($('link[href="' + href + '"]').length > 1){
+    if ($('link[href="' + href + '"]').length > 1) {
         $('link[href="' + href + '"]').first().remove();
     }
 }
 
+var DOMCounter = 0;
+
+function DOMtoJSON(node) {
+    node = node || this;
+
+    // DOM Counter
+    DOMCounter++;
+    $(node).attr("data-bb-id", DOMCounter);
+
+    var obj = {
+        nodeType: node.nodeType
+    };
+    if (node.tagName) {
+        obj.tagName = node.tagName.toLowerCase();
+    }
+
+    if (node.nodeName) {
+        obj.nodeName = node.nodeName;
+    }
+
+    if (node.nodeValue) {
+        obj.nodeValue = node.nodeValue;
+    }
+
+    var attrs = node.attributes;
+    var nodeClass = "", nodeID = "";
+    if (attrs) {
+        var length = attrs.length;
+        var arr = obj.attributes = new Array(length);
+        for (var i = 0; i < length; i++) {
+            var attr = attrs[i];
+            arr[i] = [attr.nodeName, attr.nodeValue];
+
+            if (attr.nodeName === "class") nodeClass = attr.nodeValue;
+            if (attr.nodeName === "id") nodeID = attr.nodeValue;
+        }
+    }
+
+    var nodeIcon = "fa-code";
+    var nodeGroup = "NODE";
+    var nodeTag = obj.tagName.toLowerCase();
+
+    if ($.inArray(nodeTag, ["div", "head", "section"]) !== -1) nodeGroup = "Container";
+    if ($.inArray(nodeTag, ["button"]) !== -1) nodeGroup = "Button";
+    if ($.inArray(nodeTag, ["h1", "h2", "h3", "h4", "h5", "h6", "span", "p"]) !== -1) nodeGroup = "Text";
+
+    switch (nodeGroup){
+        case "Container":
+            nodeIcon = "fa-window-maximize";
+            break;
+        case "Text":
+            nodeIcon = "fa-text-width";
+            break;
+    }
+
+    obj.icon = "fa " + nodeIcon;
+
+    obj.text = nodeGroup;
+    obj.bbID = DOMCounter;
+    obj.state = {
+        opened: true
+    };
+
+    var childNodes = node.childNodes;
+    if (childNodes) {
+        var cleanNodes = [];
+        for (i = 0; i < childNodes.length; i++) {
+            if (childNodes[i].nodeName !== "#text") {
+                cleanNodes.push(childNodes[i]);
+            }
+        }
+
+        length = cleanNodes.length;
+        obj.children = [];
+        for (i = 0; i < length; i++) {
+            var children = DOMtoJSON(cleanNodes[i]);
+            obj.children.push(children);
+        }
+    }
+
+    return obj;
+}
+
 $(document).ready(function () {
     $("body")
-        // Disabled tabs
-        .on("click", '#settings-tabs>.disabled', function (){
+    // Disabled tabs
+        .on("click", '#settings-tabs>.disabled', function () {
             return false;
         })
         // Open settings panel
-        .on("click", '.open-settings-panel', function (){
+        .on("click", '.open-settings-panel', function () {
             var iframe = getIframeContent();
             $('#settings-panel').removeClass("hidden");
             iframe.find('.previewcontent').removeClass('activeprevew');
         })
         // Close settings panel
-        .on("click", '.close-settings-panel', function (){
+        .on("click", '.close-settings-panel', function () {
             var iframe = getIframeContent();
             $('#settings-panel').addClass("hidden");
             iframe.find('.previewcontent').addClass('activeprevew');
@@ -45,11 +128,11 @@ $(document).ready(function () {
             var fields = [];
             var iframe = getIframeContent();
 
-            $('[name=types]:checked').each(function (){
+            $('[name=types]:checked').each(function () {
                 fields.push($(this).val());
             });
 
-            if(fields.length < 1) {
+            if (fields.length < 1) {
                 alert("Please select at least one field type");
                 return;
             }
@@ -59,13 +142,13 @@ $(document).ready(function () {
             iframe.find('.previewcontent').addClass('activeprevew');
         })
         // Change field settings
-        .on('change', '[name=settings]', function (){
+        .on('change', '[name=settings]', function () {
             var iframe = getIframeContent();
 
             var $this = $(this);
             var settings = JSON.parse($this.val()),
                 selectedField = $('[name=selected-field]').val(),
-                field = iframe.find('[data-field-id='+selectedField+']'),
+                field = iframe.find('[data-field-id=' + selectedField + ']'),
                 selectedType = field.data('field-type'),
                 fieldTemplate = $('#field-template').html();
 
@@ -81,23 +164,23 @@ $(document).ready(function () {
         });
 
     // Change layout
-    $('[name=form_layout]').on('change', function (){
+    $('[name=form_layout]').on('change', function () {
         var layout = $(this).val();
         var iframe = $('#unit-iframe');
 
         iframe.attr("src", ajaxLinks.changeLayout + layout);
     });
 
-    function onFrameLoaded(){
+    function onFrameLoaded() {
         var iframe = getIframeContent();
 
         // Mark sortable areas
-        iframe.find('.bb-form-area').each(function (i){
+        iframe.find('.bb-form-area').each(function (i) {
             $(this).attr("data-sortable", i);
         });
 
         // Add form actions
-        iframe.find('.bb-form-area').each(function (){
+        iframe.find('.bb-form-area').each(function () {
             var formActionsTemplate = $('#form-actions-template').html();
 
             $(this)
@@ -112,11 +195,11 @@ $(document).ready(function () {
         var fieldsJSONString = $('[name=fields_json]').val(),
             fieldsJSON = JSON.parse(fieldsJSONString);
 
-        $.each(fieldsJSON, function (index, fields){
+        $.each(fieldsJSON, function (index, fields) {
             var formArea = iframe.find('[data-sortable=' + index + ']');
 
-            $.each(fields, function (index, field){
-                var fieldHTML = $('#fields-backup').find('[data-field-id='+field+']').clone();
+            $.each(fields, function (index, field) {
+                var fieldHTML = $('#fields-backup').find('[data-field-id=' + field + ']').clone();
                 formArea.append(fieldHTML);
             });
 
@@ -127,15 +210,46 @@ $(document).ready(function () {
     }
 
     // iFrame functions
-    $('#unit-iframe').load(function (){
+    $('#unit-iframe').load(function () {
         var headHTML = $('#iframe-inject-head').html();
         var iframe = getIframeContent();
         iframe.prepend(headHTML);
 
+        // Load DOM tree
+        var DOMTree = DOMtoJSON(iframe.find('.previewcontent>div')[0]);
+        $('#jstree')
+            .jstree({
+                "core": {
+                    "animation": 0,
+                    "check_callback": true,
+                    "themes": {"stripes": true},
+                    'data': DOMTree
+                },
+                "plugins": [
+                    "wholerow"
+                ]
+            })
+            .bind("hover_node.jstree", function (e, data) {
+                // Remove hover effect
+                iframe.find("[data-bb-hovered]").removeAttr("data-bb-hovered");
+
+                // Add hover effect for hovered node
+                var domNode = iframe.find('[data-bb-id="' + data.node.original.bbID + '"]');
+                domNode.attr("data-bb-hovered", true);
+            })
+            .on('open_node.jstree', function(e, data){
+                var icon = $('#' + data.node.id).find('i.jstree-icon.jstree-ocl').first();
+                icon.removeClass('fa-caret-right').addClass('fa fa-caret-down');
+            })
+            .on('close_node.jstree', function(e, data){
+                var icon = $('#' + data.node.id).find('i.jstree-icon.jstree-ocl').first();
+                icon.removeClass('fa-caret-down').addClass('fa-caret-right');
+            });
+
         // Enable settings tabs
         $('#settings-tabs>.disabled').removeClass("disabled");
 
-        if($('#settings-panel').data("state") === "open"){
+        if ($('#settings-panel').data("state") === "open") {
             iframe.find('.previewcontent').removeClass("activeprevew");
         }
 
@@ -154,16 +268,16 @@ $(document).ready(function () {
         });
 
         // Load saved fields
-        if(typeof fieldsJSON !== "undefined"){
-            $.each(fieldsJSON, function (index, areaJSON){
+        if (typeof fieldsJSON !== "undefined") {
+            $.each(fieldsJSON, function (index, areaJSON) {
                 addFieldsToFormArea(areaJSON, index);
             });
         }
 
         // Unit settings
-        if(typeof unitJSON !== "undefined"){
-            $.each(unitJSON, function (key, value){
-                if(key !== "_token" && key !== "itemname"){
+        if (typeof unitJSON !== "undefined") {
+            $.each(unitJSON, function (key, value) {
+                if (key !== "_token" && key !== "itemname") {
                     var field = iframe.find('#add_custome_page').find('[name=' + key + ']');
                     field.val(value);
                 }
@@ -172,13 +286,13 @@ $(document).ready(function () {
             document.getElementById('unit-iframe').contentWindow.savesettingevent();
         }
 
-        $('.layout-settings').click(function(){
-            var  $this = $(this);
-            if($this.hasClass('active')){
+        $('.layout-settings').click(function () {
+            var $this = $(this);
+            if ($this.hasClass('active')) {
                 $this.removeClass('active');
                 iframe.find('[data-settinglive="settings"]').addClass('hide');
                 iframe.find('.previewcontent').addClass('activeprevew');
-            }else{
+            } else {
                 $this.addClass('active');
                 iframe.find('[data-settinglive="settings"]').removeClass('hide');
                 iframe.find('.previewcontent').removeClass('activeprevew');
@@ -195,12 +309,12 @@ $(document).ready(function () {
                 iframe.find('.bb-form-area').removeClass("active");
                 iframe.find('.bb-form-actions').removeClass("active");
 
-                if(!toggle) {
+                if (!toggle) {
                     $(this).addClass("active");
                     $(this).closest('.bb-form-area-container').find('.bb-form-actions').addClass("active");
                 }
             })
-            .on('click', '.add-field-trigger', function (){
+            .on('click', '.add-field-trigger', function () {
                 iframe.find('.bb-form-area').removeClass("active");
 
                 $(this)
@@ -217,8 +331,8 @@ $(document).ready(function () {
                 var fieldsJSON = JSON.parse(fields);
                 var existingFields = [];
 
-                if(Object.keys(fieldsJSON).length > 0){
-                    $.each(fieldsJSON, function (index, group){
+                if (Object.keys(fieldsJSON).length > 0) {
+                    $.each(fieldsJSON, function (index, group) {
                         existingFields = existingFields.concat(group);
                     });
                 }
@@ -238,7 +352,7 @@ $(document).ready(function () {
                 });
             })
             // Field settings
-            .on('click', '.field-settings', function (){
+            .on('click', '.field-settings', function () {
                 var fieldID = $(this).closest('.form-group').data('field-id');
                 var fieldType = $(this).closest('.form-group').data('field-type');
                 $('[name=selected-field]').val(fieldID);
@@ -268,10 +382,10 @@ $(document).ready(function () {
 
                 var isRemoved = false;
 
-                $.each(oldData, function (index, item){
-                    if(!isRemoved){
+                $.each(oldData, function (index, item) {
+                    if (!isRemoved) {
                         var itemToRemoveIndex = item.indexOf(itemtoRemove);
-                        if(itemToRemoveIndex !== -1){
+                        if (itemToRemoveIndex !== -1) {
                             item.splice(itemToRemoveIndex, 1);
                             isRemoved = true;
                         }
@@ -288,11 +402,11 @@ $(document).ready(function () {
                 });
 
                 // Remove from backup
-                $('#fields-backup').find('[data-field-id='+itemtoRemove+']').remove();
+                $('#fields-backup').find('[data-field-id=' + itemtoRemove + ']').remove();
             });
     });
 
-    function getIframeContent(){
+    function getIframeContent() {
         return $('#unit-iframe').contents().find('body');
     }
 
@@ -300,18 +414,18 @@ $(document).ready(function () {
     function addFieldsToFormArea(fieldsJSON, position) {
         var iframe = getIframeContent();
 
-        if(!position) position = 0;
+        if (!position) position = 0;
 
         // Build form
         var activeFormArea = iframe.find('.bb-form-area.active');
         var fieldHTML = "";
-        if(activeFormArea.length === 1){
+        if (activeFormArea.length === 1) {
             position = activeFormArea.data("sortable");
             fieldHTML = formBuilder(fieldsJSON, position);
             activeFormArea.html(fieldHTML);
-        }else{
+        } else {
             fieldHTML = formBuilder(fieldsJSON, position);
-            iframe.find('[data-sortable='+position+']').html(fieldHTML);
+            iframe.find('[data-sortable=' + position + ']').html(fieldHTML);
         }
 
         // Add field to backup
@@ -325,8 +439,8 @@ $(document).ready(function () {
     }
 
     // Add action button to fields
-    function addActionsButton(iframe, position){
-        iframe.find('[data-sortable='+position+']>.form-group').each(function () {
+    function addActionsButton(iframe, position) {
+        iframe.find('[data-sortable=' + position + ']>.form-group').each(function () {
             var $this = $(this),
                 actionsTemplate = $('#actions-template').html(),
                 id = $this.attr("data-field-id");
@@ -348,7 +462,7 @@ $(document).ready(function () {
 
         $(fields).each(function (index, field) {
             // Add to existing fields
-            if(!existingFieldsData[position]) existingFieldsData[position] = [];
+            if (!existingFieldsData[position]) existingFieldsData[position] = [];
             existingFieldsData[position].push(field);
 
             // Render fields
@@ -373,7 +487,7 @@ $(document).ready(function () {
     }
 
     // Activate sortable
-    function activateSortable(){
+    function activateSortable() {
         var iframe = getIframeContent();
         // Form sortable
         iframe.find('.bb-form-area').sortable({
@@ -382,7 +496,7 @@ $(document).ready(function () {
                 var fieldsJSON = $('[name=fields_json]'),
                     fieldsJSONData = JSON.parse(fieldsJSON.val());
 
-                iframe.find('.bb-form-area').each(function (){
+                iframe.find('.bb-form-area').each(function () {
 
                     var ids = [],
                         container = $(this),
@@ -412,12 +526,12 @@ $(document).ready(function () {
     function onMessage(event) {
 
         var data = event.data;
-        if(data.TODO){
+        if (data.TODO) {
 
             var TODO = data.TODO;
 
             // On Save settings form
-            if(TODO === "POST_SETTINGS_CALLBACK"){
+            if (TODO === "POST_SETTINGS_CALLBACK") {
                 var json = data.json;
                 $('[name="unit_json"]').val(JSON.stringify(json));
 
