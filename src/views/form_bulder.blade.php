@@ -66,6 +66,9 @@
     <span class="form-preview">FORM PREVIEW</span>
 
     <div class="pull-right">
+        <a class="btn btn-success add-field-trigger">
+            <i class="fa fa-plus"></i> Add Field
+        </a>
         <a class="btn btn-info open-layers-panel">
             <i class="glyphicon glyphicon-tasks"></i> Layers
         </a>
@@ -96,9 +99,7 @@
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" id="settings-tabs" role="tablist" style="margin-bottom: 10px;">
             <li role="presentation" class="disabled"><a href="#fields" aria-controls="home" role="tab" data-toggle="tab">Fields</a></li>
-            <li role="presentation" class="disabled"><a href="#fields-style" aria-controls="settings" role="tab" data-toggle="tab">Fields Style</a></li>
             <li role="presentation" class="active"><a href="#form-settings" aria-controls="profile" role="tab" data-toggle="tab">Form Settings</a></li>
-            <li role="presentation" class="disabled"><a href="#element-settings" aria-controls="messages" role="tab" data-toggle="tab">Layers</a></li>
         </ul>
 
         <!-- Tab panes -->
@@ -106,21 +107,12 @@
             <div role="tabpanel" class="tab-pane" id="fields">
                 <div class="fields-container"></div>
             </div>
-            <div role="tabpanel" class="tab-pane" id="fields-style">
-                @include('forms::settings.fields_style')
-            </div>
             <div role="tabpanel" class="tab-pane active" id="form-settings">
                 @include('forms::settings.form_settings')
-            </div>
-            <div role="tabpanel" class="tab-pane" id="element-settings">
-                @include('forms::settings.element_settings')
             </div>
         </div>
 
     </div>
-
-    {{--<div class="fields-container"></div>--}}
-    {{--<button class="btn btn-primary add-to-form">Add to form</button>--}}
 </div>
 
 <div class="select-fields-container hidden" id="field-settings">
@@ -154,11 +146,16 @@
 <!-- Fields Backup -->
 <script type="template/html" id="fields-backup"></script>
 
+<!-- Elements Settings -->
+@include('forms::settings.element_settings')
+
+
 <!-- Injected templates to iframe -->
 <script type="template/html" id="iframe-inject-head">
     <style>
         [data-bb-hovered] {
-            outline: 2px dashed #ff0707;
+            outline: 2px dashed #ff0707!important;
+            cursor: pointer;
         }
 
         .bb-form-area {
@@ -167,7 +164,7 @@
         }
 
         .bb-form-area:empty:after{
-            content: "Add Form Fields Here";
+            content: "Drop Form Fields Here";
             color: #bdbdbd;
             position: absolute;
             width: 100%;

@@ -23,6 +23,30 @@ function reload_css(href) {
     }
 }
 
+function getNodeGroup(node){
+    var nodeGroup = "NODE";
+    var nodeTag = node.tagName.toLowerCase();
+
+    if ($.inArray(nodeTag, ["div", "head", "section"]) !== -1) nodeGroup = "Container";
+    if ($.inArray(nodeTag, ["button"]) !== -1) nodeGroup = "Button";
+    if ($.inArray(nodeTag, ["h1", "h2", "h3", "h4", "h5", "h6", "span", "p"]) !== -1) nodeGroup = "Text";
+
+    if ($.inArray(nodeTag, ["input"]) !== -1) {
+        if(node.attributes.type) {
+            var inputType = node.attributes.type.nodeValue;
+            if ($.inArray(inputType, ["submit", "reset", "button"]) !== -1) nodeGroup = "Button";
+        }
+    }
+
+    if(node.attributes.class && node.attributes.class.nodeValue){
+        var nodeClasses = node.attributes.class.nodeValue;
+        if(nodeClasses.indexOf("row") !== -1) nodeGroup = "Row";
+        if(nodeClasses.indexOf("col-") !== -1) nodeGroup = "Column";
+    }
+
+    return nodeGroup;
+}
+
 var DOMCounter = 0;
 
 function DOMtoJSON(node) {
@@ -62,25 +86,36 @@ function DOMtoJSON(node) {
     }
 
     var nodeIcon = "fa-code";
-    var nodeGroup = "NODE";
-    var nodeTag = obj.tagName.toLowerCase();
-
-    if ($.inArray(nodeTag, ["div", "head", "section"]) !== -1) nodeGroup = "Container";
-    if ($.inArray(nodeTag, ["button"]) !== -1) nodeGroup = "Button";
-    if ($.inArray(nodeTag, ["h1", "h2", "h3", "h4", "h5", "h6", "span", "p"]) !== -1) nodeGroup = "Text";
+    var nodeGroup = getNodeGroup(node);
 
     switch (nodeGroup){
         case "Container":
+        case "Row":
             nodeIcon = "fa-window-maximize";
+            break;
+        case "Column":
+            nodeIcon = "fa-columns";
             break;
         case "Text":
             nodeIcon = "fa-text-width";
+            break;
+        case "Button":
+            nodeIcon = "fa-hand-pointer-o";
             break;
     }
 
     obj.icon = "fa " + nodeIcon;
 
-    obj.text = nodeGroup + '<a href="#" class="bb-node-edit"><i class="fa fa-pencil"></i></a>';
+    obj.text = nodeGroup;
+
+    if(nodeGroup !== "NODE"){
+        obj.text += '<a href="#" class="bb-node-edit" data-type="'+nodeGroup.toLowerCase()+'"><i class="fa fa-pencil"></i></a>';
+    }
+
+    if(nodeGroup === "Row" || nodeGroup === "Column"){
+        obj.text = '<span class="text-muted"><i class="fa fa-lock"></i> ' + nodeGroup + '</span>';
+    }
+
     obj.bbID = DOMCounter;
     obj.state = {
         opened: true
@@ -114,14 +149,17 @@ $(document).ready(function () {
         })
         // Node edit
         .on("click", '.bb-node-edit', function () {
-            var editPanel = jsPanel.create({
+            var nodeType = $(this).data('type');
+
+            jsPanel.create({
                 container: 'body',
                 theme: 'primary',
                 headerTitle: 'Edit Layer',
                 position: 'center-center 0 50',
                 contentSize: '450 200',
-                content: '<div id="element-settings"></div>'
+                content: $('#element-'+nodeType+'-settings').html()
             });
+
         })
         // Open layers panel
         .on("click", '.open-layers-panel', function () {
@@ -174,6 +212,19 @@ $(document).ready(function () {
                     $('.open-layers-panel').removeClass("disabled");
                 }
             });
+        })
+        // Add field trigger
+        .on("click", '.add-field-trigger', function () {
+            var iframe = getIframeContent();
+            var settingsPanel = $('#settings-panel');
+            settingsPanel.removeClass("hidden");
+            settingsPanel.find('li').removeClass("active");
+            settingsPanel.find('li').first().addClass("active");
+
+            settingsPanel.find('.tab-pane').removeClass("active");
+            settingsPanel.find('.tab-pane').first().addClass("active");
+
+            iframe.find('.previewcontent').removeClass('activeprevew');
         })
         // Open settings panel
         .on("click", '.open-settings-panel', function () {
@@ -396,6 +447,13 @@ $(document).ready(function () {
 
                 // Remove from backup
                 $('#fields-backup').find('[data-field-id=' + itemtoRemove + ']').remove();
+            })
+            // Hover nodes
+            .on('mouseover', '[data-bb-id]', function (e){
+                e.stopPropagation();
+                var $this = $(this);
+                iframe.find('[data-bb-id]').removeAttr("data-bb-hovered");
+                $this.attr("data-bb-hovered", true);
             });
     });
 
