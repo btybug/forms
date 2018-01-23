@@ -150,11 +150,7 @@ $(document).ready(function () {
         })
         // Node edit
         .on("click", '.bb-node-edit', function () {
-            var nodeType = $(this).data('type'),
-                layersPanel = $('#layers-panel');
-
-            // Disable layers panel
-            layersPanel.addClass("disabled");
+            var nodeType = $(this).data('type');
 
             jsPanel.create({
                 container: 'body',
@@ -162,10 +158,7 @@ $(document).ready(function () {
                 headerTitle: 'Edit Layer',
                 position: 'center-center 0 50',
                 contentSize: '450 200',
-                content: $('#element-'+nodeType+'-settings').html(),
-                onclosed: function (){
-                    layersPanel.removeClass("disabled");
-                }
+                content: $('#element-'+nodeType+'-settings').html()
             });
 
         })
