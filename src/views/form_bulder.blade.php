@@ -37,6 +37,7 @@
     {!! HTML::script("public/libs/jspanel/jspanel.min.js") !!}
 
     {!! BBstyle(plugins_path("vendor/sahak.avatar/forms/src/Assets/css/form-builder.css")) !!}
+    {!! BBscript(plugins_path("vendor/sahak.avatar/forms/src/Assets/js/jquery-ui-droppable-iframe.js")) !!}
     {!! BBscript(plugins_path("vendor/sahak.avatar/forms/src/Assets/js/field-builder.js")) !!}
     {!! BBscript(plugins_path("vendor/sahak.avatar/forms/src/Assets/js/form-builder.js")) !!}
 
@@ -223,6 +224,14 @@
 
         .bb-form-area.active {
             outline: 1px solid #c0c0c0;
+        }
+
+        .form-area-active {
+            background: #fffacd;
+        }
+
+        .form-area-hover {
+            background: #deffcd;
         }
     </style>
 </script>

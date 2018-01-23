@@ -351,32 +351,23 @@ $(document).ready(function () {
                 $(".fields-container").html(data.html);
 
                 // Fields draggable
-                $('.bb-fields-list>div').draggable({
-                    connectToSortable: iframe.find('.bb-form-area').sortable({
-                        connectWith: ".connectedSortable",
-                        stop: function (event, ui) {
-                            var fieldsJSON = $('[name=fields_json]'),
-                                fieldsJSONData = JSON.parse(fieldsJSON.val());
-
-                            iframe.find('.bb-form-area').each(function () {
-
-                                var ids = [],
-                                    container = $(this),
-                                    sortableIndex = container.attr('data-sortable');
-
-                                container.find('.form-group').each(function () {
-                                    var id = $(this).attr("data-field-id");
-                                    ids.push(parseInt(id));
-                                });
-
-                                fieldsJSONData[sortableIndex] = ids;
-                            });
-
-                            fieldsJSON.val(JSON.stringify(fieldsJSONData));
-                        }
-                    }),
+                $('.bb-fields-list>.bb-field-item').draggable({
                     helper: "clone",
                     iframeFix: true
+                });
+
+                // Droppable areas
+                iframe.find( ".bb-form-area" ).droppable({
+                    classes: {
+                        "ui-droppable-active": "form-area-active",
+                        "ui-droppable-hover": "form-area-hover"
+                    },
+                    drop: function( event, ui ) {
+                        var fieldType = $(ui.draggable).data("type"),
+                            position = $(this).data("sortable");
+
+                        addFieldsToFormArea([fieldType], position);
+                    }
                 });
             },
             type: 'POST'
@@ -599,29 +590,29 @@ $(document).ready(function () {
     function activateSortable() {
         var iframe = getIframeContent();
         // Form sortable
-        // iframe.find('.bb-form-area').sortable({
-        //     connectWith: ".connectedSortable",
-        //     stop: function (event, ui) {
-        //         var fieldsJSON = $('[name=fields_json]'),
-        //             fieldsJSONData = JSON.parse(fieldsJSON.val());
-        //
-        //         iframe.find('.bb-form-area').each(function () {
-        //
-        //             var ids = [],
-        //                 container = $(this),
-        //                 sortableIndex = container.attr('data-sortable');
-        //
-        //             container.find('.form-group').each(function () {
-        //                 var id = $(this).attr("data-field-id");
-        //                 ids.push(parseInt(id));
-        //             });
-        //
-        //             fieldsJSONData[sortableIndex] = ids;
-        //         });
-        //
-        //         fieldsJSON.val(JSON.stringify(fieldsJSONData));
-        //     }
-        // });
+        iframe.find('.bb-form-area').sortable({
+            connectWith: ".connectedSortable",
+            stop: function (event, ui) {
+                var fieldsJSON = $('[name=fields_json]'),
+                    fieldsJSONData = JSON.parse(fieldsJSON.val());
+
+                iframe.find('.bb-form-area').each(function () {
+
+                    var ids = [],
+                        container = $(this),
+                        sortableIndex = container.attr('data-sortable');
+
+                    container.find('.form-group').each(function () {
+                        var id = $(this).attr("data-field-id");
+                        ids.push(parseInt(id));
+                    });
+
+                    fieldsJSONData[sortableIndex] = ids;
+                });
+
+                fieldsJSON.val(JSON.stringify(fieldsJSONData));
+            }
+        });
     }
 
     // Listen to iframe
