@@ -102,7 +102,7 @@ button.form-save {
   padding: 15px;
 }
 
-a.bb-node-edit {
+a.bb-node-btn {
   float: right;
   margin-right: 10px;
   color: #a5a5a5;
@@ -113,7 +113,7 @@ a.bb-node-edit {
   width: 100%
 }
 
-.jstree-default .jstree-anchor:hover a.bb-node-edit{
+.jstree-default .jstree-anchor:hover a.bb-node-btn{
   display: block;
 }
 
@@ -130,7 +130,7 @@ i.jstree-icon.jstree-ocl {
   padding: 10px;
 }
 
-[aria-selected="true"] > a > .bb-node-edit {
+[aria-selected="true"] > a > .bb-node-btn {
   display: block;
 }
 
@@ -173,4 +173,18 @@ span.bb-node-column {
 
 span.bb-node-container {
   color: #8e81ff;
+}
+
+.row > [class*="col-"]:empty {
+  height: 50px;
+  background: #c1b8e2;
+  outline: 2px dashed green;
+}
+
+.section-layout-select{
+  padding: 10px;
+
+  label{
+    margin-right: 10px;
+  }
 }

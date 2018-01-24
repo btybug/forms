@@ -99,17 +99,40 @@
 
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" id="settings-tabs" role="tablist" style="margin-bottom: 10px;">
+            <li role="presentation" class="disabled"><a href="#style" aria-controls="home" role="tab" data-toggle="tab">Style</a></li>
             <li role="presentation" class="disabled"><a href="#fields" aria-controls="home" role="tab" data-toggle="tab">Fields</a></li>
             <li role="presentation" class="active"><a href="#form-settings" aria-controls="profile" role="tab" data-toggle="tab">Form Settings</a></li>
+            <li role="presentation"><a href="#html-elements" aria-controls="profile" role="tab" data-toggle="tab">HTML Elements</a></li>
         </ul>
 
         <!-- Tab panes -->
         <div class="tab-content">
+            <div role="tabpanel" class="tab-pane" id="style">
+                @php
+                    $tags = ["Select Class", "Saved Class", "Custom Class", "Studio"];
+                @endphp
+                <div class="form-group">
+                    <label>Select Class</label>
+                    <select id="selected-tag" class="form-control">
+                        @foreach($tags as $tag)
+                            <option value="{{$tag}}">{{$tag}}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
             <div role="tabpanel" class="tab-pane" id="fields">
                 <div class="fields-container"></div>
             </div>
             <div role="tabpanel" class="tab-pane active" id="form-settings">
                 @include('forms::settings.form_settings')
+            </div>
+            <div role="tabpanel" class="tab-pane" id="html-elements">
+                <div class="bb-fields-list">
+                    <div data-type="text" class="bb-field-item">div</div>
+                    <div data-type="text" class="bb-field-item">h1</div>
+                    <div data-type="text" class="bb-field-item">span</div>
+                    <div data-type="text" class="bb-field-item">p</div>
+                </div>
             </div>
         </div>
 
@@ -142,6 +165,41 @@
             <i class="fa fa-trash"></i>
         </button>
     </div>
+</script>
+
+<!-- Section Layout Template -->
+<script type="template/html" id="section-layout-template">
+    <div class="section-layout-select">
+        @php
+        $layouts = ["3-3-3-3", "3-3-6", "3-6-3", "3-9", "4-4-4", "6-3-3", "6-6", "9-3", "12"];
+        @endphp
+
+        @foreach($layouts as $layout)
+        <label>
+            <input type="radio" value="{{$layout}}" name="bb-layout-select" />
+            <img src="{!! url('public/images/layouts/cols-'.$layout.'.png') !!}" />
+        </label>
+        @endforeach
+
+        <button class="btn btn-primary apply-layout" data-id="{id}">Apply Layout</button>
+    </div>
+</script>
+
+<!-- Column Content Template -->
+<script type="template/html" id="column-content">
+    @php
+        $tags = ["div", "h1", "h2", "span", "p"];
+    @endphp
+    <div class="form-group">
+        <label>Select Tag</label>
+        <select id="selected-tag" class="form-control">
+            @foreach($tags as $tag)
+                <option value="{{$tag}}">{{$tag}}</option>
+            @endforeach
+        </select>
+    </div>
+
+    <button class="btn btn-primary apply-tag" data-id="{id}">Apply Tag</button>
 </script>
 
 <!-- Fields Backup -->

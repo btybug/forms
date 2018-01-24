@@ -112,16 +112,25 @@ function DOMtoJSON(node) {
     var nodeGroupID = nodeGroup + " #" + DOMCounter;
 
     if(nodeGroup !== "NODE"){
-        nodeGroupID += '<a href="#" class="bb-node-edit" data-type="'+nodeGroup.toLowerCase()+'"><i class="fa fa-pencil"></i></a>';
+        nodeGroupID += '<a href="#" class="bb-node-btn bb-node-edit" data-type="'+nodeGroup.toLowerCase()+'"><i class="fa fa-pencil"></i></a>';
+    }
+
+    if(nodeGroup === "Wrapper"){
+        nodeGroupID += '<a href="#" class="bb-node-btn bb-add-section" data-id="'+DOMCounter+'"><i class="fa fa-plus"></i></a>';
+    }
+
+    if(nodeGroup === "Section"){
+        nodeGroupID += '<a href="#" class="bb-node-btn bb-section-columns" data-id="'+DOMCounter+'"><i class="fa fa-columns"></i></a>';
+    }
+
+    if(nodeGroup === "Column"){
+        nodeGroupID += '<a href="#" class="bb-node-btn bb-column-content" data-id="'+DOMCounter+'"><i class="fa fa-columns"></i></a>';
     }
 
     nodeGroupID = '<span class="bb-node-'+nodeGroup.toLowerCase()+'">' + nodeGroupID + '</span>';
 
-    obj.text = nodeGroupID;
 
-    // if(nodeGroup === "Row" || nodeGroup === "Column"){
-    //     obj.text = '<span class="text-muted"><i class="fa fa-lock"></i> ' + nodeGroupID + '</span>';
-    // }
+    obj.text = nodeGroupID;
 
     obj.bbID = DOMCounter;
     obj.state = {
@@ -168,6 +177,76 @@ $(document).ready(function () {
             });
 
         })
+        // Column Content
+        .on("click", '.bb-column-content', function () {
+            var nodeID = $(this).data('id'),
+                template = $('#column-content').html();
+
+            template = template.replace('{id}', nodeID);
+
+            jsPanel.create({
+                container: 'body',
+                theme: 'primary',
+                headerTitle: 'Section Layout',
+                position: 'left-bottom 0 50',
+                contentSize: '450 300',
+                content: template
+            });
+        })
+        // Apply tag
+        .on('click', '.apply-tag', function (){
+            var iframe = getIframeContent();
+            var section = iframe.find('[data-bb-id=' + $(this).data("id") + ']');
+
+            var selectedTag = $('#selected-tag').val();
+
+            var columnHTML = "<" + selectedTag  + ">Demo Text</" + selectedTag + '>';
+
+            section.html(columnHTML);
+        })
+        // Section columns
+        .on("click", '.bb-section-columns', function () {
+            var nodeID = $(this).data('id'),
+                template = $('#section-layout-template').html();
+
+            template = template.replace('{id}', nodeID);
+
+            jsPanel.create({
+                container: 'body',
+                theme: 'primary',
+                headerTitle: 'Section Layout',
+                position: 'center-bottom 0 50',
+                contentSize: '450 200',
+                content: template
+            });
+        })
+        // Apply layout
+        .on('click', '.apply-layout', function (){
+            var iframe = getIframeContent();
+            var section = iframe.find('[data-bb-id=' + $(this).data("id") + ']');
+
+            var columnString = $('[name=bb-layout-select]:checked').val(),
+                columnArray = columnString.split("-");
+
+            var columnHTML = "";
+
+            $.each(columnArray, function (index, columnClass){
+                columnHTML += '<div class="col-md-'+columnClass+'"></div>';
+            });
+
+            section.html(columnHTML);
+        })
+        // Add section
+        .on("click", '.bb-add-section', function () {
+            var iframe = getIframeContent();
+
+            var $this = $(this),
+                wrapper = iframe.find('[data-bb-id="'+$this.data("id")+'"]');
+
+            wrapper.append('<div class="row bb-section"><div class="col-md-12"></div></div>');
+
+            // TODO: ReGenerate tree list
+        })
         // Open layers panel
         .on("click", '.open-layers-panel', function () {
             if($(this).hasClass("disabled")) return;
@@ -198,7 +277,7 @@ $(document).ready(function () {
                                 'data': DOMTree
                             },
                             "plugins": [
-                                "wholerow", "noclose"
+                                "wholerow", "noclose", "dnd"
                             ]
                         })
                         .bind("hover_node.jstree", function (e, data) {
@@ -417,6 +496,7 @@ $(document).ready(function () {
         // Actions
         iframe
             .on("click", ".bb-form-area", function () {
+                var $this = $(this);
                 var toggle = $(this).hasClass("active");
                 iframe.find('.bb-form-area').removeClass("active");
                 iframe.find('.bb-form-actions').removeClass("active");
@@ -425,6 +505,15 @@ $(document).ready(function () {
                     $(this).addClass("active");
                     $(this).closest('.bb-form-area-container').find('.bb-form-actions').addClass("active");
                 }
+
+                jsPanel.create({
+                    container: 'body',
+                    theme: 'primary',
+                    headerTitle: 'Add Fields',
+                    position: 'center-center 0 50',
+                    contentSize: '450 200',
+                    content: $('.fields-container').html()
+                });
             })
             // Field settings
             .on('click', '.field-settings', function () {
