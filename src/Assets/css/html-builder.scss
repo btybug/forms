@@ -1,0 +1,160 @@
+.ui-sortable-handle:hover, .ui-sortable > div:hover {
+  outline: 2px dashed #e2e2e2;
+  outline-offset: 5px;
+  cursor: move;
+}
+
+[data-toggle="tooltip"] {
+  cursor: help;
+}
+
+a.bb-form-layout {
+  margin-right: 30px;
+  text-decoration: none;
+}
+
+.bb-form-header {
+  background: #464646;
+  color: #fff;
+  padding: 10px 15px;
+}
+
+input.form-name {
+  margin-left: 10px;
+  text-indent: 5px;
+  border: none;
+  padding: 5px;
+  width: 200px;
+  color: #000;
+}
+
+button.form-save {
+  background: #e4d700;
+  color: #524e02;
+  border: none;
+  font-weight: bold;
+  padding: 5px 30px;
+  text-transform: uppercase;
+}
+
+.bb-form-options {
+  background: #848484;
+  padding: 10px 15px;
+  display: table;
+  width: 100%;
+}
+
+.form-layout {
+  width: 360px;
+}
+
+.form-style {
+  margin-right: 10px;
+}
+
+.bb-form-container {
+  padding: 10px 20px;
+}
+
+.form-preview {
+  background: #464646;
+  color: #fff;
+  font-size: 17px;
+  padding: 10px;
+  text-transform: uppercase;
+  text-align: center;
+  top: 5px;
+  position: relative;
+}
+
+/* Unit Iframe */
+#unit-iframe{
+  width: 100%;
+  border: none;
+  height: calc(100vh - 153px);
+  margin-top: 10px;
+}
+
+.select-fields-container {
+  position: absolute;
+  width: 40%;
+  right: 0;
+  top: 50px;
+  bottom: 0;
+  background: #eaeaea;
+  padding: 10px;
+}
+
+.setting-nav {
+  background: #565656;
+  color: #fff;
+  padding: 17px;
+  margin: -10px;
+  margin-bottom: 10px;
+
+  button{
+    top: -8px;
+    position: relative;
+  }
+}
+
+.message{
+  padding: 15px;
+}
+
+a.bb-node-edit {
+  float: right;
+  margin-right: 10px;
+  color: #a5a5a5;
+  display: none;
+}
+
+.jstree-default .jstree-anchor {
+  width: 100%
+}
+
+.jstree-default .jstree-anchor:hover a.bb-node-edit{
+  display: block;
+}
+
+div#layers-tree {
+  overflow-y: scroll;
+  height: 100%;
+}
+
+i.jstree-icon.jstree-ocl {
+  display: none;
+}
+
+.element-settings-tabs .tab-pane{
+  padding: 10px;
+}
+
+[aria-selected="true"] > a > .bb-node-edit {
+  display: block;
+}
+
+.jsPanel.disabled:before {
+  content: "";
+  background: rgba(255, 255, 255, 0.57);
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+}
+
+.bb-fields-list {
+  margin: 10px;
+}
+
+.bb-fields-list div {
+  cursor: move;
+  border: 1px dashed #b3b3b3;
+  text-transform: capitalize;
+  text-indent: 10px;
+  margin-bottom: 10px;
+  line-height: 35px;
+  background: #f3f3f3;
+  width: 200px;
+  user-select: none;
+}
