@@ -22,7 +22,8 @@ class IndexConroller extends Controller
     public function getFormBulder()
     {
         $form = null;
-        return view('forms::form_bulder', compact('form'));
+//        return view('forms::form_bulder', compact('form'));
+        return view('forms::form_builder', compact('form'));
     }
 
     public function postFormBulder(

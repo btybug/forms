@@ -40,9 +40,11 @@ function getNodeGroup(node){
 
     if(node.attributes.class && node.attributes.class.nodeValue){
         var nodeClasses = node.attributes.class.nodeValue;
-        if(nodeClasses.indexOf("row") !== -1) nodeGroup = "Row";
+        if(nodeClasses.indexOf("row") !== -1) nodeGroup = "Section";
         if(nodeClasses.indexOf("col-") !== -1) nodeGroup = "Column";
     }
+
+    if(node.attributes["bb-main-wrapper"]) nodeGroup = "Wrapper";
 
     return nodeGroup;
 }
@@ -107,15 +109,19 @@ function DOMtoJSON(node) {
 
     obj.icon = "fa " + nodeIcon;
 
-    obj.text = nodeGroup;
+    var nodeGroupID = nodeGroup + " #" + DOMCounter;
 
     if(nodeGroup !== "NODE"){
-        obj.text += '<a href="#" class="bb-node-edit" data-type="'+nodeGroup.toLowerCase()+'"><i class="fa fa-pencil"></i></a>';
+        nodeGroupID += '<a href="#" class="bb-node-edit" data-type="'+nodeGroup.toLowerCase()+'"><i class="fa fa-pencil"></i></a>';
     }
 
-    if(nodeGroup === "Row" || nodeGroup === "Column"){
-        obj.text = '<span class="text-muted"><i class="fa fa-lock"></i> ' + nodeGroup + '</span>';
-    }
+    nodeGroupID = '<span class="bb-node-'+nodeGroup.toLowerCase()+'">' + nodeGroupID + '</span>';
+
+    obj.text = nodeGroupID;
+
+    // if(nodeGroup === "Row" || nodeGroup === "Column"){
+    //     obj.text = '<span class="text-muted"><i class="fa fa-lock"></i> ' + nodeGroupID + '</span>';
+    // }
 
     obj.bbID = DOMCounter;
     obj.state = {

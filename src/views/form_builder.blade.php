@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Form Builder</title>
+    <title>HTML Builder</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
@@ -36,10 +36,10 @@
     {!! HTML::style("public/libs/jspanel/jspanel.min.css") !!}
     {!! HTML::script("public/libs/jspanel/jspanel.min.js") !!}
 
-    {!! BBstyle(plugins_path("vendor/sahak.avatar/forms/src/Assets/css/form-builder.css")) !!}
+    {!! BBstyle(plugins_path("vendor/sahak.avatar/forms/src/Assets/css/html-builder.css")) !!}
     {!! BBscript(plugins_path("vendor/sahak.avatar/forms/src/Assets/js/jquery-ui-droppable-iframe.js")) !!}
     {!! BBscript(plugins_path("vendor/sahak.avatar/forms/src/Assets/js/field-builder.js")) !!}
-    {!! BBscript(plugins_path("vendor/sahak.avatar/forms/src/Assets/js/form-builder.js")) !!}
+    {!! BBscript(plugins_path("vendor/sahak.avatar/forms/src/Assets/js/html-builder.js")) !!}
 
     {!! HTML::style('public-x/custom/css/formBuilder.css', ["id"=>"custom_css"]) !!}
     {!! HTML::script('public-x/custom/js/formBuilder.js') !!}
