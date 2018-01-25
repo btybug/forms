@@ -71,7 +71,7 @@
 
     <div class="pull-right">
         <a class="btn btn-success add-field-trigger">
-            <i class="fa fa-plus"></i> Add Field
+            <i class="fa fa-plus"></i> Add Item
         </a>
         <a class="btn btn-info open-layers-panel">
             <i class="glyphicon glyphicon-tasks"></i> Layers
@@ -98,47 +98,8 @@
         <button class="btn btn-danger pull-right close-settings-panel">Close</button>
     </div>
 
-    <div>
-
-        <!-- Nav tabs -->
-        <ul class="nav nav-tabs" id="settings-tabs" role="tablist" style="margin-bottom: 10px;">
-            <li role="presentation" class="disabled"><a href="#style" aria-controls="home" role="tab" data-toggle="tab">Style</a></li>
-            <li role="presentation" class="disabled"><a href="#fields" aria-controls="home" role="tab" data-toggle="tab">Fields</a></li>
-            <li role="presentation" class="active"><a href="#form-settings" aria-controls="profile" role="tab" data-toggle="tab">Form Settings</a></li>
-            <li role="presentation"><a href="#html-elements" aria-controls="profile" role="tab" data-toggle="tab">HTML Elements</a></li>
-        </ul>
-
-        <!-- Tab panes -->
-        <div class="tab-content">
-            <div role="tabpanel" class="tab-pane" id="style">
-                @php
-                    $tags = ["Select Class", "Saved Class", "Custom Class", "Studio"];
-                @endphp
-                <div class="form-group">
-                    <label>Select Class</label>
-                    <select id="selected-tag" class="form-control">
-                        @foreach($tags as $tag)
-                            <option value="{{$tag}}">{{$tag}}</option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-            <div role="tabpanel" class="tab-pane" id="fields">
-                <div class="fields-container"></div>
-            </div>
-            <div role="tabpanel" class="tab-pane active" id="form-settings">
-                @include('forms::settings.form_settings')
-            </div>
-            <div role="tabpanel" class="tab-pane" id="html-elements">
-                <div class="bb-fields-list">
-                    <div data-type="text" class="bb-field-item">div</div>
-                    <div data-type="text" class="bb-field-item">h1</div>
-                    <div data-type="text" class="bb-field-item">span</div>
-                    <div data-type="text" class="bb-field-item">p</div>
-                </div>
-            </div>
-        </div>
-
+    <div class="settings-panel-content">
+        @include('forms::settings.form_settings')
     </div>
 </div>
 
@@ -170,24 +131,6 @@
     </div>
 </script>
 
-<!-- Section Layout Template -->
-<script type="template/html" id="section-layout-template">
-    <div class="section-layout-select">
-        @php
-        $layouts = ["3-3-3-3", "3-3-6", "3-6-3", "3-9", "4-4-4", "6-3-3", "6-6", "9-3", "12"];
-        @endphp
-
-        @foreach($layouts as $layout)
-        <label>
-            <input type="radio" value="{{$layout}}" name="bb-layout-select" />
-            <img src="{!! url('public/images/layouts/cols-'.$layout.'.png') !!}" />
-        </label>
-        @endforeach
-
-        <button class="btn btn-primary apply-layout" data-id="{id}">Apply Layout</button>
-    </div>
-</script>
-
 <!-- Column Content Template -->
 <script type="template/html" id="column-content">
     @php
@@ -211,7 +154,6 @@
 <!-- Elements Settings -->
 @include('forms::settings.element_settings')
 
-
 <!-- Injected templates to iframe -->
 <script type="template/html" id="iframe-inject-head">
     <style>
@@ -220,24 +162,22 @@
             cursor: pointer;
         }
 
-        .bb-form-area {
+        .item-column>div {
             outline: 1px dashed #c0c0c0;
             outline-offset: 5px;
+            min-height: 50px;
+            position: relative;
         }
 
-        .bb-form-area:empty:after{
-            content: "Drop Form Fields Here";
+        .item-column>div:empty:after{
+            content: "Drop Here";
             color: #bdbdbd;
             position: absolute;
             width: 100%;
             height: 100%;
             text-align: center;
             line-height: 50px;
-        }
-
-        .bb-form-area {
-            min-height: 50px;
-            position: relative;
+            font-size: 12px;
         }
 
         .ui-sortable-handle:hover, .ui-sortable > div:hover {
@@ -293,12 +233,6 @@
 
         .form-area-hover {
             background: #deffcd;
-        }
-
-        [class*="col-"]:empty {
-            height: 50px;
-            background: #c1b8e2;
-            outline: 2px dashed green;
         }
     </style>
 </script>

@@ -42,9 +42,12 @@ function getNodeGroup(node){
         var nodeClasses = node.attributes.class.nodeValue;
         if(nodeClasses.indexOf("row") !== -1) nodeGroup = "Section";
         if(nodeClasses.indexOf("col-") !== -1) nodeGroup = "Column";
+        if(nodeClasses.indexOf("item-column") !== -1) nodeGroup = "Item Column";
+        if(nodeClasses.indexOf("parent-column") !== -1) nodeGroup = "Parent Column";
     }
 
     if(node.attributes["bb-main-wrapper"]) nodeGroup = "Wrapper";
+    if(node.attributes["data-field-id"]) nodeGroup = "Field";
 
     return nodeGroup;
 }
@@ -110,22 +113,23 @@ function DOMtoJSON(node) {
     obj.icon = "fa " + nodeIcon;
 
     var nodeGroupID = nodeGroup + " #" + DOMCounter;
+    var nodeGroupType = nodeGroup.toLowerCase().replace(" ", "-");
 
     if(nodeGroup !== "NODE"){
-        nodeGroupID += '<a href="#" class="bb-node-btn bb-node-edit" data-type="'+nodeGroup.toLowerCase()+'"><i class="fa fa-pencil"></i></a>';
+        nodeGroupID += '<a href="#" class="bb-node-btn bb-node-edit" data-type="'+nodeGroupType+'" data-id="'+DOMCounter+'"><i class="fa fa-pencil"></i></a>';
     }
 
-    if(nodeGroup === "Wrapper"){
+    if(nodeGroup === "Wrapper" || nodeGroup === "Parent Column"){
         nodeGroupID += '<a href="#" class="bb-node-btn bb-add-section" data-id="'+DOMCounter+'"><i class="fa fa-plus"></i></a>';
     }
 
-    if(nodeGroup === "Section"){
-        nodeGroupID += '<a href="#" class="bb-node-btn bb-section-columns" data-id="'+DOMCounter+'"><i class="fa fa-columns"></i></a>';
-    }
-
-    if(nodeGroup === "Column"){
-        nodeGroupID += '<a href="#" class="bb-node-btn bb-column-content" data-id="'+DOMCounter+'"><i class="fa fa-columns"></i></a>';
-    }
+    // if(nodeGroup === "Section"){
+    //     nodeGroupID += '<a href="#" class="bb-node-btn bb-section-columns" data-id="'+DOMCounter+'"><i class="fa fa-columns"></i></a>';
+    // }
+    //
+    // if(nodeGroup === "Column"){
+    //     nodeGroupID += '<a href="#" class="bb-node-btn bb-column-content" data-id="'+DOMCounter+'"><i class="fa fa-columns"></i></a>';
+    // }
 
     nodeGroupID = '<span class="bb-node-'+nodeGroup.toLowerCase()+'">' + nodeGroupID + '</span>';
 
@@ -138,7 +142,7 @@ function DOMtoJSON(node) {
     };
 
     var childNodes = node.childNodes;
-    if (childNodes) {
+    if (childNodes && nodeGroup !== "Field") {
         var cleanNodes = [];
         for (i = 0; i < childNodes.length; i++) {
             if (childNodes[i].nodeName !== "#text") {
@@ -157,25 +161,34 @@ function DOMtoJSON(node) {
     return obj;
 }
 
+var fieldsJSON;
+
 $(document).ready(function () {
     $("body")
         // Disabled tabs
         .on("click", '#settings-tabs>.disabled', function () {
             return false;
         })
+        // Change column type
+        .on("click", '.change-column-type', function () {
+            var iframe = getIframeContent();
+            var selectedType = $('#column-type').val(),
+                nodeID = $(this).data('id');
+
+            iframe.find('[data-bb-id='+nodeID+']')
+                .removeClass('item-column')
+                .addClass('parent-column')
+                .html('<div class="row bb-section"><div class="col-md-12 item-column"></div></div>');
+
+            // ReGenerate tree list
+            generateDOMTree();
+
+            // Recall column identification
+            onFrameLoaded();
+        })
         // Node edit
         .on("click", '.bb-node-edit', function () {
-            var nodeType = $(this).data('type');
-
-            jsPanel.create({
-                container: 'body',
-                theme: 'primary',
-                headerTitle: 'Edit Layer',
-                position: 'center-center 0 50',
-                contentSize: '450 200',
-                content: $('#element-'+nodeType+'-settings').html()
-            });
-
+            editNode($(this).data("type"), $(this).data("id"));
         })
         // Column Content
         .on("click", '.bb-column-content', function () {
@@ -231,10 +244,16 @@ $(document).ready(function () {
             var columnHTML = "";
 
             $.each(columnArray, function (index, columnClass){
-                columnHTML += '<div class="col-md-'+columnClass+' has-context-menu"></div>';
+                columnHTML += '<div class="col-md-'+columnClass+' item-column"></div>';
             });
 
             section.html(columnHTML);
+
+            // ReGenerate tree list
+            generateDOMTree();
+
+            // Recall column identification
+            onFrameLoaded();
         })
         // Add section
         .on("click", '.bb-add-section', function () {
@@ -243,10 +262,13 @@ $(document).ready(function () {
             var $this = $(this),
                 wrapper = iframe.find('[data-bb-id="'+$this.data("id")+'"]');
 
-            wrapper.append('<div class="row bb-section"><div class="col-md-12"></div></div>');
+            wrapper.append('<div class="row bb-section"><div class="col-md-12 item-column"></div></div>');
 
             // ReGenerate tree list
             generateDOMTree();
+
+            // Recall column identification
+            onFrameLoaded();
         })
         // Open layers panel
         .on("click", '.open-layers-panel', function () {
@@ -354,8 +376,53 @@ $(document).ready(function () {
         iframe.attr("src", ajaxLinks.changeLayout + layout);
     });
 
+    // Edit node
+    function editNode(nodeType, nodeID){
+        var iframe = getIframeContent();
+
+        // Node settings
+        var templateHTML = $('#element-'+nodeType+'-settings').html();
+
+        templateHTML = templateHTML.replace("{id}", nodeID);
+
+        // Apply panel content
+        $('.settings-panel-content').html(templateHTML);
+
+        // Render fields
+        if(nodeType === "item-column"){
+            $(".fields-container").html(fieldsJSON.html);
+
+            // Fields draggable
+            $('.bb-fields-list>.bb-field-item').draggable({
+                helper: "clone",
+                iframeFix: true
+            });
+
+            // Droppable areas
+            iframe.find( ".item-column>div" ).droppable({
+                accept: ".bb-field-item",
+                classes: {
+                    "ui-droppable-active": "form-area-active",
+                    "ui-droppable-hover": "form-area-hover"
+                },
+                drop: function( event, ui ) {
+                    var fieldType = $(ui.draggable).data("type"),
+                        position = $(this).data("sortable");
+
+                    addFieldsToFormArea([fieldType], position);
+                }
+            });
+        }
+
+        // Show panel
+        $('#settings-panel').removeClass("hidden");
+        iframe.find('.previewcontent').removeClass('activeprevew');
+    }
+
     // Generate DOM tree
     function generateDOMTree(){
+        DOMCounter = 0;
+
         var iframe = getIframeContent();
         var DOMTree = DOMtoJSON(iframe.find('[bb-main-wrapper]')[0]);
         var layersTree = $('#layers-tree');
@@ -393,28 +460,15 @@ $(document).ready(function () {
         var iframe = getIframeContent();
 
         // Mark sortable areas
-        iframe.find('.bb-form-area').each(function (i) {
-            $(this).attr("data-sortable", i);
+        iframe.find('.item-column').each(function (i) {
+            var itemID = $(this).data("bb-id");
+            if($(this).find('[data-sortable]').length === 0){
+                $(this).append('<div data-sortable="'+itemID+'"></div>');
+            }
         });
 
-        // Activate sortable
-        activateSortable();
-
-        // Restore fields from backup
-        var fieldsJSONString = $('[name=fields_json]').val(),
-            fieldsJSON = JSON.parse(fieldsJSONString);
-
-        $.each(fieldsJSON, function (index, fields) {
-            var formArea = iframe.find('[data-sortable=' + index + ']');
-
-            $.each(fields, function (index, field) {
-                var fieldHTML = $('#fields-backup').find('[data-field-id=' + field + ']').clone();
-                formArea.append(fieldHTML);
-            });
-
-            // Action buttons
-            addActionsButton(iframe, index);
-        });
+        // Open layers panel
+        $('.open-layers-panel').trigger("click");
 
         // Context menu
         iframe.contextMenu({
@@ -434,6 +488,9 @@ $(document).ready(function () {
                 }}
             }
         });
+
+        // Activate sortable
+        activateSortable();
     }
 
     // iFrame functions
@@ -457,27 +514,7 @@ $(document).ready(function () {
             },
             dataType: 'json',
             success: function (data) {
-                $(".fields-container").html(data.html);
-
-                // Fields draggable
-                $('.bb-fields-list>.bb-field-item').draggable({
-                    helper: "clone",
-                    iframeFix: true
-                });
-
-                // Droppable areas
-                iframe.find( ".bb-form-area" ).droppable({
-                    classes: {
-                        "ui-droppable-active": "form-area-active",
-                        "ui-droppable-hover": "form-area-hover"
-                    },
-                    drop: function( event, ui ) {
-                        var fieldType = $(ui.draggable).data("type"),
-                            position = $(this).data("sortable");
-
-                        addFieldsToFormArea([fieldType], position);
-                    }
-                });
+                fieldsJSON = data;
             },
             type: 'POST'
         });
@@ -519,25 +556,15 @@ $(document).ready(function () {
 
         // Actions
         iframe
-            .on("click", ".bb-form-area", function () {
-                var $this = $(this);
+            .on("click", ".item-column>div", function () {
                 var toggle = $(this).hasClass("active");
-                iframe.find('.bb-form-area').removeClass("active");
+                iframe.find('.item-column>div').removeClass("active");
                 iframe.find('.bb-form-actions').removeClass("active");
 
                 if (!toggle) {
                     $(this).addClass("active");
-                    $(this).closest('.bb-form-area-container').find('.bb-form-actions').addClass("active");
+                    $(this).closest('.item-column-container').find('.bb-form-actions').addClass("active");
                 }
-
-                jsPanel.create({
-                    container: 'body',
-                    theme: 'primary',
-                    headerTitle: 'Add Fields',
-                    position: 'center-center 0 50',
-                    contentSize: '450 200',
-                    content: $('.fields-container').html()
-                });
             })
             // Field settings
             .on('click', '.field-settings', function () {
@@ -622,6 +649,13 @@ $(document).ready(function () {
                 layersTree.animate({
                     scrollTop: ($("#" + nodeID).position().top)
                 },500);
+            })
+            // On node double click
+            .on('dblclick', '[data-bb-id]', function (e){
+                e.stopPropagation();
+
+                var nodeType = getNodeGroup(this);
+                editNode(nodeType.toLowerCase(), $(this).attr("data-bb-id"));
             });
     });
 
@@ -631,12 +665,13 @@ $(document).ready(function () {
 
     // Add fields to form area
     function addFieldsToFormArea(fieldsJSON, position) {
+        console.log(position);
         var iframe = getIframeContent();
 
         if (!position) position = 0;
 
         // Build form
-        var activeFormArea = iframe.find('.bb-form-area.active');
+        var activeFormArea = iframe.find('.item-column>div.active');
         var fieldHTML = "";
         if (activeFormArea.length === 1) {
             position = activeFormArea.data("sortable");
@@ -709,13 +744,13 @@ $(document).ready(function () {
     function activateSortable() {
         var iframe = getIframeContent();
         // Form sortable
-        iframe.find('.bb-form-area').sortable({
-            connectWith: ".connectedSortable",
+        iframe.find('.item-column>div').sortable({
+            connectWith: ".item-column>div",
             stop: function (event, ui) {
                 var fieldsJSON = $('[name=fields_json]'),
                     fieldsJSONData = JSON.parse(fieldsJSON.val());
 
-                iframe.find('.bb-form-area').each(function () {
+                iframe.find('.item-column>div').each(function () {
 
                     var ids = [],
                         container = $(this),
