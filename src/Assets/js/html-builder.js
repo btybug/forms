@@ -231,7 +231,7 @@ $(document).ready(function () {
             var columnHTML = "";
 
             $.each(columnArray, function (index, columnClass){
-                columnHTML += '<div class="col-md-'+columnClass+'"></div>';
+                columnHTML += '<div class="col-md-'+columnClass+' has-context-menu"></div>';
             });
 
             section.html(columnHTML);
@@ -245,7 +245,8 @@ $(document).ready(function () {
 
             wrapper.append('<div class="row bb-section"><div class="col-md-12"></div></div>');
 
-            // TODO: ReGenerate tree list
+            // ReGenerate tree list
+            generateDOMTree();
         })
         // Open layers panel
         .on("click", '.open-layers-panel', function () {
@@ -264,38 +265,8 @@ $(document).ready(function () {
                 callback: function () {
                     $('.open-layers-panel, .add-field-trigger').addClass("disabled");
 
-                    var iframe = getIframeContent();
-
                     // Load DOM tree
-                    var DOMTree = DOMtoJSON(iframe.find('.previewcontent>div')[0]);
-                    $('#layers-tree')
-                        .jstree({
-                            "core": {
-                                "animation": 0,
-                                "check_callback": true,
-                                "themes": {"stripes": true},
-                                'data': DOMTree
-                            },
-                            "plugins": [
-                                "wholerow", "noclose", "dnd"
-                            ]
-                        })
-                        .bind("hover_node.jstree", function (e, data) {
-                            // Remove hover effect
-                            iframe.find("[data-bb-hovered]").removeAttr("data-bb-hovered");
-
-                            // Add hover effect for hovered node
-                            var domNode = iframe.find('[data-bb-id="' + data.node.original.bbID + '"]');
-                            domNode.attr("data-bb-hovered", true);
-                        })
-                        .on('open_node.jstree', function(e, data){
-                            var icon = $('#' + data.node.id).find('i.jstree-icon.jstree-ocl').first();
-                            icon.removeClass('fa-caret-right').addClass('fa fa-caret-down');
-                        })
-                        .on('close_node.jstree', function(e, data){
-                            var icon = $('#' + data.node.id).find('i.jstree-icon.jstree-ocl').first();
-                            icon.removeClass('fa-caret-down').addClass('fa-caret-right');
-                        });
+                    generateDOMTree();
                 },
                 onclosed: function (){
                     var iframe = getIframeContent();
@@ -383,6 +354,41 @@ $(document).ready(function () {
         iframe.attr("src", ajaxLinks.changeLayout + layout);
     });
 
+    // Generate DOM tree
+    function generateDOMTree(){
+        var iframe = getIframeContent();
+        var DOMTree = DOMtoJSON(iframe.find('[bb-main-wrapper]')[0]);
+        var layersTree = $('#layers-tree');
+
+        // Clean tree if exists
+        if ($.jstree.reference(layersTree)) {
+            layersTree.jstree(true).settings.core.data = DOMTree;
+            layersTree.jstree(true).refresh();
+            return;
+        }
+
+        layersTree
+            .jstree({
+                "core": {
+                    "animation": 0,
+                    "check_callback": true,
+                    "themes": {"stripes": true},
+                    'data': DOMTree
+                },
+                "plugins": [
+                    "wholerow", "noclose", "dnd"
+                ]
+            })
+            .bind("hover_node.jstree", function (e, data) {
+                // Remove hover effect
+                iframe.find("[data-bb-hovered]").removeAttr("data-bb-hovered");
+
+                // Add hover effect for hovered node
+                var domNode = iframe.find('[data-bb-id="' + data.node.original.bbID + '"]');
+                domNode.attr("data-bb-hovered", true);
+            });
+    }
+
     function onFrameLoaded() {
         var iframe = getIframeContent();
 
@@ -410,6 +416,24 @@ $(document).ready(function () {
             addActionsButton(iframe, index);
         });
 
+        // Context menu
+        iframe.contextMenu({
+            selector: '.has-context-menu',
+            position: function(opt, x, y){
+                opt.$menu.css({top: y + 95, left: x});
+            },
+            items: {
+                "edit": {name: "Edit", icon: "edit"},
+                "cut": {name: "Cut", icon: "cut"},
+                copy: {name: "Copy", icon: "copy"},
+                "paste": {name: "Paste", icon: "paste"},
+                "delete": {name: "Delete", icon: "delete"},
+                "sep1": "---------",
+                "quit": {name: "Quit", icon: function(){
+                        return 'context-menu-icon context-menu-icon-quit';
+                }}
+            }
+        });
     }
 
     // iFrame functions

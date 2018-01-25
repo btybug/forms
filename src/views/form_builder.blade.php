@@ -33,6 +33,9 @@
     {!! BBstyle(plugins_path("vendor/sahak.avatar/forms/src/Assets/libs/jstree/themes/default/style.min.css")) !!}
     {!! BBscript(plugins_path("vendor/sahak.avatar/forms/src/Assets/libs/jstree/jstree.min.js")) !!}
 
+    {!! HTML::script("public/libs/context_menu/jquery.contextMenu.min.js") !!}
+    {!! HTML::style("public/libs/context_menu/jquery.contextMenu.min.css") !!}
+
     {!! HTML::style("public/libs/jspanel/jspanel.min.css") !!}
     {!! HTML::script("public/libs/jspanel/jspanel.min.js") !!}
 
@@ -290,6 +293,12 @@
 
         .form-area-hover {
             background: #deffcd;
+        }
+
+        [class*="col-"]:empty {
+            height: 50px;
+            background: #c1b8e2;
+            outline: 2px dashed green;
         }
     </style>
 </script>
