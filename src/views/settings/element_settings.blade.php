@@ -74,7 +74,25 @@
             <li role="presentation" class="active">
                 <a href="#style" aria-controls="profile" role="tab" data-toggle="tab">Style</a>
             </li>
-            <li role="presentation">
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="style">
+                <div class="form-group">
+                    <label>Container Class</label>
+                    <select name="" id="" class="form-control"></select>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="template/html" id="elements-panel">
+    <div class="element-settings-tabs">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active">
                 <a href="#fields" aria-controls="profile" role="tab" data-toggle="tab">Fields</a>
             </li>
             <li role="presentation">
@@ -87,17 +105,11 @@
 
         <!-- Tab panes -->
         <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="style">
-                <div class="form-group">
-                    <label>Container Class</label>
-                    <select name="" id="" class="form-control"></select>
-                </div>
-            </div>
-            <div role="tabpanel" class="tab-pane" id="fields">
+            <div role="tabpanel" class="tab-pane active" id="fields">
                 <div class="fields-container"></div>
             </div>
             <div role="tabpanel" class="tab-pane" id="elements">
-
+                @include('forms::settings.html_elements')
             </div>
             <div role="tabpanel" class="tab-pane" id="units">
 

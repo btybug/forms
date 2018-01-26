@@ -43,6 +43,7 @@
     {!! BBscript(plugins_path("vendor/sahak.avatar/forms/src/Assets/js/jquery-ui-droppable-iframe.js")) !!}
     {!! BBscript(plugins_path("vendor/sahak.avatar/forms/src/Assets/js/field-builder.js")) !!}
     {!! BBscript(plugins_path("vendor/sahak.avatar/forms/src/Assets/js/html-builder.js")) !!}
+    {{--{!! BBscript(plugins_path("vendor/sahak.avatar/forms/src/Assets/js/inspector.js")) !!}--}}
 
     {!! HTML::style('public-x/custom/css/formBuilder.css', ["id"=>"custom_css"]) !!}
     {!! HTML::script('public-x/custom/js/formBuilder.js') !!}
@@ -70,7 +71,7 @@
     <span class="form-preview">FORM PREVIEW</span>
 
     <div class="pull-right">
-        <a class="btn btn-success add-field-trigger">
+        <a class="btn btn-success add-item-trigger">
             <i class="fa fa-plus"></i> Add Item
         </a>
         <a class="btn btn-info open-layers-panel">
@@ -251,6 +252,13 @@
         @endif
     });
 </script>
+
+<div class="bb-hover-marker bb-hover-marker-top">
+    <span class="bb-hover-marker-element"></span>
+</div>
+<div class="bb-hover-marker bb-hover-marker-bottom"></div>
+<div class="bb-hover-marker bb-hover-marker-left"></div>
+<div class="bb-hover-marker bb-hover-marker-right"></div>
 
 </body>
 </html>

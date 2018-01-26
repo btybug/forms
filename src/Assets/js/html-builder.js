@@ -23,9 +23,78 @@ function reload_css(href) {
     }
 }
 
+function cssPath(el) {
+    var fullPath    = 0,  // Set to 1 to build ultra-specific full CSS-path, or 0 for optimised selector
+        useNthChild = 0,  // Set to 1 to use ":nth-child()" pseudo-selectors to match the given element
+        cssPathStr = '',
+        testPath = '',
+        parents = [],
+        parentSelectors = [],
+        tagName,
+        cssId,
+        cssClass,
+        tagSelector,
+        vagueMatch,
+        nth,
+        i,
+        c;
+
+    // Go up the list of parent nodes and build unique identifier for each:
+    vagueMatch = 0;
+
+    // Get the node's HTML tag name in lowercase:
+    tagName = el.nodeName.toLowerCase();
+
+    // Get node's ID attribute, adding a '#':
+    cssId = ( el.id ) ? ( '#' + el.id ) : false;
+
+    // Get node's CSS classes, replacing spaces with '.':
+    cssClass = ( el.className ) ? ( '.' + el.className.replace(/\s+/g,".") ) : '';
+
+    // Build a unique identifier for this parent node:
+    if ( cssId ) {
+        // Matched by ID:
+        tagSelector = tagName + cssId + cssClass;
+    } else if ( cssClass ) {
+        // Matched by class (will be checked for multiples afterwards):
+        tagSelector = tagName + cssClass;
+    } else {
+        // Couldn't match by ID or class, so use ":nth-child()" instead:
+        vagueMatch = 1;
+        tagSelector = tagName;
+    }
+
+    // Add this full tag selector to the parentSelectors array:
+    parentSelectors.unshift( tagSelector );
+
+
+    // Build the CSS path string from the parent tag selectors:
+    for ( i = 0; i < parentSelectors.length; i++ ) {
+        cssPathStr += ' ' + parentSelectors[i];// + ' ' + cssPathStr;
+
+        // If using ":nth-child()" selectors and this selector has no ID / isn't the html or body tag:
+        if ( useNthChild && !parentSelectors[i].match(/#/) && !parentSelectors[i].match(/^(html|body)$/) ) {
+
+            // If there's no CSS class, or if the semi-complete CSS selector path matches multiple elements:
+            if ( !parentSelectors[i].match(/\./) || $( cssPathStr ).length > 1 ) {
+
+                // Count element's previous siblings for ":nth-child" pseudo-selector:
+                for ( nth = 1, c = el; c.previousElementSibling; c = c.previousElementSibling, nth++ );
+
+                // Append ":nth-child()" to CSS path:
+                cssPathStr += ":nth-child(" + nth + ")";
+            }
+        }
+
+    }
+
+    // Return trimmed full CSS path:
+    return cssPathStr.replace(/^[ \t]+|[ \t]+$/, '');
+}
+
 function getNodeGroup(node){
-    var nodeGroup = "NODE";
     var nodeTag = node.tagName.toLowerCase();
+    var nodeGroup = nodeTag;
 
     if ($.inArray(nodeTag, ["div", "head", "section"]) !== -1) nodeGroup = "Container";
     if ($.inArray(nodeTag, ["button"]) !== -1) nodeGroup = "Button";
@@ -122,14 +191,6 @@ function DOMtoJSON(node) {
     if(nodeGroup === "Wrapper" || nodeGroup === "Parent Column"){
         nodeGroupID += '<a href="#" class="bb-node-btn bb-add-section" data-id="'+DOMCounter+'"><i class="fa fa-plus"></i></a>';
     }
-
-    // if(nodeGroup === "Section"){
-    //     nodeGroupID += '<a href="#" class="bb-node-btn bb-section-columns" data-id="'+DOMCounter+'"><i class="fa fa-columns"></i></a>';
-    // }
-    //
-    // if(nodeGroup === "Column"){
-    //     nodeGroupID += '<a href="#" class="bb-node-btn bb-column-content" data-id="'+DOMCounter+'"><i class="fa fa-columns"></i></a>';
-    // }
 
     nodeGroupID = '<span class="bb-node-'+nodeGroup.toLowerCase()+'">' + nodeGroupID + '</span>';
 
@@ -281,34 +342,69 @@ $(document).ready(function () {
                 container: 'body',
                 theme:       'primary',
                 headerTitle: 'Layers',
-                position:    'center-top 0 30',
+                position:    'left-bottom 5 -20',
                 contentSize: '450 250',
                 content:     '<div id="layers-tree"></div>',
                 callback: function () {
-                    $('.open-layers-panel, .add-field-trigger').addClass("disabled");
+                    $('.open-layers-panel').addClass("disabled");
 
                     // Load DOM tree
                     generateDOMTree();
                 },
                 onclosed: function (){
                     var iframe = getIframeContent();
-                    $('.open-layers-panel, .add-field-trigger').removeClass("disabled");
+                    $('.open-layers-panel').removeClass("disabled");
                     iframe.find('[data-bb-id]').removeAttr("data-bb-hovered");
                 }
             });
         })
         // Add field trigger
-        .on("click", '.add-field-trigger', function () {
+        .on("click", '.add-item-trigger', function () {
             var iframe = getIframeContent();
-            var settingsPanel = $('#settings-panel');
-            settingsPanel.removeClass("hidden");
-            settingsPanel.find('li').removeClass("active");
-            settingsPanel.find('li').first().addClass("active");
+            var template = $('#elements-panel').html();
 
-            settingsPanel.find('.tab-pane').removeClass("active");
-            settingsPanel.find('.tab-pane').first().addClass("active");
+            jsPanel.create({
+                id: 'items-panel',
+                container: 'body',
+                theme:       'primary',
+                headerTitle: 'Fields & Elements',
+                position:    'right-bottom -5 -20',
+                contentSize: '450 350',
+                content:     template,
+                callback: function () {
+                    $(".fields-container").html(fieldsJSON.html);
 
-            iframe.find('.previewcontent').removeClass('activeprevew');
+                    // Fields draggable
+                    $('.draggable-element').draggable({
+                        appendTo: 'body',
+                        helper: "clone",
+                        iframeFix: true
+                    });
+
+                    // Droppable areas
+                    iframe.find( ".item-column>div" ).droppable({
+                        accept: ".draggable-element",
+                        classes: {
+                            "ui-droppable-active": "form-area-active",
+                            "ui-droppable-hover": "form-area-hover"
+                        },
+                        drop: function( event, ui ) {
+                            var fieldType = $(ui.draggable).data("type"),
+                                position = $(this).data("bb-id");
+
+                            if(fieldType === "element"){
+                                var elementHTML = $(ui.draggable).find(".html-element-item-sample").html();
+                                $(this).append(elementHTML);
+                            }else{
+                                addFieldsToFormArea([fieldType], position);
+                            }
+
+                            // ReGenerate tree list
+                            generateDOMTree();
+                        }
+                    });
+                }
+            });
         })
         // Open settings panel
         .on("click", '.open-settings-panel', function () {
@@ -388,32 +484,6 @@ $(document).ready(function () {
         // Apply panel content
         $('.settings-panel-content').html(templateHTML);
 
-        // Render fields
-        if(nodeType === "item-column"){
-            $(".fields-container").html(fieldsJSON.html);
-
-            // Fields draggable
-            $('.bb-fields-list>.bb-field-item').draggable({
-                helper: "clone",
-                iframeFix: true
-            });
-
-            // Droppable areas
-            iframe.find( ".item-column>div" ).droppable({
-                accept: ".bb-field-item",
-                classes: {
-                    "ui-droppable-active": "form-area-active",
-                    "ui-droppable-hover": "form-area-hover"
-                },
-                drop: function( event, ui ) {
-                    var fieldType = $(ui.draggable).data("type"),
-                        position = $(this).data("sortable");
-
-                    addFieldsToFormArea([fieldType], position);
-                }
-            });
-        }
-
         // Show panel
         $('#settings-panel').removeClass("hidden");
         iframe.find('.previewcontent').removeClass('activeprevew');
@@ -447,12 +517,11 @@ $(document).ready(function () {
                 ]
             })
             .bind("hover_node.jstree", function (e, data) {
-                // Remove hover effect
-                iframe.find("[data-bb-hovered]").removeAttr("data-bb-hovered");
-
                 // Add hover effect for hovered node
                 var domNode = iframe.find('[data-bb-id="' + data.node.original.bbID + '"]');
-                domNode.attr("data-bb-hovered", true);
+
+                // Hover nodes
+                hoverNode(domNode);
             });
     }
 
@@ -469,6 +538,9 @@ $(document).ready(function () {
 
         // Open layers panel
         $('.open-layers-panel').trigger("click");
+
+        // Close settings panel
+        $('.close-settings-panel').trigger("click");
 
         // Context menu
         iframe.contextMenu({
@@ -627,9 +699,7 @@ $(document).ready(function () {
                 if(!$('.open-layers-panel').hasClass("disabled")) return;
 
                 // Hover nodes
-                var $this = $(this);
-                iframe.find('[data-bb-id]').removeAttr("data-bb-hovered");
-                $this.attr("data-bb-hovered", true);
+                hoverNode($(this));
             })
             // On node click
             .on('click', '[data-bb-id]', function (e){
@@ -656,8 +726,39 @@ $(document).ready(function () {
 
                 var nodeType = getNodeGroup(this);
                 editNode(nodeType.toLowerCase(), $(this).attr("data-bb-id"));
+                hoverNode($(this));
             });
     });
+
+    function hoverNode($this){
+        var iframeTopFixer = $('#unit-iframe').offset().top;
+
+        $('.bb-hover-marker-top').css({
+            width: $this.outerWidth() + 7,
+            left: ($this.offset().left) - 5,
+            top: ($this.offset().top + iframeTopFixer) - 5
+        });
+
+        $('.bb-hover-marker-bottom').css({
+            width: $this.outerWidth() + 7,
+            left: ($this.offset().left) - 5,
+            top: ($this.offset().top + iframeTopFixer + $this.outerHeight()) + 5
+        });
+
+        $('.bb-hover-marker-left').css({
+            height: $this.outerHeight() + 10,
+            left: ($this.offset().left) - 5,
+            top: ($this.offset().top + iframeTopFixer) - 5
+        });
+
+        $('.bb-hover-marker-right').css({
+            height: $this.outerHeight() + 12,
+            left: ($this.offset().left + $this.outerWidth()) + 2,
+            top: ($this.offset().top + iframeTopFixer) - 5
+        });
+
+        $('.bb-hover-marker-element').text(cssPath($this.get(0)));
+    }
 
     function getIframeContent() {
         return $('#unit-iframe').contents().find('body');
@@ -671,16 +772,8 @@ $(document).ready(function () {
         if (!position) position = 0;
 
         // Build form
-        var activeFormArea = iframe.find('.item-column>div.active');
-        var fieldHTML = "";
-        if (activeFormArea.length === 1) {
-            position = activeFormArea.data("sortable");
-            fieldHTML = formBuilder(fieldsJSON, position);
-            activeFormArea.html(fieldHTML);
-        } else {
-            fieldHTML = formBuilder(fieldsJSON, position);
-            iframe.find('[data-sortable=' + position + ']').html(fieldHTML);
-        }
+        var fieldHTML = formBuilder(fieldsJSON, position);
+        iframe.find('[data-bb-id=' + position + ']').html(fieldHTML);
 
         // Add field to backup
         $('#fields-backup').append(fieldHTML);
@@ -709,22 +802,12 @@ $(document).ready(function () {
     function formBuilder(fields, position) {
         var iframe = getIframeContent();
 
-        var existingFields = $("#existing-fields"),
-            existingFieldsData = JSON.parse(existingFields.val());
-
-        var fieldsHTMLData = iframe.find('[data-sortable=' + position + ']').html();
+        var fieldsHTMLData = iframe.find('[data-bb-id=' + position + ']').html();
 
         $(fields).each(function (index, field) {
-            // Add to existing fields
-            if (!existingFieldsData[position]) existingFieldsData[position] = [];
-            existingFieldsData[position].push(field);
-
             // Render fields
             fieldsHTMLData += renderFormField(field);
         });
-
-        // Add existing fields to hidden input
-        existingFields.val(JSON.stringify(existingFieldsData));
 
         return fieldsHTMLData;
     }
