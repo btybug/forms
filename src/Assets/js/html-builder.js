@@ -202,8 +202,15 @@ function DOMtoJSON(node) {
         opened: true
     };
 
+    // Check if children loop required
     var childNodes = node.childNodes;
-    if (childNodes && nodeGroup !== "Field") {
+    var childrenLoop = true;
+
+    if(!childNodes) childrenLoop = false;
+    if(nodeGroup === "Field") childrenLoop = false;
+    if(node.attributes["bb-group"]) childrenLoop = false;
+
+    if (childrenLoop) {
         var cleanNodes = [];
         for (i = 0; i < childNodes.length; i++) {
             if (childNodes[i].nodeName !== "#text") {
@@ -266,17 +273,6 @@ $(document).ready(function () {
                 contentSize: '450 300',
                 content: template
             });
-        })
-        // Apply tag
-        .on('click', '.apply-tag', function (){
-            var iframe = getIframeContent();
-            var section = iframe.find('[data-bb-id=' + $(this).data("id") + ']');
-
-            var selectedTag = $('#selected-tag').val();
-
-            var columnHTML = "<" + selectedTag  + ">Demo Text</" + selectedTag + '>';
-
-            section.html(columnHTML);
         })
         // Section columns
         .on("click", '.bb-section-columns', function () {
@@ -393,8 +389,14 @@ $(document).ready(function () {
                                 position = $(this).data("bb-id");
 
                             if(fieldType === "element"){
-                                var elementHTML = $(ui.draggable).find(".html-element-item-sample").html();
-                                $(this).append(elementHTML);
+                                var elementHTML = $(ui.draggable).find(".html-element-item-sample").html(),
+                                    template = $(elementHTML);
+
+                                if(template.children().length > 0){
+                                    template.attr("bb-group", true);
+                                }
+
+                                $(this).append(template);
                             }else{
                                 addFieldsToFormArea([fieldType], position);
                             }
@@ -479,7 +481,36 @@ $(document).ready(function () {
         // Node settings
         var templateHTML = $('#element-'+nodeType+'-settings').html();
 
-        templateHTML = templateHTML.replace("{id}", nodeID);
+        if(templateHTML){
+            templateHTML = templateHTML.replace("{id}", nodeID);
+        }else{
+            templateHTML = $('#element-settings').html();
+            var node = iframe.find('[data-bb-id='+nodeID+']'),
+                children = node.children();
+
+            if(children.length > 0){
+                var content = '',
+                    style = '';
+
+                $.each(children, function (index, child){
+                    var childType = getNodeGroup(child);
+                    var contentTemplate = $('#bbt-'+childType.toLowerCase()+'-content').html();
+                    var styleTemplate = $('#bbt-'+childType.toLowerCase()+'-style').html();
+
+                    if(contentTemplate){
+                        content += contentTemplate;
+                    }
+
+                    if(styleTemplate){
+                        style += styleTemplate;
+                    }
+                });
+
+                templateHTML = templateHTML.replace("{content}", content);
+                templateHTML = templateHTML.replace("{style}", style);
+            }
+
+        }
 
         // Apply panel content
         $('.settings-panel-content').html(templateHTML);
@@ -727,11 +758,16 @@ $(document).ready(function () {
                 var nodeType = getNodeGroup(this);
                 editNode(nodeType.toLowerCase(), $(this).attr("data-bb-id"));
                 hoverNode($(this));
+            })
+            .bind('scroll', function() {
+                console.log("Ok");
             });
     });
 
     function hoverNode($this){
-        var iframeTopFixer = $('#unit-iframe').offset().top;
+        var iframe = $('#unit-iframe');
+        var scrollTop = iframe.contents().scrollTop();
+        var iframeTopFixer = iframe.offset().top - scrollTop;
 
         $('.bb-hover-marker-top').css({
             width: $this.outerWidth() + 7,
@@ -830,24 +866,7 @@ $(document).ready(function () {
         iframe.find('.item-column>div').sortable({
             connectWith: ".item-column>div",
             stop: function (event, ui) {
-                var fieldsJSON = $('[name=fields_json]'),
-                    fieldsJSONData = JSON.parse(fieldsJSON.val());
 
-                iframe.find('.item-column>div').each(function () {
-
-                    var ids = [],
-                        container = $(this),
-                        sortableIndex = container.attr('data-sortable');
-
-                    container.find('.form-group').each(function () {
-                        var id = $(this).attr("data-field-id");
-                        ids.push(parseInt(id));
-                    });
-
-                    fieldsJSONData[sortableIndex] = ids;
-                });
-
-                fieldsJSON.val(JSON.stringify(fieldsJSONData));
             }
         });
     }

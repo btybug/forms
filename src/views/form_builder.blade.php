@@ -235,6 +235,21 @@
         .form-area-hover {
             background: #deffcd;
         }
+
+        .html-element-item {
+            border: 1px solid #d0d0d0;
+            background: #f1f1f1;
+            border-radius: 3px;
+            padding: 3px 10px;
+            float: left;
+            margin-right: 10px;
+            user-select: none;
+            cursor: move;
+            font-size: 15px;
+            margin-bottom: 10px;
+            z-index: 999999999;
+            height: auto!important;
+        }
     </style>
 </script>
 

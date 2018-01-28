@@ -118,138 +118,65 @@
     </div>
 </script>
 
-<script type="template/html" id="element-button-settings">
-    <div class="element-settings-tabs">
-        <!-- Nav tabs -->
-        <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active">
-                <a href="#content" aria-controls="home" role="tab" data-toggle="tab">Content</a>
-            </li>
-            <li role="presentation">
-                <a href="#style" aria-controls="profile" role="tab" data-toggle="tab">Style</a>
-            </li>
-        </ul>
-
-        <!-- Tab panes -->
-        <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="content">
-                <div class="form-group">
-                    <label>Text Content</label>
-                    <textarea id="text-content" class="form-control" rows="4"></textarea>
-                </div>
-            </div>
-            <div role="tabpanel" class="tab-pane" id="style">
-                <div class="form-group">
-                    <label>Text Class</label>
-                    <select name="" id="" class="form-control"></select>
-                </div>
-                <div class="form-group">
-                    <label>Container Class</label>
-                    <select name="" id="" class="form-control"></select>
-                </div>
-            </div>
-        </div>
-    </div>
-</script>
-
-<script type="template/html" id="element-image-settings">
-    <div class="element-settings-tabs">
-        <!-- Nav tabs -->
-        <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active">
-                <a href="#content" aria-controls="home" role="tab" data-toggle="tab">Content</a>
-            </li>
-            <li role="presentation">
-                <a href="#style" aria-controls="profile" role="tab" data-toggle="tab">Style</a>
-            </li>
-        </ul>
-
-        <!-- Tab panes -->
-        <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="content">
-                <div class="form-group">
-                    <label>Image Content</label>
-                    <select name="" id="" class="form-control"></select>
-                </div>
-            </div>
-            <div role="tabpanel" class="tab-pane" id="style">
-                <div class="form-group">
-                    <label>Image Class</label>
-                    <select name="" id="" class="form-control"></select>
-                </div>
-            </div>
-        </div>
-    </div>
-</script>
-
-<script type="template/html" id="element-text-settings">
-    <div class="element-settings-tabs">
-        <!-- Nav tabs -->
-        <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active">
-                <a href="#content" aria-controls="home" role="tab" data-toggle="tab">Content</a>
-            </li>
-            <li role="presentation">
-                <a href="#style" aria-controls="profile" role="tab" data-toggle="tab">Style</a>
-            </li>
-        </ul>
-
-        <!-- Tab panes -->
-        <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="content">
-                <div class="form-group">
-                    <label>Text Content</label>
-                    <textarea id="text-content" class="form-control" rows="4"></textarea>
-                </div>
-            </div>
-            <div role="tabpanel" class="tab-pane" id="style">
-                <div class="form-group">
-                    <label>Text Class</label>
-                    <select name="" id="" class="form-control"></select>
-                </div>
-                <div class="form-group">
-                    <label>Container Class</label>
-                    <select name="" id="" class="form-control"></select>
-                </div>
-            </div>
-        </div>
-    </div>
-</script>
-
-<script type="template/html" id="element-field-settings">
-    <div class="element-settings-tabs">
-        <!-- Nav tabs -->
-        <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active">
-                <a href="#content" aria-controls="home" role="tab" data-toggle="tab">Content</a>
-            </li>
-            <li role="presentation">
-                <a href="#style" aria-controls="profile" role="tab" data-toggle="tab">Style</a>
-            </li>
-        </ul>
-
-        <!-- Tab panes -->
-        <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="content">
-                <div class="form-group">
-                    <label>Text Content</label>
-                    <textarea id="text-content" class="form-control" rows="4"></textarea>
-                </div>
-            </div>
-            <div role="tabpanel" class="tab-pane" id="style">
-                <div class="form-group">
-                    <label>Text Class</label>
-                    <select name="" id="" class="form-control"></select>
-                </div>
-                <div class="form-group">
-                    <label>Container Class</label>
-                    <select name="" id="" class="form-control"></select>
-                </div>
-            </div>
-        </div>
-    </div>
-</script>
-
 <script type="template/html" id="form-settings-template">
     @include('forms::settings.form_settings')
+</script>
+
+<script type="template/html" id="bbt-text-content">
+    <div class="form-group">
+        <label>Text Content</label>
+        <textarea id="text-content" class="form-control" rows="4"></textarea>
+    </div>
+</script>
+
+<script type="template/html" id="bbt-image-content">
+    <div class="form-group">
+        <label>Image Content</label>
+        <textarea id="image-content" class="form-control" rows="4"></textarea>
+    </div>
+</script>
+
+<script type="template/html" id="bbt-link-content">
+    <div class="form-group">
+        <label>Link Content</label>
+        <textarea id="link-content" class="form-control" rows="4"></textarea>
+    </div>
+</script>
+
+<script type="template/html" id="bbt-text-style">
+    <div class="form-group">
+        <label>Text Class</label>
+        <select name="" id="" class="form-control"></select>
+    </div>
+</script>
+
+<script type="template/html" id="bbt-container-style">
+    <div class="form-group">
+        <label>Container Class</label>
+        <select name="" id="" class="form-control"></select>
+    </div>
+</script>
+
+<script type="template/html" id="element-settings">
+    <div class="element-settings-tabs">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active">
+                <a href="#content" aria-controls="home" role="tab" data-toggle="tab">Content</a>
+            </li>
+            <li role="presentation">
+                <a href="#style" aria-controls="profile" role="tab" data-toggle="tab">Style</a>
+            </li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="content">
+                {content}
+            </div>
+            <div role="tabpanel" class="tab-pane" id="style">
+                {style}
+            </div>
+        </div>
+    </div>
 </script>
