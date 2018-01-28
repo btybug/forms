@@ -125,6 +125,12 @@
 <script type="template/html" id="bbt-text-content">
     <div class="form-group">
         <label>Text Content</label>
+        <select name="" id="" class="form-control">
+            <option value="">Custom Text</option>
+            <option value="">Custom Style</option>
+            <option value="">Studio</option>
+        </select>
+
         <textarea id="text-content" class="form-control" rows="4"></textarea>
     </div>
 </script>
@@ -146,7 +152,20 @@
 <script type="template/html" id="bbt-text-style">
     <div class="form-group">
         <label>Text Class</label>
-        <select name="" id="" class="form-control"></select>
+        <select name="" id="" class="form-control">
+            <option value="">Select Class</option>
+            <option value="">Custom Style</option>
+            <option value="">Studio</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Available Classes</label>
+        <div class="html-elements-list">
+            <div class="html-element-item">Class 1</div>
+            <div class="html-element-item">Class 2</div>
+            <div class="html-element-item">Class 3</div>
+        </div>
     </div>
 </script>
 

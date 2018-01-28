@@ -1,6 +1,13 @@
 @php
 
 $elementsGroups = [
+    "Layout" => [
+        "row" => '<div class="row">ROW</div>',
+        "col 3" => '<div class="col-md-3">COLUMN</div>',
+        "col 4" => '<div class="col-md-4">COLUMN</div>',
+        "col 6" => '<div class="col-md-6">COLUMN</div>',
+        "col 12" => '<div class="col-md-12">COLUMN</div>',
+    ],
     "Text Elements" => [
         "h1" => '<h1>Heading 1 Element</h1>',
         "h2" => '<h2>Heading 2 Element</h2>',
