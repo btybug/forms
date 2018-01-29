@@ -221,7 +221,7 @@ function DOMtoJSON(node) {
     }
 
     if(nodeGroup === "Field") childrenLoop = false;
-    if(node.attributes["bb-group"]) childrenLoop = false;
+    // if(node.attributes["bb-group"]) childrenLoop = false;
 
     if (childrenLoop) {
         var cleanNodes = [];
