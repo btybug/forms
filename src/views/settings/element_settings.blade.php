@@ -93,10 +93,10 @@
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="active">
-                <a href="#fields" aria-controls="profile" role="tab" data-toggle="tab">Fields</a>
+                <a href="#elements" aria-controls="profile" role="tab" data-toggle="tab">HTML Elements</a>
             </li>
             <li role="presentation">
-                <a href="#elements" aria-controls="profile" role="tab" data-toggle="tab">HTML Elements</a>
+                <a href="#fields" aria-controls="profile" role="tab" data-toggle="tab">Fields</a>
             </li>
             <li role="presentation">
                 <a href="#units" aria-controls="profile" role="tab" data-toggle="tab">Units</a>
@@ -105,11 +105,11 @@
 
         <!-- Tab panes -->
         <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="fields">
-                <div class="fields-container"></div>
-            </div>
-            <div role="tabpanel" class="tab-pane" id="elements">
+            <div role="tabpanel" class="tab-pane active" id="elements">
                 @include('forms::settings.html_elements')
+            </div>
+            <div role="tabpanel" class="tab-pane" id="fields">
+                <div class="fields-container"></div>
             </div>
             <div role="tabpanel" class="tab-pane" id="units">
 

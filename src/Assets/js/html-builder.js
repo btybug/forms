@@ -345,8 +345,8 @@ $(document).ready(function () {
                 wrapper = iframe.find('[data-bb-id="'+$this.data("id")+'"]'),
                 template = "";
 
-            if(type === "Container" && type === "Row"){
-                $('.add-field-trigger').trigger("click");
+            if(type === "Container" || type === "Row"){
+                $('.add-item-trigger').trigger("click");
                 return;
             }
 
@@ -391,27 +391,34 @@ $(document).ready(function () {
         })
         // Add field trigger
         .on("click", '.add-item-trigger', function () {
-            var template = $('#elements-panel').html();
+            var template = $('#elements-panel').html(),
+                $this = $(this);
 
-            jsPanel.create({
-                id: 'items-panel',
-                container: 'body',
-                theme:       'primary',
-                headerTitle: 'Fields & Elements',
-                position:    'right-bottom -5 -20',
-                contentSize: '450 350',
-                content:     template,
-                callback: function () {
-                    $(".fields-container").html(fieldsJSON.html);
+            if(!$(this).hasClass("opened")){
+                jsPanel.create({
+                    id: 'items-panel',
+                    container: 'body',
+                    theme:       'primary',
+                    headerTitle: 'Fields & Elements',
+                    position:    'right-bottom -5 -20',
+                    contentSize: '450 350',
+                    content:     template,
+                    callback: function () {
+                        $(".fields-container").html(fieldsJSON.html);
 
-                    // Fields draggable
-                    $('.draggable-element').draggable({
-                        appendTo: 'body',
-                        helper: "clone",
-                        iframeFix: true
-                    });
-                }
-            });
+                        // Fields draggable
+                        $('.draggable-element').draggable({
+                            appendTo: 'body',
+                            helper: "clone",
+                            iframeFix: true
+                        });
+                    },
+                    close: function (){
+                        $this.removeClass("opened");
+                    }
+                });
+                $(this).addClass("opened");
+            }
         })
         // Open settings panel
         .on("click", '.open-settings-panel', function () {
@@ -945,19 +952,42 @@ $(document).ready(function () {
             },
             drop: function( event, ui ) {
 
+                var target = iframe.find('.form-area-hover').last();
+                if(iframe.find('.form-area-hover').last().length === 0) {
+                    target = $(event.target);
+                }
+
                 var fieldType = $(ui.draggable).data("type"),
+                    fieldTag = $(ui.draggable).data("tag"),
                     position = iframe.find('.form-area-hover').last().data("bb-id");
 
                 if(fieldType === "element"){
+
+                    // Insert template
                     var elementHTML = $(ui.draggable).find(".html-element-item-sample").html(),
                         template = $(elementHTML);
 
                     if(template.children().length > 0){
                         template.attr("bb-group", true);
                     }
+                    /* Conditions */
+                    if(target.hasClass("row") && fieldTag === "row") {
+                        target.after(template);
+                    }
+                    else if(target.attr("class").indexOf("col-") !== -1 && fieldTag.indexOf("col") !== -1) {
+                        target.after(template);
+                    }
+                    else if(target.hasClass("container") && fieldTag.indexOf("col") !== -1) {
+                        // Do Nothing
+                        template = '<div class="row">'+elementHTML+'</div>';
+                        target.append(template);
+                    }
+                    else{
+                        target.append(template);
+                    }
 
-                    iframe.find('.form-area-hover').last().append(template);
                     iframe.find('.form-area-hover').removeClass("form-area-hover");
+
                 }else{
                     addFieldsToFormArea([fieldType], position);
                 }
