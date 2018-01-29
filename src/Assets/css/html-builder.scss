@@ -165,7 +165,7 @@ span.bb-node-wrapper {
   color: green;
 }
 
-span.bb-node-section {
+span.bb-node-row{
   color: #909018;
 }
 
@@ -205,9 +205,19 @@ span.bb-node-container {
 
 .bb-hover-marker {
   position: absolute;
-  background: #45ea65;
-  width: 2px;
-  height: 2px;
+  pointer-events: none;
+}
+
+.bb-hover-marker-size{
+  border:2px solid #45ea65;
+}
+
+.bb-hover-marker-padding{
+  background: rgba(73, 191, 124, 0.32);
+}
+
+.bb-hover-marker-margin{
+  background: rgba(220, 137, 0, 0.32);
 }
 
 span.bb-hover-marker-element {

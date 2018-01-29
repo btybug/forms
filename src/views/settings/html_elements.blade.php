@@ -2,11 +2,19 @@
 
 $elementsGroups = [
     "Layout" => [
-        "row" => '<div class="row">ROW</div>',
-        "col 3" => '<div class="col-md-3">COLUMN</div>',
-        "col 4" => '<div class="col-md-4">COLUMN</div>',
-        "col 6" => '<div class="col-md-6">COLUMN</div>',
-        "col 12" => '<div class="col-md-12">COLUMN</div>',
+        "row" => '<div class="row bb-placeholder-area"></div>',
+        "col 1" => '<div class="col-md-1 bb-placeholder-area"></div>',
+        "col 2" => '<div class="col-md-2 bb-placeholder-area"></div>',
+        "col 3" => '<div class="col-md-3 bb-placeholder-area"></div>',
+        "col 4" => '<div class="col-md-4 bb-placeholder-area"></div>',
+        "col 5" => '<div class="col-md-5 bb-placeholder-area"></div>',
+        "col 6" => '<div class="col-md-6 bb-placeholder-area"></div>',
+        "col 7" => '<div class="col-md-7 bb-placeholder-area"></div>',
+        "col 8" => '<div class="col-md-8 bb-placeholder-area"></div>',
+        "col 9" => '<div class="col-md-9 bb-placeholder-area"></div>',
+        "col 10" => '<div class="col-md-10 bb-placeholder-area"></div>',
+        "col 11" => '<div class="col-md-11 bb-placeholder-area"></div>',
+        "col 12" => '<div class="col-md-12 bb-placeholder-area"></div>',
     ],
     "Text Elements" => [
         "h1" => '<h1>Heading 1 Element</h1>',
@@ -67,7 +75,7 @@ $elementsGroups = [
     <div class="panel-body">
         <div class="html-elements-list">
             @foreach($elements as $tag => $element)
-            <div class="html-element-item draggable-element" data-type="element">
+            <div class="html-element-item draggable-element" data-tag="{{$tag}}" data-type="element">
                 {{$tag}}
                 <div class="html-element-item-sample hidden">{!! $element !!}</div>
             </div>

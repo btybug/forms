@@ -165,7 +165,6 @@
 
         .item-column>div {
             outline: 1px dashed #c0c0c0;
-            outline-offset: 5px;
             min-height: 50px;
             position: relative;
         }
@@ -250,6 +249,12 @@
             z-index: 999999999;
             height: auto!important;
         }
+
+        .bb-placeholder-area {
+            min-height: 100px;
+            box-shadow: 0 0 0 1px rgba(0,0,0,0.15);
+            background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAADklEQVQIW2NgQAXGZHAAGioAza6+Hk0AAAAASUVORK5CYII=);
+        }
     </style>
 </script>
 
@@ -268,12 +273,17 @@
     });
 </script>
 
-<div class="bb-hover-marker bb-hover-marker-top">
+<div class="bb-hover-marker bb-hover-marker-padding bb-hover-marker-padding-top"></div>
+<div class="bb-hover-marker bb-hover-marker-padding bb-hover-marker-padding-bottom"></div>
+<div class="bb-hover-marker bb-hover-marker-padding bb-hover-marker-padding-left"></div>
+<div class="bb-hover-marker bb-hover-marker-padding bb-hover-marker-padding-right"></div>
+<div class="bb-hover-marker bb-hover-marker-margin bb-hover-marker-margin-top"></div>
+<div class="bb-hover-marker bb-hover-marker-margin bb-hover-marker-margin-bottom"></div>
+<div class="bb-hover-marker bb-hover-marker-margin bb-hover-marker-margin-left"></div>
+<div class="bb-hover-marker bb-hover-marker-margin bb-hover-marker-margin-right"></div>
+<div class="bb-hover-marker bb-hover-marker-size">
     <span class="bb-hover-marker-element"></span>
 </div>
-<div class="bb-hover-marker bb-hover-marker-bottom"></div>
-<div class="bb-hover-marker bb-hover-marker-left"></div>
-<div class="bb-hover-marker bb-hover-marker-right"></div>
 
 </body>
 </html>

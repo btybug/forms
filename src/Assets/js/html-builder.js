@@ -5,23 +5,46 @@
     };
 })(jQuery);
 
-function reload_js(src) {
-    $('script[src="' + src + '"]').remove();
-    $('<script>').attr('src', src).appendTo('body');
-}
+$.fn.extend({
+    pixels: function (property, base) {
+        var value = $(this).css(property);
+        var original = value;
+        var outer = property.indexOf('left') !== -1 || property.indexOf('right') !== -1
+            ? $(this).parent().outerWidth()
+            : $(this).parent().outerHeight();
 
-function reload_css(href) {
-    $('<link>').attr({
-        'href': href,
-        'type': 'text/css',
-        'rel': 'stylesheet',
-        'media': 'all'
-    }).appendTo('head');
+        // EM Conversion Factor
+        base = base || 16;
 
-    if ($('link[href="' + href + '"]').length > 1) {
-        $('link[href="' + href + '"]').first().remove();
+        if (value === 'auto' || value === 'inherit')
+            return outer || 0;
+
+        value = value.replace('rem', '');
+        value = value.replace('em', '');
+
+        if (value !== original) {
+            value = parseFloat(value);
+            return value ? base * value : 0;
+        }
+
+        value = value.replace('pt', '');
+
+        if (value !== original) {
+            value = parseFloat(value);
+            return value ? value * 1.333333 : 0; // 1pt = 1.333px
+        }
+
+        value = value.replace('%', '');
+
+        if (value !== original) {
+            value = parseFloat(value);
+            return value ? (outer * value / 100) : 0;
+        }
+
+        value = value.replace('px', '');
+        return parseFloat(value) || 0;
     }
-}
+});
 
 function cssPath(el) {
     var fullPath    = 0,  // Set to 1 to build ultra-specific full CSS-path, or 0 for optimised selector
@@ -96,7 +119,6 @@ function getNodeGroup(node){
     var nodeTag = node.tagName.toLowerCase();
     var nodeGroup = nodeTag;
 
-    if ($.inArray(nodeTag, ["div", "head", "section"]) !== -1) nodeGroup = "Container";
     if ($.inArray(nodeTag, ["button"]) !== -1) nodeGroup = "Button";
     if ($.inArray(nodeTag, ["h1", "h2", "h3", "h4", "h5", "h6", "span", "p"]) !== -1) nodeGroup = "Text";
 
@@ -109,13 +131,12 @@ function getNodeGroup(node){
 
     if(node.attributes.class && node.attributes.class.nodeValue){
         var nodeClasses = node.attributes.class.nodeValue;
-        if(nodeClasses.indexOf("row") !== -1) nodeGroup = "Section";
+        if(nodeClasses.indexOf("row") !== -1) nodeGroup = "Row";
         if(nodeClasses.indexOf("col-") !== -1) nodeGroup = "Column";
-        if(nodeClasses.indexOf("item-column") !== -1) nodeGroup = "Item Column";
-        if(nodeClasses.indexOf("parent-column") !== -1) nodeGroup = "Parent Column";
+        if(nodeClasses.indexOf("container") !== -1) nodeGroup = "Container";
+        if(nodeClasses.indexOf("main-wrapper") !== -1) nodeGroup = "Wrapper";
     }
 
-    if(node.attributes["bb-main-wrapper"]) nodeGroup = "Wrapper";
     if(node.attributes["data-field-id"]) nodeGroup = "Field";
 
     return nodeGroup;
@@ -160,24 +181,8 @@ function DOMtoJSON(node) {
         }
     }
 
-    var nodeIcon = "fa-code";
+    var nodeIcon = "fa-eye";
     var nodeGroup = getNodeGroup(node);
-
-    switch (nodeGroup){
-        case "Container":
-        case "Row":
-            nodeIcon = "fa-window-maximize";
-            break;
-        case "Column":
-            nodeIcon = "fa-columns";
-            break;
-        case "Text":
-            nodeIcon = "fa-text-width";
-            break;
-        case "Button":
-            nodeIcon = "fa-hand-pointer-o";
-            break;
-    }
 
     obj.icon = "fa " + nodeIcon;
 
@@ -188,8 +193,12 @@ function DOMtoJSON(node) {
         nodeGroupID += '<a href="#" class="bb-node-btn bb-node-edit" data-type="'+nodeGroupType+'" data-id="'+DOMCounter+'"><i class="fa fa-pencil"></i></a>';
     }
 
-    if(nodeGroup === "Wrapper" || nodeGroup === "Parent Column"){
-        nodeGroupID += '<a href="#" class="bb-node-btn bb-add-section" data-id="'+DOMCounter+'"><i class="fa fa-plus"></i></a>';
+    if(nodeGroup !== "Wrapper"){
+        nodeGroupID += '<a href="#" class="bb-node-btn bb-node-delete" data-id="'+DOMCounter+'"><i class="fa fa-trash"></i></a>';
+    }
+
+    if(nodeGroup === "Wrapper" || nodeGroup === "Container"){
+        nodeGroupID += '<a href="#" class="bb-node-btn bb-add-section" data-type="'+nodeGroup+'" data-id="'+DOMCounter+'"><i class="fa fa-plus"></i></a>';
     }
 
     nodeGroupID = '<span class="bb-node-'+nodeGroup.toLowerCase()+'">' + nodeGroupID + '</span>';
@@ -206,7 +215,11 @@ function DOMtoJSON(node) {
     var childNodes = node.childNodes;
     var childrenLoop = true;
 
-    if(!childNodes) childrenLoop = false;
+    if(!childNodes || childNodes.length === 0){
+        $(node).addClass('bb-placeholder-area');
+        childrenLoop = false;
+    }
+
     if(nodeGroup === "Field") childrenLoop = false;
     if(node.attributes["bb-group"]) childrenLoop = false;
 
@@ -257,6 +270,16 @@ $(document).ready(function () {
         // Node edit
         .on("click", '.bb-node-edit', function () {
             editNode($(this).data("type"), $(this).data("id"));
+        })
+        // Node edit
+        .on("click", '.bb-node-delete', function () {
+            var iframe = getIframeContent();
+
+            var nodeID = $(this).data("id"),
+                node = iframe.find("[data-bb-id="+nodeID+"]");
+
+            node.remove();
+            generateDOMTree();
         })
         // Column Content
         .on("click", '.bb-column-content', function () {
@@ -317,9 +340,19 @@ $(document).ready(function () {
             var iframe = getIframeContent();
 
             var $this = $(this),
-                wrapper = iframe.find('[data-bb-id="'+$this.data("id")+'"]');
+                type = $this.data("type"),
+                wrapper = iframe.find('[data-bb-id="'+$this.data("id")+'"]'),
+                template = "";
 
-            wrapper.append('<div class="row bb-section"><div class="col-md-12 item-column"></div></div>');
+            if(type === "Container"){
+                template = '<div class="row" />';
+            }
+
+            if(type === "Wrapper"){
+                template = '<div class="container" />';
+            }
+
+            wrapper.append(template);
 
             // ReGenerate tree list
             generateDOMTree();
@@ -356,7 +389,6 @@ $(document).ready(function () {
         })
         // Add field trigger
         .on("click", '.add-item-trigger', function () {
-            var iframe = getIframeContent();
             var template = $('#elements-panel').html();
 
             jsPanel.create({
@@ -375,35 +407,6 @@ $(document).ready(function () {
                         appendTo: 'body',
                         helper: "clone",
                         iframeFix: true
-                    });
-
-                    // Droppable areas
-                    iframe.find( ".item-column>div" ).droppable({
-                        accept: ".draggable-element",
-                        classes: {
-                            "ui-droppable-active": "form-area-active",
-                            "ui-droppable-hover": "form-area-hover"
-                        },
-                        drop: function( event, ui ) {
-                            var fieldType = $(ui.draggable).data("type"),
-                                position = $(this).data("bb-id");
-
-                            if(fieldType === "element"){
-                                var elementHTML = $(ui.draggable).find(".html-element-item-sample").html(),
-                                    template = $(elementHTML);
-
-                                if(template.children().length > 0){
-                                    template.attr("bb-group", true);
-                                }
-
-                                $(this).append(template);
-                            }else{
-                                addFieldsToFormArea([fieldType], position);
-                            }
-
-                            // ReGenerate tree list
-                            generateDOMTree();
-                        }
                     });
                 }
             });
@@ -525,7 +528,12 @@ $(document).ready(function () {
         DOMCounter = 0;
 
         var iframe = getIframeContent();
-        var DOMTree = DOMtoJSON(iframe.find('[bb-main-wrapper]')[0]);
+
+        // Remove placeholder
+        iframe.find('.bb-placeholder-area').removeClass("bb-placeholder-area");
+
+        // Generate tree
+        var DOMTree = DOMtoJSON(iframe.find('.bb-main-wrapper')[0]);
         var layersTree = $('#layers-tree');
 
         // Clean tree if exists
@@ -768,29 +776,84 @@ $(document).ready(function () {
         var iframe = $('#unit-iframe');
         var scrollTop = iframe.contents().scrollTop();
         var iframeTopFixer = iframe.offset().top - scrollTop;
+        
+        var width = $this.outerWidth(),
+            height = $this.outerHeight(),
+            left = $this.offset().left,
+            top = $this.offset().top,
+            paddingLeft = $this.pixels("padding-left"),
+            paddingRight = $this.pixels("padding-right"),
+            paddingTop= $this.pixels("padding-top"),
+            paddingBottom= $this.pixels("padding-bottom"),
+            marginLeft = $this.pixels("margin-left"),
+            marginRight = $this.pixels("margin-right"),
+            marginTop= $this.pixels("margin-top"),
+            marginBottom= $this.pixels("margin-bottom");
 
-        $('.bb-hover-marker-top').css({
-            width: $this.outerWidth() + 7,
-            left: ($this.offset().left) - 5,
-            top: ($this.offset().top + iframeTopFixer) - 5
+        // Element Size
+        $('.bb-hover-marker-size').css({
+            width: width + 4,
+            height: height + 4,
+            left: left - 2,
+            top: (top + iframeTopFixer) - 2
         });
 
-        $('.bb-hover-marker-bottom').css({
-            width: $this.outerWidth() + 7,
-            left: ($this.offset().left) - 5,
-            top: ($this.offset().top + iframeTopFixer + $this.outerHeight()) + 5
+        // Padding
+        $('.bb-hover-marker-padding-top').css({
+            width: width,
+            height: paddingTop,
+            left: left,
+            top: (top + iframeTopFixer)
         });
 
-        $('.bb-hover-marker-left').css({
-            height: $this.outerHeight() + 10,
-            left: ($this.offset().left) - 5,
-            top: ($this.offset().top + iframeTopFixer) - 5
+        $('.bb-hover-marker-padding-bottom').css({
+            width: width,
+            height: paddingBottom,
+            left: (left),
+            top: (top + iframeTopFixer + height - paddingBottom)
         });
 
-        $('.bb-hover-marker-right').css({
-            height: $this.outerHeight() + 12,
-            left: ($this.offset().left + $this.outerWidth()) + 2,
-            top: ($this.offset().top + iframeTopFixer) - 5
+        $('.bb-hover-marker-padding-left').css({
+            width: paddingLeft,
+            height: height,
+            left: (left),
+            top: (top + iframeTopFixer)
+        });
+
+        $('.bb-hover-marker-padding-right').css({
+            width: paddingRight,
+            height: height,
+            left: (left + width - paddingRight),
+            top: (top + iframeTopFixer)
+        });
+
+        // Margin
+        $('.bb-hover-marker-margin-top').css({
+            width: width,
+            height: marginTop,
+            left: (left),
+            top: (top + iframeTopFixer) - marginTop
+        });
+
+        $('.bb-hover-marker-margin-bottom').css({
+            width: width,
+            height: marginBottom,
+            left: (left),
+            top: (top + iframeTopFixer + height)
+        });
+
+        $('.bb-hover-marker-margin-left').css({
+            width: marginLeft,
+            height: height,
+            left: (left - marginLeft),
+            top: (top + iframeTopFixer)
+        });
+
+        $('.bb-hover-marker-margin-right').css({
+            width: marginRight,
+            height: height,
+            left: (left + width),
+            top: (top + iframeTopFixer)
         });
 
         $('.bb-hover-marker-element').text(cssPath($this.get(0)));
@@ -867,6 +930,41 @@ $(document).ready(function () {
             connectWith: ".item-column>div",
             stop: function (event, ui) {
 
+            }
+        });
+
+        // Droppable areas
+        iframe.find(".bb-main-wrapper div").droppable({
+            accept: ".draggable-element",
+            greedy: true,
+            classes: {
+                "ui-droppable-active": "form-area-active",
+                "ui-droppable-hover": "form-area-hover"
+            },
+            drop: function( event, ui ) {
+
+                var fieldType = $(ui.draggable).data("type"),
+                    position = iframe.find('.form-area-hover').last().data("bb-id");
+
+                if(fieldType === "element"){
+                    var elementHTML = $(ui.draggable).find(".html-element-item-sample").html(),
+                        template = $(elementHTML);
+
+                    if(template.children().length > 0){
+                        template.attr("bb-group", true);
+                    }
+
+                    iframe.find('.form-area-hover').last().append(template);
+                    iframe.find('.form-area-hover').removeClass("form-area-hover");
+                }else{
+                    addFieldsToFormArea([fieldType], position);
+                }
+
+                // Activate sortable
+                activateSortable();
+
+                // ReGenerate tree list
+                generateDOMTree();
             }
         });
     }
