@@ -197,7 +197,7 @@ function DOMtoJSON(node) {
         nodeGroupID += '<a href="#" class="bb-node-btn bb-node-delete" data-id="'+DOMCounter+'"><i class="fa fa-trash"></i></a>';
     }
 
-    if(nodeGroup === "Wrapper" || nodeGroup === "Container"){
+    if(nodeGroup === "Wrapper" || nodeGroup === "Container" || nodeGroup === "Row"){
         nodeGroupID += '<a href="#" class="bb-node-btn bb-add-section" data-type="'+nodeGroup+'" data-id="'+DOMCounter+'"><i class="fa fa-plus"></i></a>';
     }
 
@@ -345,8 +345,9 @@ $(document).ready(function () {
                 wrapper = iframe.find('[data-bb-id="'+$this.data("id")+'"]'),
                 template = "";
 
-            if(type === "Container"){
-                template = '<div class="row" />';
+            if(type === "Container" && type === "Row"){
+                $('.add-field-trigger').trigger("click");
+                return;
             }
 
             if(type === "Wrapper"){
