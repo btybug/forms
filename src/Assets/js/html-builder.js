@@ -280,6 +280,7 @@ $(document).ready(function () {
 
             node.remove();
             generateDOMTree();
+            activateSortable();
         })
         // Column Content
         .on("click", '.bb-column-content', function () {
