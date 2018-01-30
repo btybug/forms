@@ -281,9 +281,14 @@
 <div class="bb-hover-marker bb-hover-marker-margin bb-hover-marker-margin-bottom"></div>
 <div class="bb-hover-marker bb-hover-marker-margin bb-hover-marker-margin-left"></div>
 <div class="bb-hover-marker bb-hover-marker-margin bb-hover-marker-margin-right"></div>
-<div class="bb-hover-marker bb-hover-marker-size">
-    <span class="bb-hover-marker-element"></span>
+<div class="bb-hover-marker bb-hover-marker-size"></div>
+<div class="bb-hover-marker-element"></div>
+
+<div class="bb-node-action-menu">
+    <i class="fa fa-bars bb-node-move"></i>
 </div>
+
+<div class="bb-node-action-size"></div>
 
 </body>
 </html>

@@ -206,12 +206,12 @@ span.bb-node-container {
 .bb-hover-marker {
   position: absolute;
   pointer-events: none;
+  left: -20px;
 }
 
 .bb-hover-marker-size{
   border:2px solid #45ea65;
 }
-
 .bb-hover-marker-padding{
   background: rgba(73, 191, 124, 0.32);
 }
@@ -220,7 +220,7 @@ span.bb-node-container {
   background: rgba(220, 137, 0, 0.32);
 }
 
-span.bb-hover-marker-element {
+.bb-hover-marker-element {
   position: absolute;
   top: -17px;
   background: #45ea64;
@@ -237,4 +237,26 @@ span.bb-hover-marker-element {
 
 .element-settings-tabs .tab-content{
   height: calc(100% - 40px);
+}
+
+.bb-node-action-menu {
+  position: absolute;
+  background: #4584ea;
+  color: #fff;
+  width: 90px;
+  padding: 5px 10px;
+  display: table;
+  left: -200px;
+
+  .bb-node-move{
+    float: right;
+    cursor: move;
+  }
+}
+
+.bb-node-action-size{
+  position: absolute;
+  pointer-events: none;
+  border:2px solid #4584ea;
+  left: -200px;
 }

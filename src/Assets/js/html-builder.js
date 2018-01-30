@@ -47,7 +47,7 @@ $.fn.extend({
 });
 
 function cssPath(el) {
-    var fullPath    = 0,  // Set to 1 to build ultra-specific full CSS-path, or 0 for optimised selector
+    var fullPath = 0,  // Set to 1 to build ultra-specific full CSS-path, or 0 for optimised selector
         useNthChild = 0,  // Set to 1 to use ":nth-child()" pseudo-selectors to match the given element
         cssPathStr = '',
         testPath = '',
@@ -69,16 +69,16 @@ function cssPath(el) {
     tagName = el.nodeName.toLowerCase();
 
     // Get node's ID attribute, adding a '#':
-    cssId = ( el.id ) ? ( '#' + el.id ) : false;
+    cssId = (el.id) ? ('#' + el.id) : false;
 
     // Get node's CSS classes, replacing spaces with '.':
-    cssClass = ( el.className ) ? ( '.' + el.className.replace(/\s+/g,".") ) : '';
+    cssClass = (el.className) ? ('.' + el.className.replace(/\s+/g, ".")) : '';
 
     // Build a unique identifier for this parent node:
-    if ( cssId ) {
+    if (cssId) {
         // Matched by ID:
         tagSelector = tagName + cssId + cssClass;
-    } else if ( cssClass ) {
+    } else if (cssClass) {
         // Matched by class (will be checked for multiples afterwards):
         tagSelector = tagName + cssClass;
     } else {
@@ -88,21 +88,21 @@ function cssPath(el) {
     }
 
     // Add this full tag selector to the parentSelectors array:
-    parentSelectors.unshift( tagSelector );
+    parentSelectors.unshift(tagSelector);
 
 
     // Build the CSS path string from the parent tag selectors:
-    for ( i = 0; i < parentSelectors.length; i++ ) {
+    for (i = 0; i < parentSelectors.length; i++) {
         cssPathStr += ' ' + parentSelectors[i];// + ' ' + cssPathStr;
 
         // If using ":nth-child()" selectors and this selector has no ID / isn't the html or body tag:
-        if ( useNthChild && !parentSelectors[i].match(/#/) && !parentSelectors[i].match(/^(html|body)$/) ) {
+        if (useNthChild && !parentSelectors[i].match(/#/) && !parentSelectors[i].match(/^(html|body)$/)) {
 
             // If there's no CSS class, or if the semi-complete CSS selector path matches multiple elements:
-            if ( !parentSelectors[i].match(/\./) || $( cssPathStr ).length > 1 ) {
+            if (!parentSelectors[i].match(/\./) || $(cssPathStr).length > 1) {
 
                 // Count element's previous siblings for ":nth-child" pseudo-selector:
-                for ( nth = 1, c = el; c.previousElementSibling; c = c.previousElementSibling, nth++ );
+                for (nth = 1, c = el; c.previousElementSibling; c = c.previousElementSibling, nth++) ;
 
                 // Append ":nth-child()" to CSS path:
                 cssPathStr += ":nth-child(" + nth + ")";
@@ -115,7 +115,7 @@ function cssPath(el) {
     return cssPathStr.replace(/^[ \t]+|[ \t]+$/, '');
 }
 
-function getNodeGroup(node){
+function getNodeGroup(node) {
     var nodeTag = node.tagName.toLowerCase();
     var nodeGroup = nodeTag;
 
@@ -123,21 +123,21 @@ function getNodeGroup(node){
     if ($.inArray(nodeTag, ["h1", "h2", "h3", "h4", "h5", "h6", "span", "p"]) !== -1) nodeGroup = "Text";
 
     if ($.inArray(nodeTag, ["input"]) !== -1) {
-        if(node.attributes.type) {
+        if (node.attributes.type) {
             var inputType = node.attributes.type.nodeValue;
             if ($.inArray(inputType, ["submit", "reset", "button"]) !== -1) nodeGroup = "Button";
         }
     }
 
-    if(node.attributes.class && node.attributes.class.nodeValue){
+    if (node.attributes.class && node.attributes.class.nodeValue) {
         var nodeClasses = node.attributes.class.nodeValue;
-        if(nodeClasses.indexOf("row") !== -1) nodeGroup = "Row";
-        if(nodeClasses.indexOf("col-") !== -1) nodeGroup = "Column";
-        if(nodeClasses.indexOf("container") !== -1) nodeGroup = "Container";
-        if(nodeClasses.indexOf("main-wrapper") !== -1) nodeGroup = "Wrapper";
+        if (nodeClasses.indexOf("row") !== -1) nodeGroup = "Row";
+        if (nodeClasses.indexOf("col-") !== -1) nodeGroup = "Column";
+        if (nodeClasses.indexOf("container") !== -1) nodeGroup = "Container";
+        if (nodeClasses.indexOf("main-wrapper") !== -1) nodeGroup = "Wrapper";
     }
 
-    if(node.attributes["data-field-id"]) nodeGroup = "Field";
+    if (node.attributes["data-field-id"]) nodeGroup = "Field";
 
     return nodeGroup;
 }
@@ -189,19 +189,19 @@ function DOMtoJSON(node) {
     var nodeGroupID = nodeGroup + " #" + DOMCounter;
     var nodeGroupType = nodeGroup.toLowerCase().replace(" ", "-");
 
-    if(nodeGroup !== "NODE"){
-        nodeGroupID += '<a href="#" class="bb-node-btn bb-node-edit" data-type="'+nodeGroupType+'" data-id="'+DOMCounter+'"><i class="fa fa-pencil"></i></a>';
+    if (nodeGroup !== "NODE") {
+        nodeGroupID += '<a href="#" class="bb-node-btn bb-node-edit" data-type="' + nodeGroupType + '" data-id="' + DOMCounter + '"><i class="fa fa-pencil"></i></a>';
     }
 
-    if(nodeGroup !== "Wrapper"){
-        nodeGroupID += '<a href="#" class="bb-node-btn bb-node-delete" data-id="'+DOMCounter+'"><i class="fa fa-trash"></i></a>';
+    if (nodeGroup !== "Wrapper") {
+        nodeGroupID += '<a href="#" class="bb-node-btn bb-node-delete" data-id="' + DOMCounter + '"><i class="fa fa-trash"></i></a>';
     }
 
-    if(nodeGroup === "Wrapper" || nodeGroup === "Container" || nodeGroup === "Row"){
-        nodeGroupID += '<a href="#" class="bb-node-btn bb-add-section" data-type="'+nodeGroup+'" data-id="'+DOMCounter+'"><i class="fa fa-plus"></i></a>';
+    if (nodeGroup === "Wrapper" || nodeGroup === "Container" || nodeGroup === "Row") {
+        nodeGroupID += '<a href="#" class="bb-node-btn bb-add-section" data-type="' + nodeGroup + '" data-id="' + DOMCounter + '"><i class="fa fa-plus"></i></a>';
     }
 
-    nodeGroupID = '<span class="bb-node-'+nodeGroup.toLowerCase()+'">' + nodeGroupID + '</span>';
+    nodeGroupID = '<span class="bb-node-' + nodeGroup.toLowerCase() + '">' + nodeGroupID + '</span>';
 
 
     obj.text = nodeGroupID;
@@ -215,12 +215,12 @@ function DOMtoJSON(node) {
     var childNodes = node.childNodes;
     var childrenLoop = true;
 
-    if(!childNodes || childNodes.length === 0){
+    if (!childNodes || childNodes.length === 0) {
         $(node).addClass('bb-placeholder-area');
         childrenLoop = false;
     }
 
-    if(nodeGroup === "Field") childrenLoop = false;
+    if (nodeGroup === "Field") childrenLoop = false;
     // if(node.attributes["bb-group"]) childrenLoop = false;
 
     if (childrenLoop) {
@@ -246,7 +246,7 @@ var fieldsJSON;
 
 $(document).ready(function () {
     $("body")
-        // Disabled tabs
+    // Disabled tabs
         .on("click", '#settings-tabs>.disabled', function () {
             return false;
         })
@@ -256,7 +256,7 @@ $(document).ready(function () {
             var selectedType = $('#column-type').val(),
                 nodeID = $(this).data('id');
 
-            iframe.find('[data-bb-id='+nodeID+']')
+            iframe.find('[data-bb-id=' + nodeID + ']')
                 .removeClass('item-column')
                 .addClass('parent-column')
                 .html('<div class="row bb-section"><div class="col-md-12 item-column"></div></div>');
@@ -276,7 +276,7 @@ $(document).ready(function () {
             var iframe = getIframeContent();
 
             var nodeID = $(this).data("id"),
-                node = iframe.find("[data-bb-id="+nodeID+"]");
+                node = iframe.find("[data-bb-id=" + nodeID + "]");
 
             node.remove();
             generateDOMTree();
@@ -315,7 +315,7 @@ $(document).ready(function () {
             });
         })
         // Apply layout
-        .on('click', '.apply-layout', function (){
+        .on('click', '.apply-layout', function () {
             var iframe = getIframeContent();
             var section = iframe.find('[data-bb-id=' + $(this).data("id") + ']');
 
@@ -324,8 +324,8 @@ $(document).ready(function () {
 
             var columnHTML = "";
 
-            $.each(columnArray, function (index, columnClass){
-                columnHTML += '<div class="col-md-'+columnClass+' item-column"></div>';
+            $.each(columnArray, function (index, columnClass) {
+                columnHTML += '<div class="col-md-' + columnClass + ' item-column"></div>';
             });
 
             section.html(columnHTML);
@@ -342,15 +342,15 @@ $(document).ready(function () {
 
             var $this = $(this),
                 type = $this.data("type"),
-                wrapper = iframe.find('[data-bb-id="'+$this.data("id")+'"]'),
+                wrapper = iframe.find('[data-bb-id="' + $this.data("id") + '"]'),
                 template = "";
 
-            if(type === "Container" || type === "Row"){
+            if (type === "Container" || type === "Row") {
                 $('.add-item-trigger').trigger("click");
                 return;
             }
 
-            if(type === "Wrapper"){
+            if (type === "Wrapper") {
                 template = '<div class="container" />';
             }
 
@@ -364,25 +364,25 @@ $(document).ready(function () {
         })
         // Open layers panel
         .on("click", '.open-layers-panel', function () {
-            if($(this).hasClass("disabled")) return;
+            if ($(this).hasClass("disabled")) return;
 
             DOMCounter = 0;
 
             jsPanel.create({
                 id: 'layers-panel',
                 container: 'body',
-                theme:       'primary',
+                theme: 'primary',
                 headerTitle: 'Layers',
-                position:    'left-bottom 5 -20',
+                position: 'left-bottom 5 -20',
                 contentSize: '450 250',
-                content:     '<div id="layers-tree"></div>',
+                content: '<div id="layers-tree"></div>',
                 callback: function () {
                     $('.open-layers-panel').addClass("disabled");
 
                     // Load DOM tree
                     generateDOMTree();
                 },
-                onclosed: function (){
+                onclosed: function () {
                     var iframe = getIframeContent();
                     $('.open-layers-panel').removeClass("disabled");
                     iframe.find('[data-bb-id]').removeAttr("data-bb-hovered");
@@ -394,15 +394,15 @@ $(document).ready(function () {
             var template = $('#elements-panel').html(),
                 $this = $(this);
 
-            if(!$(this).hasClass("opened")){
+            if (!$(this).hasClass("opened")) {
                 jsPanel.create({
                     id: 'items-panel',
                     container: 'body',
-                    theme:       'primary',
+                    theme: 'primary',
                     headerTitle: 'Fields & Elements',
-                    position:    'right-bottom -5 -20',
+                    position: 'right-bottom -5 -20',
                     contentSize: '450 350',
-                    content:     template,
+                    content: template,
                     callback: function () {
                         $(".fields-container").html(fieldsJSON.html);
 
@@ -413,7 +413,7 @@ $(document).ready(function () {
                             iframeFix: true
                         });
                     },
-                    close: function (){
+                    close: function () {
                         $this.removeClass("opened");
                     }
                 });
@@ -487,33 +487,33 @@ $(document).ready(function () {
     });
 
     // Edit node
-    function editNode(nodeType, nodeID){
+    function editNode(nodeType, nodeID) {
         var iframe = getIframeContent();
 
         // Node settings
-        var templateHTML = $('#element-'+nodeType+'-settings').html();
+        var templateHTML = $('#element-' + nodeType + '-settings').html();
 
-        if(templateHTML){
+        if (templateHTML) {
             templateHTML = templateHTML.replace("{id}", nodeID);
-        }else{
+        } else {
             templateHTML = $('#element-settings').html();
-            var node = iframe.find('[data-bb-id='+nodeID+']'),
+            var node = iframe.find('[data-bb-id=' + nodeID + ']'),
                 children = node.children();
 
-            if(children.length > 0){
+            if (children.length > 0) {
                 var content = '',
                     style = '';
 
-                $.each(children, function (index, child){
+                $.each(children, function (index, child) {
                     var childType = getNodeGroup(child);
-                    var contentTemplate = $('#bbt-'+childType.toLowerCase()+'-content').html();
-                    var styleTemplate = $('#bbt-'+childType.toLowerCase()+'-style').html();
+                    var contentTemplate = $('#bbt-' + childType.toLowerCase() + '-content').html();
+                    var styleTemplate = $('#bbt-' + childType.toLowerCase() + '-style').html();
 
-                    if(contentTemplate){
+                    if (contentTemplate) {
                         content += contentTemplate;
                     }
 
-                    if(styleTemplate){
+                    if (styleTemplate) {
                         style += styleTemplate;
                     }
                 });
@@ -533,7 +533,7 @@ $(document).ready(function () {
     }
 
     // Generate DOM tree
-    function generateDOMTree(){
+    function generateDOMTree() {
         DOMCounter = 0;
 
         var iframe = getIframeContent();
@@ -570,6 +570,11 @@ $(document).ready(function () {
 
                 // Hover nodes
                 hoverNode(domNode);
+            })
+            .on("select_node.jstree", function (e, data) {
+                // Activate node
+                var domNode = iframe.find('[data-bb-id="' + data.node.original.bbID + '"]');
+                activateNode(domNode);
             });
     }
 
@@ -579,8 +584,8 @@ $(document).ready(function () {
         // Mark sortable areas
         iframe.find('.item-column').each(function (i) {
             var itemID = $(this).data("bb-id");
-            if($(this).find('[data-sortable]').length === 0){
-                $(this).append('<div data-sortable="'+itemID+'"></div>');
+            if ($(this).find('[data-sortable]').length === 0) {
+                $(this).append('<div data-sortable="' + itemID + '"></div>');
             }
         });
 
@@ -593,7 +598,7 @@ $(document).ready(function () {
         // Context menu
         iframe.contextMenu({
             selector: '.has-context-menu',
-            position: function(opt, x, y){
+            position: function (opt, x, y) {
                 opt.$menu.css({top: y + 95, left: x});
             },
             items: {
@@ -603,9 +608,11 @@ $(document).ready(function () {
                 "paste": {name: "Paste", icon: "paste"},
                 "delete": {name: "Delete", icon: "delete"},
                 "sep1": "---------",
-                "quit": {name: "Quit", icon: function(){
+                "quit": {
+                    name: "Quit", icon: function () {
                         return 'context-menu-icon context-menu-icon-quit';
-                }}
+                    }
+                }
             }
         });
 
@@ -740,23 +747,31 @@ $(document).ready(function () {
                 $('#fields-backup').find('[data-field-id=' + itemtoRemove + ']').remove();
             })
             // Hover nodes
-            .on('mouseover', '[data-bb-id]', function (e){
+            .on('mouseover', '[data-bb-id]', function (e) {
                 e.stopPropagation();
 
                 // Check if the layers panel is open
-                if(!$('.open-layers-panel').hasClass("disabled")) return;
+                if (!$('.open-layers-panel').hasClass("disabled")) return;
 
                 // Hover nodes
                 hoverNode($(this));
             })
+            // Hover parent node
+            .on('mouseover', '.corepreviewSetting', function (e) {
+                e.stopPropagation();
+                hideHoverNode();
+            })
             // On node click
-            .on('click', '[data-bb-id]', function (e){
+            .on('click', '[data-bb-id]', function (e) {
                 e.stopPropagation();
 
-                // Check if the layers panel is open
-                if(!$('.open-layers-panel').hasClass("disabled")) return;
-
                 var $this = $(this);
+
+                // Activate node
+                activateNode($this);
+
+                // Check if the layers panel is open
+                if (!$('.open-layers-panel').hasClass("disabled")) return;
                 var nodeID = 'j-node-' + $this.attr("data-bb-id");
                 var layersTree = $('#layers-tree');
 
@@ -766,38 +781,96 @@ $(document).ready(function () {
 
                 layersTree.animate({
                     scrollTop: ($("#" + nodeID).position().top)
-                },500);
+                }, 500);
             })
             // On node double click
-            .on('dblclick', '[data-bb-id]', function (e){
+            .on('dblclick', '[data-bb-id]', function (e) {
                 e.stopPropagation();
 
                 var nodeType = getNodeGroup(this);
-                editNode(nodeType.toLowerCase(), $(this).attr("data-bb-id"));
+                // editNode(nodeType.toLowerCase(), $(this).attr("data-bb-id"));
                 hoverNode($(this));
             })
-            .bind('scroll', function() {
+            .bind('scroll', function () {
                 console.log("Ok");
             });
     });
 
-    function hoverNode($this){
+    function activateNode($this) {
         var iframe = $('#unit-iframe');
         var scrollTop = iframe.contents().scrollTop();
         var iframeTopFixer = iframe.offset().top - scrollTop;
-        
+        var width = $this.outerWidth(),
+            height = $this.outerHeight(),
+            left = $this.offset().left,
+            top = $this.offset().top;
+
+        // Activate node
+        var nodeActionMenu = $('.bb-node-action-menu');
+        nodeActionMenu
+            .css({
+                left: left + width - nodeActionMenu.outerWidth() + 2,
+                top: (top + iframeTopFixer) - nodeActionMenu.outerHeight()
+            })
+            .attr("data-selected-node", $this.data("bb-id"));
+
+        $('.bb-node-action-size').css({
+            width: width + 4,
+            height: height + 4,
+            left: left - 2,
+            top: (top + iframeTopFixer) - 2
+        });
+
+        // Active node dragging
+        $('.bb-node-move')
+            .draggable({
+                appendTo: 'body',
+                iframeFix: true,
+                helper: function (){
+                    var activeNode = $this
+                        .clone(false)
+                        .css({
+                            opacity: 0.5,
+                            transform: "scale(0.33, 0.33)",
+                            transformOrigin: "0 0"
+                        });
+
+                    $("body").append(activeNode);
+
+                    return activeNode.get(0);
+                }
+            })
+            .on("dragstart", function () {
+                hideActiveNode();
+                $this.hide();
+            });
+    }
+
+    function hoverNode($this) {
+        var iframe = $('#unit-iframe');
+        var scrollTop = iframe.contents().scrollTop();
+        var iframeTopFixer = iframe.offset().top - scrollTop;
+
         var width = $this.outerWidth(),
             height = $this.outerHeight(),
             left = $this.offset().left,
             top = $this.offset().top,
             paddingLeft = $this.pixels("padding-left"),
             paddingRight = $this.pixels("padding-right"),
-            paddingTop= $this.pixels("padding-top"),
-            paddingBottom= $this.pixels("padding-bottom"),
+            paddingTop = $this.pixels("padding-top"),
+            paddingBottom = $this.pixels("padding-bottom"),
             marginLeft = $this.pixels("margin-left"),
             marginRight = $this.pixels("margin-right"),
-            marginTop= $this.pixels("margin-top"),
-            marginBottom= $this.pixels("margin-bottom");
+            marginTop = $this.pixels("margin-top"),
+            marginBottom = $this.pixels("margin-bottom");
+
+        // Element path
+        $('.bb-hover-marker-element')
+            .text(cssPath($this.get(0)))
+            .css({
+                left: left - 2,
+                top: (top + iframeTopFixer) - 18
+            });
 
         // Element Size
         $('.bb-hover-marker-size').css({
@@ -864,8 +937,30 @@ $(document).ready(function () {
             left: (left + width),
             top: (top + iframeTopFixer)
         });
+    }
 
-        $('.bb-hover-marker-element').text(cssPath($this.get(0)));
+    function hideHoverNode() {
+        $('.bb-hover-marker').css({
+            width: 0,
+            height: 0,
+            top: 'auto',
+            bottom: -10,
+            left: -10
+        });
+
+        $('.bb-hover-marker-element').text("");
+    }
+
+    function hideActiveNode() {
+        $('.bb-node-action-menu').css({
+            left: -200
+        });
+
+        $('.bb-node-action-size').css({
+            width: 0,
+            height: 0,
+            left: -200
+        });
     }
 
     function getIframeContent() {
@@ -934,26 +1029,19 @@ $(document).ready(function () {
     // Activate sortable
     function activateSortable() {
         var iframe = getIframeContent();
-        // Form sortable
-        iframe.find('.item-column>div').sortable({
-            connectWith: ".item-column>div",
-            stop: function (event, ui) {
-
-            }
-        });
 
         // Droppable areas
         iframe.find(".bb-main-wrapper div").droppable({
-            accept: ".draggable-element",
+            accept: ".draggable-element, .bb-node-move",
             greedy: true,
             classes: {
                 "ui-droppable-active": "form-area-active",
                 "ui-droppable-hover": "form-area-hover"
             },
-            drop: function( event, ui ) {
+            drop: function (event, ui) {
 
                 var target = iframe.find('.form-area-hover').last();
-                if(iframe.find('.form-area-hover').last().length === 0) {
+                if (iframe.find('.form-area-hover').last().length === 0) {
                     target = $(event.target);
                 }
 
@@ -961,34 +1049,34 @@ $(document).ready(function () {
                     fieldTag = $(ui.draggable).data("tag"),
                     position = iframe.find('.form-area-hover').last().data("bb-id");
 
-                if(fieldType === "element"){
+                if (fieldType === "element") {
 
                     // Insert template
                     var elementHTML = $(ui.draggable).find(".html-element-item-sample").html(),
                         template = $(elementHTML);
 
-                    if(template.children().length > 0){
+                    if (template.children().length > 0) {
                         template.attr("bb-group", true);
                     }
                     /* Conditions */
-                    if(target.hasClass("row") && fieldTag === "row") {
+                    if (target.hasClass("row") && fieldTag === "row") {
                         target.after(template);
                     }
-                    else if(target.attr("class").indexOf("col-") !== -1 && fieldTag.indexOf("col") !== -1) {
+                    else if (target.attr("class").indexOf("col-") !== -1 && fieldTag.indexOf("col") !== -1) {
                         target.after(template);
                     }
-                    else if(target.hasClass("container") && fieldTag.indexOf("col") !== -1) {
+                    else if (target.hasClass("container") && fieldTag.indexOf("col") !== -1) {
                         // Do Nothing
-                        template = '<div class="row">'+elementHTML+'</div>';
+                        template = '<div class="row">' + elementHTML + '</div>';
                         target.append(template);
                     }
-                    else{
+                    else {
                         target.append(template);
                     }
 
                     iframe.find('.form-area-hover').removeClass("form-area-hover");
 
-                }else{
+                } else {
                     addFieldsToFormArea([fieldType], position);
                 }
 
