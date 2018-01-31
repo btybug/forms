@@ -1031,7 +1031,8 @@ $(document).ready(function () {
         var iframe = getIframeContent();
 
         // Droppable areas
-        iframe.find(".bb-main-wrapper div").droppable({
+        // iframe.find(".bb-main-wrapper div").droppable({
+        iframe.droppable({
             accept: ".draggable-element, .bb-node-move",
             greedy: true,
             classes: {
