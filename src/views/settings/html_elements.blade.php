@@ -66,7 +66,7 @@ $elementsGroups = [
     ],
 ];
 
-@endphp
+@endphp 
 
 
 @foreach($elementsGroups as $group => $elements)
