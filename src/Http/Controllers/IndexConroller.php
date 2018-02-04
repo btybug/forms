@@ -23,7 +23,6 @@ class IndexConroller extends Controller
     {
         $form = null;
 //        return view('forms::form_bulder', compact('form'));
-	    
         return view('forms::form_builder', compact('form'));
     }
 
