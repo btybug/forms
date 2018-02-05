@@ -793,6 +793,9 @@ $(document).ready(function () {
 
     // Activate selected node
     function activateNode($this) {
+
+        if(!$this.offset()) return;
+
         var iframe = $('#unit-iframe');
         var scrollTop = iframe.contents().scrollTop();
         var iframeTopFixer = iframe.offset().top - scrollTop;
@@ -819,6 +822,9 @@ $(document).ready(function () {
     }
 
     function hoverNode($this) {
+
+        if(!$this.offset()) return;
+
         var iframe = $('#unit-iframe');
         var scrollTop = iframe.contents().scrollTop();
         var iframeTopFixer = iframe.offset().top - scrollTop;
@@ -1028,7 +1034,7 @@ $(document).ready(function () {
 
     function hideDropPlaceholder(){
         $('.bb-drop-placeholder').css({
-            left: -300,
+            left: -3000,
             width: 0
         });
     }
@@ -1041,7 +1047,7 @@ $(document).ready(function () {
 
         var whereToDrop = null;
 
-        if(el.offset() && el.offset().top){
+        if(el.offset()){
             var iframeEl = $('#unit-iframe');
             var scrollTop = iframeEl.contents().scrollTop();
             var iframeTopFixer = iframeEl.offset().top - scrollTop;
@@ -1071,11 +1077,19 @@ $(document).ready(function () {
         var scrollTop = iframeEl.contents().scrollTop();
         var iframeTopFixer = iframeEl.offset().top - scrollTop;
 
+        if($('.bb-node-move').hasClass("ui-draggable")){
+            $('.bb-node-move').draggable("destroy");
+        }
+
+        if($('.draggable-element').hasClass("ui-draggable")){
+            $('.draggable-element').draggable("destroy");
+        }
+
         $('.bb-node-move, .draggable-element')
             .draggable({
                 appendTo: 'body',
                 iframeFix: true,
-                iframeOffset: $('#unit-iframe').offset(),
+                iframeOffset: iframeEl.offset(),
                 helper: function (){
 
                     if($(this).hasClass("draggable-element")) return $(this).clone(false);
@@ -1106,6 +1120,8 @@ $(document).ready(function () {
                 var el = $(allElementsFromPointIframe(event.pageX, event.pageY));
                 toDrop = whereToDrop(el);
                 toDropElement = el;
+
+                console.log(el, toDrop);
 
                 if(toDrop){
                     var elTop = el.offset().top + iframeTopFixer,
@@ -1139,6 +1155,8 @@ $(document).ready(function () {
                     if(toDrop === "inside"){
                         el.addClass(dropInsideClass);
                     }
+                }else{
+                    hideDropPlaceholder();
                 }
 
             })
@@ -1148,18 +1166,28 @@ $(document).ready(function () {
                 hideDropPlaceholder();
                 $('.bb-hover-marker, .bb-hover-marker-element').show();
 
+                var activeElement = getActiveNodeEl(),
+                    removeActiveElement = true;
+
+                if($(this).hasClass("draggable-element")){
+                    activeElement = $(this).find('.html-element-item-sample').html();
+                    removeActiveElement = false;
+                }
+
                 // Move element
                 if(toDrop === "above"){
-                    toDropElement.before(getActiveNodeEl());
+                    toDropElement.before(activeElement);
                 }
 
                 if(toDrop === "below"){
-                    toDropElement.after(getActiveNodeEl());
+                    toDropElement.after(activeElement);
                 }
 
                 if(toDrop === "inside"){
-                    toDropElement.append(getActiveNodeEl());
+                    toDropElement.append(activeElement);
                 }
+
+                // if(removeActiveElement) getActiveNodeEl().remove();
 
                 generateDOMTree();
             });
