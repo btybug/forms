@@ -215,4 +215,20 @@ span.bb-node-container {
   border: 2px solid #4584ea;
   left: -200px; }
 
+.bb-drop-placeholder {
+  position: absolute;
+  pointer-events: none;
+  border: 2px solid #3567b9;
+  left: -200px; }
+
+.bb-drop-placeholder span {
+  background: #3567b9;
+  color: #fff;
+  font-size: 11px;
+  position: absolute;
+  top: -8px;
+  width: 70px;
+  border-radius: 8px;
+  text-align: center; }
+
 /*# sourceMappingURL=html-builder.css.map */

@@ -246,7 +246,7 @@ var fieldsJSON;
 
 $(document).ready(function () {
     $("body")
-    // Disabled tabs
+        // Disabled tabs
         .on("click", '#settings-tabs>.disabled', function () {
             return false;
         })
@@ -280,7 +280,6 @@ $(document).ready(function () {
 
             node.remove();
             generateDOMTree();
-            activateSortable();
         })
         // Column Content
         .on("click", '.bb-column-content', function () {
@@ -407,11 +406,7 @@ $(document).ready(function () {
                         $(".fields-container").html(fieldsJSON.html);
 
                         // Fields draggable
-                        $('.draggable-element').draggable({
-                            appendTo: 'body',
-                            helper: "clone",
-                            iframeFix: true
-                        });
+                        activateSortable();
                     },
                     close: function () {
                         $this.removeClass("opened");
@@ -796,6 +791,7 @@ $(document).ready(function () {
             });
     });
 
+    // Activate selected node
     function activateNode($this) {
         var iframe = $('#unit-iframe');
         var scrollTop = iframe.contents().scrollTop();
@@ -812,7 +808,7 @@ $(document).ready(function () {
                 left: left + width - nodeActionMenu.outerWidth() + 2,
                 top: (top + iframeTopFixer) - nodeActionMenu.outerHeight()
             })
-            .attr("data-selected-node", $this.data("bb-id"));
+            .attr("data-selected-node", $this.attr("data-bb-id"));
 
         $('.bb-node-action-size').css({
             width: width + 4,
@@ -820,30 +816,6 @@ $(document).ready(function () {
             left: left - 2,
             top: (top + iframeTopFixer) - 2
         });
-
-        // Active node dragging
-        $('.bb-node-move')
-            .draggable({
-                appendTo: 'body',
-                iframeFix: true,
-                helper: function (){
-                    var activeNode = $this
-                        .clone(false)
-                        .css({
-                            opacity: 0.5,
-                            transform: "scale(0.33, 0.33)",
-                            transformOrigin: "0 0"
-                        });
-
-                    $("body").append(activeNode);
-
-                    return activeNode.get(0);
-                }
-            })
-            .on("dragstart", function () {
-                hideActiveNode();
-                $this.hide();
-            });
     }
 
     function hoverNode($this) {
@@ -969,7 +941,6 @@ $(document).ready(function () {
 
     // Add fields to form area
     function addFieldsToFormArea(fieldsJSON, position) {
-        console.log(position);
         var iframe = getIframeContent();
 
         if (!position) position = 0;
@@ -1026,68 +997,172 @@ $(document).ready(function () {
         });
     }
 
+    // Get active node element
+    function getActiveNodeEl(){
+        var iframe = getIframeContent();
+        return iframe.find('[data-bb-id=' + $('.bb-node-action-menu').attr("data-selected-node") + ']');
+    }
+
+    function allElementsFromPointIframe(x, y) {
+        var iframe  = $('#unit-iframe');
+        var offsetX = iframe.offset().left;
+        var offsetY = iframe.offset().top;
+
+        var element, elements = [];
+        var old_visibility = [];
+        while (true) {
+            element = document.getElementById('unit-iframe').contentWindow.document.elementFromPoint(x - offsetX, y - offsetY);
+            if (!element || element === document.getElementById('unit-iframe').contentWindow.document.documentElement) {
+                break;
+            }
+            elements.push(element);
+            old_visibility.push(element.style.visibility);
+            element.style.visibility = 'hidden';
+        }
+        for (var k = 0; k < elements.length; k++) {
+            elements[k].style.visibility = old_visibility[k];
+        }
+
+        return elements[0];
+    }
+
+    function hideDropPlaceholder(){
+        $('.bb-drop-placeholder').css({
+            left: -300,
+            width: 0
+        });
+    }
+
+    // Where to drop
+    var toDrop,
+        toDropElement;
+
+    function whereToDrop(el){
+
+        var whereToDrop = null;
+
+        if(el.offset() && el.offset().top){
+            var iframeEl = $('#unit-iframe');
+            var scrollTop = iframeEl.contents().scrollTop();
+            var iframeTopFixer = iframeEl.offset().top - scrollTop;
+
+            var mouseTop = event.pageY,
+                elTop = el.offset().top + iframeTopFixer,
+                elHeight = el.outerHeight(),
+                elQuart = elHeight/4;
+
+            whereToDrop = 'inside';
+
+            if(mouseTop <= (elTop+elQuart)) whereToDrop = 'above';
+            if(mouseTop >= (elTop+elHeight-elQuart)) whereToDrop = 'below';
+        }
+
+        return whereToDrop;
+    }
+
     // Activate sortable
     function activateSortable() {
         var iframe = getIframeContent();
+        var iframeEl = $('#unit-iframe');
+        var dropPlaceHolder = $('.bb-drop-placeholder');
 
-        // Droppable areas
-        // iframe.find(".bb-main-wrapper div").droppable({
-        iframe.droppable({
-            accept: ".draggable-element, .bb-node-move",
-            greedy: true,
-            classes: {
-                "ui-droppable-active": "form-area-active",
-                "ui-droppable-hover": "form-area-hover"
-            },
-            drop: function (event, ui) {
+        // Active node dragging
+        var dropInsideClass = "bb-drop-inside";
+        var scrollTop = iframeEl.contents().scrollTop();
+        var iframeTopFixer = iframeEl.offset().top - scrollTop;
 
-                var target = iframe.find('.form-area-hover').last();
-                if (iframe.find('.form-area-hover').last().length === 0) {
-                    target = $(event.target);
+        $('.bb-node-move, .draggable-element')
+            .draggable({
+                appendTo: 'body',
+                iframeFix: true,
+                iframeOffset: $('#unit-iframe').offset(),
+                helper: function (){
+
+                    if($(this).hasClass("draggable-element")) return $(this).clone(false);
+
+                    var activeNode = getActiveNodeEl()
+                        .clone(false)
+                        .css({
+                            opacity: 0.5,
+                            transform: "scale(0.33, 0.33)",
+                            transformOrigin: "0 0"
+                        });
+
+                    $("body").append(activeNode);
+
+                    return activeNode.get(0);
+                }
+            })
+            .on("dragstart", function () {
+                hideActiveNode();
+
+                if($(this).hasClass("bb-node-move")){
+                    getActiveNodeEl().hide();
+                }
+            })
+            .on("drag", function (event) {
+                $('.bb-hover-marker, .bb-hover-marker-element').hide();
+
+                var el = $(allElementsFromPointIframe(event.pageX, event.pageY));
+                toDrop = whereToDrop(el);
+                toDropElement = el;
+
+                if(toDrop){
+                    var elTop = el.offset().top + iframeTopFixer,
+                        elLeft = el.offset().left,
+                        elHeight = el.outerHeight();
+
+                    iframe.find('.' + dropInsideClass).removeClass(dropInsideClass);
+
+                    hideDropPlaceholder();
+
+                    dropPlaceHolder.find('span').css({
+                        left: el.outerWidth()/2 - 35
+                    });
+
+                    if(toDrop === "above"){
+                        dropPlaceHolder.css({
+                            top: elTop - 2,
+                            left: elLeft,
+                            width: el.outerWidth()
+                        });
+                    }
+
+                    if(toDrop === "below"){
+                        dropPlaceHolder.css({
+                            top: elTop + elHeight + 2,
+                            left: elLeft,
+                            width: el.outerWidth()
+                        });
+                    }
+
+                    if(toDrop === "inside"){
+                        el.addClass(dropInsideClass);
+                    }
                 }
 
-                var fieldType = $(ui.draggable).data("type"),
-                    fieldTag = $(ui.draggable).data("tag"),
-                    position = iframe.find('.form-area-hover').last().data("bb-id");
+            })
+            .on("dragstop", function () {
+                iframe.find('.' + dropInsideClass).removeClass(dropInsideClass);
+                getActiveNodeEl().show();
+                hideDropPlaceholder();
+                $('.bb-hover-marker, .bb-hover-marker-element').show();
 
-                if (fieldType === "element") {
-
-                    // Insert template
-                    var elementHTML = $(ui.draggable).find(".html-element-item-sample").html(),
-                        template = $(elementHTML);
-
-                    if (template.children().length > 0) {
-                        template.attr("bb-group", true);
-                    }
-                    /* Conditions */
-                    if (target.hasClass("row") && fieldTag === "row") {
-                        target.after(template);
-                    }
-                    else if (target.attr("class").indexOf("col-") !== -1 && fieldTag.indexOf("col") !== -1) {
-                        target.after(template);
-                    }
-                    else if (target.hasClass("container") && fieldTag.indexOf("col") !== -1) {
-                        // Do Nothing
-                        template = '<div class="row">' + elementHTML + '</div>';
-                        target.append(template);
-                    }
-                    else {
-                        target.append(template);
-                    }
-
-                    iframe.find('.form-area-hover').removeClass("form-area-hover");
-
-                } else {
-                    addFieldsToFormArea([fieldType], position);
+                // Move element
+                if(toDrop === "above"){
+                    toDropElement.before(getActiveNodeEl());
                 }
 
-                // Activate sortable
-                activateSortable();
+                if(toDrop === "below"){
+                    toDropElement.after(getActiveNodeEl());
+                }
 
-                // ReGenerate tree list
+                if(toDrop === "inside"){
+                    toDropElement.append(getActiveNodeEl());
+                }
+
                 generateDOMTree();
-            }
-        });
+            });
     }
 
     // Listen to iframe

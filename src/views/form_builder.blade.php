@@ -255,6 +255,10 @@
             box-shadow: 0 0 0 1px rgba(0,0,0,0.15);
             background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAADklEQVQIW2NgQAXGZHAAGioAza6+Hk0AAAAASUVORK5CYII=);
         }
+
+        .bb-drop-inside{
+            outline: 2px dashed red;
+        }
     </style>
 </script>
 
@@ -285,10 +289,13 @@
 <div class="bb-hover-marker-element"></div>
 
 <div class="bb-node-action-menu">
-    <i class="fa fa-bars bb-node-move"></i>
+    <i class="fa fa-arrows bb-node-move"></i>
 </div>
 
 <div class="bb-node-action-size"></div>
+
+<div class="bb-drop-placeholder"><span>Drop Here</span></div>
+
 
 </body>
 </html>
