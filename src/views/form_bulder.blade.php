@@ -148,7 +148,7 @@
 <script type="template/html" id="fields-backup"></script>
 
 <!-- Elements Settings -->
-{{--@include('forms::settings.element_settings')--}}
+@include('forms::settings.element_settings')
 
 
 <!-- Injected templates to iframe -->
