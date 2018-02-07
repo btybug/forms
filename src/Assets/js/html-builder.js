@@ -869,7 +869,7 @@ $(document).ready(function () {
                 },
                 stop: function (){
                     $('#unit-iframe').css("pointer-events", "all");
-                    // getActiveNodeEl().parent('.row').removeClass("grid-overlay");
+                    getActiveNodeEl().parent('.row').removeClass("grid-overlay");
                 },
                 resize: function (event,ui){
                     hideHoverNode();
