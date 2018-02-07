@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <title>HTML Builder</title>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    {{--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">--}}
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
     {!! HTML::style('public/css/admin.css') !!}
     {!! HTML::style('public/css/cms.css') !!}
@@ -14,7 +16,10 @@
 
     {!! HTML::script('public/js/jquery-2.1.4.min.js') !!}
 
-    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" crossorigin="anonymous"></script>
+    {{--<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" crossorigin="anonymous"></script>--}}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
     {!! HTML::script('public/css/bootstrap/js/bootstrap-switch.min.js') !!}
     {!! HTML::script('public/css/font-awesome/js/fontawesome-iconpicker.min.js') !!}
@@ -104,7 +109,7 @@
     </div>
 </div>
 
-<div class="select-fields-container hidden" id="field-settings">
+<div class="select-fields-container" id="field-settings" hidden>
     <h3>Field Settings
         <button class="btn btn-primary btn-sm save-field-settings pull-right">Close</button>
     </h3>
@@ -259,6 +264,20 @@
         .bb-drop-inside{
             outline: 2px dashed red;
         }
+
+        .row.grid-overlay{
+            position: relative;
+        }
+
+        .row.grid-overlay:before {
+            content: "";
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            background: url(http://mainbug.local/public/images/grid_overlay.png) repeat-y;
+            opacity: 0.3;
+            background-size: contain;
+        }
     </style>
 </script>
 
@@ -291,6 +310,8 @@
 <div class="bb-node-action-menu">
     <i class="fa fa-arrows bb-node-move"></i>
 </div>
+
+<div class="bb-node-active-title"></div>
 
 <div class="bb-node-action-size"></div>
 

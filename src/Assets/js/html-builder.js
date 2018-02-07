@@ -115,6 +115,10 @@ function cssPath(el) {
     return cssPathStr.replace(/^[ \t]+|[ \t]+$/, '');
 }
 
+function isColumn(text){
+    return text.indexOf("col") !== -1;
+}
+
 function getNodeGroup(node) {
     var nodeTag = node.tagName.toLowerCase();
     var nodeGroup = nodeTag;
@@ -418,13 +422,13 @@ $(document).ready(function () {
         // Open settings panel
         .on("click", '.open-settings-panel', function () {
             var iframe = getIframeContent();
-            $('#settings-panel').removeClass("hidden");
+            $('#settings-panel').removeAttr("hidden");
             iframe.find('.previewcontent').removeClass('activeprevew');
         })
         // Close settings panel
         .on("click", '.close-settings-panel', function () {
             var iframe = getIframeContent();
-            $('#settings-panel').addClass("hidden");
+            $('#settings-panel').attr("hidden", true);
             iframe.find('.previewcontent').addClass('activeprevew');
         })
         // Save field settings
@@ -804,21 +808,77 @@ $(document).ready(function () {
             left = $this.offset().left,
             top = $this.offset().top;
 
+        var nodePath = cssPath($this.get(0));
+
         // Activate node
-        var nodeActionMenu = $('.bb-node-action-menu');
+        var nodeActionMenu = $('.bb-node-action-menu'),
+            nodeActionSize = $('.bb-node-action-size');
+
         nodeActionMenu
             .css({
-                left: left + width - nodeActionMenu.outerWidth() + 2,
+                left: left + width - nodeActionMenu.outerWidth(),
                 top: (top + iframeTopFixer) - nodeActionMenu.outerHeight()
             })
             .attr("data-selected-node", $this.attr("data-bb-id"));
 
-        $('.bb-node-action-size').css({
-            width: width + 4,
+        nodeActionSize.css({
+            width: parseFloat(window.getComputedStyle($this.get(0)).width),
             height: height + 4,
-            left: left - 2,
+            left: left,
             top: (top + iframeTopFixer) - 2
         });
+
+        $('.bb-node-active-title').css({
+            left: left,
+            top: (top + iframeTopFixer) - nodeActionMenu.outerHeight()
+        }).text(nodePath);
+
+        // Add resize handler for columns
+        var columnResizeHandler = $('.bb-column-resize-handler');
+        columnResizeHandler.hide();
+
+        nodeActionSize.css("pointer-events", "none");
+
+        if(isColumn(nodePath)){
+
+            nodeActionSize.css("pointer-events", "all");
+
+            // Column resize
+            var rowWidth = getActiveNodeEl().parent('.row').outerWidth(),
+                columnWidth = rowWidth/12;
+
+            console.log(columnWidth);
+
+            var columnResize = $('.bb-node-action-size');
+
+            if(columnResize.hasClass("ui-resizable")){
+                columnResize.resizable("destroy");
+            }
+
+            columnResize.resizable({
+                handles: 'e',
+                grid: columnWidth,
+                minWidth: 0.5,
+                classes: {
+                    "ui-resizable-e": "bb-column-resize-handler"
+                },
+                start: function (){
+                    hideHoverNode();
+                    $('#unit-iframe').css("pointer-events", "none");
+                    getActiveNodeEl().parent('.row').addClass("grid-overlay");
+                },
+                stop: function (){
+                    $('#unit-iframe').css("pointer-events", "all");
+                    // getActiveNodeEl().parent('.row').removeClass("grid-overlay");
+                },
+                resize: function (event,ui){
+                    hideHoverNode();
+                    console.log("Resize");
+                }
+            });
+
+            columnResizeHandler.show();
+        }
     }
 
     function hoverNode($this) {
@@ -1173,6 +1233,8 @@ $(document).ready(function () {
                     activeElement = $(this).find('.html-element-item-sample').html();
                     removeActiveElement = false;
                 }
+
+                console.log(getNodeGroup($(activeElement).get(0)));
 
                 // Move element
                 if(toDrop === "above"){

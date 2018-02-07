@@ -3,6 +3,9 @@
 $elementsGroups = [
     "Layout" => [
         "row" => '<div class="row bb-placeholder-area"></div>',
+        "col" => '<div class="col bb-placeholder-area"></div>',
+        "col flex 6" => '<div class="col-6 bb-placeholder-area"></div>',
+        "col flex 3" => '<div class="col-3 bb-placeholder-area"></div>',
         "col 1" => '<div class="col-md-1 bb-placeholder-area"></div>',
         "col 2" => '<div class="col-md-2 bb-placeholder-area"></div>',
         "col 3" => '<div class="col-md-3 bb-placeholder-area"></div>',
@@ -70,16 +73,16 @@ $elementsGroups = [
 
 
 @foreach($elementsGroups as $group => $elements)
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title">{{$group}}</h3>
+<div class="card mb-3">
+    <div class="card-header">
+        {{$group}}
     </div>
-    <div class="panel-body">
+    <div class="card-body">
         <div class="html-elements-list">
             @foreach($elements as $tag => $element)
             <div class="html-element-item draggable-element" data-tag="{{$tag}}" data-type="element">
                 {{$tag}}
-                <div class="html-element-item-sample hidden">{!! $element !!}</div>
+                <div class="html-element-item-sample" hidden>{!! $element !!}</div>
             </div>
             @endforeach
         </div>

@@ -92,14 +92,14 @@
     <div class="element-settings-tabs">
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active">
-                <a href="#elements" aria-controls="profile" role="tab" data-toggle="tab">HTML Elements</a>
+            <li class="nav-item">
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#elements" role="tab" aria-controls="home" aria-selected="true">HTML Elements</a>
             </li>
-            <li role="presentation">
-                <a href="#fields" aria-controls="profile" role="tab" data-toggle="tab">Fields</a>
+            <li class="nav-item">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#fields" role="tab" aria-controls="profile" aria-selected="false">Fields</a>
             </li>
-            <li role="presentation">
-                <a href="#units" aria-controls="profile" role="tab" data-toggle="tab">Units</a>
+            <li class="nav-item">
+                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#units" role="tab" aria-controls="contact" aria-selected="false">Units</a>
             </li>
         </ul>
 
@@ -180,11 +180,11 @@
     <div class="element-settings-tabs">
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active">
-                <a href="#content" aria-controls="home" role="tab" data-toggle="tab">Content</a>
+            <li class="nav-item">
+                <a href="#content" class="nav-link active" data-toggle="tab">Content</a>
             </li>
-            <li role="presentation">
-                <a href="#style" aria-controls="profile" role="tab" data-toggle="tab">Style</a>
+            <li class="nav-item">
+                <a href="#style" class="nav-link" role="tab" data-toggle="tab">Style</a>
             </li>
         </ul>
 

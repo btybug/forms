@@ -1,3 +1,7 @@
+body{
+  background: #fff;
+}
+
 .ui-sortable-handle:hover, .ui-sortable > div:hover {
   outline: 2px dashed #e2e2e2;
   outline-offset: 5px;
@@ -254,10 +258,44 @@ span.bb-node-container {
   }
 }
 
+.bb-node-active-title{
+  position: absolute;
+  background: #4584ea;
+  color: #fff;
+  padding: 4px 10px;
+  display: table;
+  left: -2000px;
+  font-size: 12px;
+}
+
+.bb-column-resize-handler{
+  position: absolute;
+  width: 12px;
+  height: 50px;
+  background: #4584ea;
+  border-radius: 5px;
+  cursor: e-resize;
+  right: -7px;
+  top: calc(50% - 25px);
+
+  &:before {
+    position: absolute;
+    content: "";
+    width: 4px;
+    height: 23px;
+    border: 1px dashed #fff;
+    border-top: none;
+    border-bottom: none;
+    left: 4px;
+    top: 13px;
+    z-index: 9999;
+  }
+}
+
 .bb-node-action-size{
   position: absolute;
   pointer-events: none;
-  border:2px solid #4584ea;
+  outline:2px solid #4584ea;
   left: -200px;
 }
 
