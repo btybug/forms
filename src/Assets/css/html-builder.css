@@ -204,12 +204,16 @@ span.bb-node-container {
   position: absolute;
   background: #4584ea;
   color: #fff;
-  width: 90px;
+  width: 93px;
   padding: 5px 10px;
   display: table;
   left: -200px; }
-  .bb-node-action-menu .bb-node-move {
+  .bb-node-action-menu i {
     float: right;
+    cursor: pointer;
+    margin-left: 5px;
+    margin-right: 5px; }
+  .bb-node-action-menu .bb-node-move {
     cursor: move; }
 
 .bb-node-active-title {
@@ -263,5 +267,27 @@ span.bb-node-container {
   width: 70px;
   border-radius: 8px;
   text-align: center; }
+
+.bb-type-panel {
+  display: none; }
+
+.class-item {
+  font-size: 15px;
+  float: left;
+  margin-right: 10px;
+  cursor: pointer;
+  user-select: none; }
+
+.class-list {
+  display: table;
+  width: 100%; }
+
+#css-editor {
+  width: 100%;
+  height: 200px; }
+
+div#element-edit-panel {
+  height: 100%;
+  overflow-y: scroll; }
 
 /*# sourceMappingURL=html-builder.css.map */

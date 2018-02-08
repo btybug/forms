@@ -2,6 +2,7 @@
 
 $elementsGroups = [
     "Layout" => [
+        "container" => '<div class="container bb-placeholder-area"></div>',
         "row" => '<div class="row bb-placeholder-area"></div>',
         "col" => '<div class="col bb-placeholder-area"></div>',
         "col flex 6" => '<div class="col-6 bb-placeholder-area"></div>',

@@ -44,6 +44,11 @@
     {!! HTML::style("public/libs/jspanel/jspanel.min.css") !!}
     {!! HTML::script("public/libs/jspanel/jspanel.min.js") !!}
 
+    {!! HTML::style("public/libs/tagsinput/bootstrap-tagsinput.css") !!}
+    {!! HTML::script("public/libs/tagsinput/bootstrap-tagsinput.min.js") !!}
+
+    {!! HTML::script("public/libs/ace/ace.js") !!}
+
     {!! BBstyle(plugins_path("vendor/sahak.avatar/forms/src/Assets/css/html-builder.css")) !!}
     {!! BBscript(plugins_path("vendor/sahak.avatar/forms/src/Assets/js/jquery-ui-droppable-iframe.js")) !!}
     {!! BBscript(plugins_path("vendor/sahak.avatar/forms/src/Assets/js/field-builder.js")) !!}
@@ -257,6 +262,7 @@
 
         .bb-placeholder-area {
             min-height: 100px;
+            width: 100%;
             box-shadow: 0 0 0 1px rgba(0,0,0,0.15);
             background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAADklEQVQIW2NgQAXGZHAAGioAza6+Hk0AAAAASUVORK5CYII=);
         }
@@ -277,6 +283,20 @@
             background: url(http://mainbug.local/public/images/grid_overlay.png) repeat-y;
             opacity: 0.3;
             background-size: contain;
+        }
+
+        /* Sample Classes */
+        .class-1{
+            background: red;
+            border: 2px solid green;
+        }
+        .class-2{
+            background: green;
+            border: 2px solid yellow;
+        }
+        .class-3{
+            background: yellow;
+            border: 2px solid red;
         }
     </style>
 </script>
@@ -309,6 +329,8 @@
 
 <div class="bb-node-action-menu">
     <i class="fa fa-arrows bb-node-move"></i>
+    <i class="fa fa-trash bb-node-delete"></i>
+    <i class="fa fa-pencil bb-node-edit"></i>
 </div>
 
 <div class="bb-node-active-title"></div>

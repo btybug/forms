@@ -273,7 +273,7 @@ $(document).ready(function () {
         })
         // Node edit
         .on("click", '.bb-node-edit', function () {
-            editNode($(this).data("type"), $(this).data("id"));
+            editNode($(this).data("id"));
         })
         // Node edit
         .on("click", '.bb-node-delete', function () {
@@ -284,6 +284,7 @@ $(document).ready(function () {
 
             node.remove();
             generateDOMTree();
+            hideActiveNode();
         })
         // Column Content
         .on("click", '.bb-column-content', function () {
@@ -416,6 +417,7 @@ $(document).ready(function () {
                         $this.removeClass("opened");
                     }
                 });
+
                 $(this).addClass("opened");
             }
         })
@@ -486,49 +488,15 @@ $(document).ready(function () {
     });
 
     // Edit node
-    function editNode(nodeType, nodeID) {
+    function editNode(nodeID) {
         var iframe = getIframeContent();
 
-        // Node settings
-        var templateHTML = $('#element-' + nodeType + '-settings').html();
+        if(!nodeID) nodeID = $('.bb-node-action-menu').attr("data-selected-node");
 
-        if (templateHTML) {
-            templateHTML = templateHTML.replace("{id}", nodeID);
-        } else {
-            templateHTML = $('#element-settings').html();
-            var node = iframe.find('[data-bb-id=' + nodeID + ']'),
-                children = node.children();
-
-            if (children.length > 0) {
-                var content = '',
-                    style = '';
-
-                $.each(children, function (index, child) {
-                    var childType = getNodeGroup(child);
-                    var contentTemplate = $('#bbt-' + childType.toLowerCase() + '-content').html();
-                    var styleTemplate = $('#bbt-' + childType.toLowerCase() + '-style').html();
-
-                    if (contentTemplate) {
-                        content += contentTemplate;
-                    }
-
-                    if (styleTemplate) {
-                        style += styleTemplate;
-                    }
-                });
-
-                templateHTML = templateHTML.replace("{content}", content);
-                templateHTML = templateHTML.replace("{style}", style);
-            }
-
+        if($('#edit-panel').length === 0) {
+            initEditPanel();
+            loadEditOptions(iframe.find('[data-bb-id=' + nodeID + ']'));
         }
-
-        // Apply panel content
-        $('.settings-panel-content').html(templateHTML);
-
-        // Show panel
-        $('#settings-panel').removeClass("hidden");
-        iframe.find('.previewcontent').removeClass('activeprevew');
     }
 
     // Generate DOM tree
@@ -577,16 +545,110 @@ $(document).ready(function () {
             });
     }
 
-    function onFrameLoaded() {
-        var iframe = getIframeContent();
+    // Load inline template
+    function loadTemplate(template){
+        return $('#' + template).html();
+    }
 
-        // Mark sortable areas
-        iframe.find('.item-column').each(function (i) {
-            var itemID = $(this).data("bb-id");
-            if ($(this).find('[data-sortable]').length === 0) {
-                $(this).append('<div data-sortable="' + itemID + '"></div>');
+    // Edit panel
+    var editor;
+
+    function initEditPanel(){
+        jsPanel.create({
+            id: 'edit-panel',
+            container: 'body',
+            theme: 'primary',
+            headerTitle: 'Edit',
+            position: 'right-bottom -5 -20',
+            contentSize: '450 350',
+            content: loadTemplate('bbt-edit-panel'),
+            callback: function () {
+                // Tags input
+                $('.element-classes').tagsinput({
+                    tagClass: 'badge badge-dark'
+                });
+
+                // CSS editor
+                editor = ace.edit("css-editor");
+                editor.setTheme("ace/theme/monokai");
+                editor.session.setMode("ace/mode/css");
+
+                // Prevent editing first and last line of editor
+                editor.commands.on("exec", function(e) {
+                    var rowCol = editor.selection.getCursor();
+                    if ((rowCol.row === 0) || ((rowCol.row + 1) === editor.session.getLength())) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                });
+            },
+            close: function () {
+
             }
         });
+    }
+
+    function loadEditOptions($this){
+        var editPanel = $('#element-edit-panel'),
+            classesInput = $('.element-classes');
+
+        // Off all events
+        classesInput.off("itemAdded");
+        classesInput.off("itemRemoved");
+
+        // Load classes
+        var elementClasses = Array.prototype.slice.call($this.get(0).classList,0);
+        var placeholderClass = $.inArray("bb-placeholder-area", elementClasses);
+        if(placeholderClass !== -1) delete elementClasses[placeholderClass];
+
+        classesInput.tagsinput('removeAll');
+        classesInput.tagsinput('add', elementClasses.join(","));
+
+        // Set editor value
+        if(editor){
+            editor.setValue(".bbcc-"+$this.attr("data-bb-id")+"{\n\n}");
+        }
+
+        // Types panels
+        $('#bb-new-class-type').change(function (){
+            var selectedType = $(this).val();
+            $('.bb-type-panel').hide();
+            $('[data-type="'+selectedType+'"]').show();
+        });
+
+        // Class Selector
+        $('.class-item').click(function (){
+            classesInput.tagsinput('add', $(this).attr("data-class"));
+        });
+
+        // On class add / remove
+        classesInput.on('itemAdded', function() {
+            var classes = classesInput.val();
+            if(placeholderClass !== -1){
+                classes += ',bb-placeholder-area';
+            }
+
+            applyClassOnElement($this, classes);
+        });
+
+        classesInput.on('itemRemoved', function() {
+            var classes = classesInput.val();
+            if(placeholderClass !== -1){
+                classes += ',bb-placeholder-area';
+            }
+
+            applyClassOnElement($this, classes);
+        });
+    }
+
+    function applyClassOnElement($this, classes){
+        $this.attr("class", classes.replace(/,/g, " "));
+        drawActiveHelpers($this);
+    }
+
+    // On iFrame complete load
+    function onFrameLoaded() {
+        var iframe = getIframeContent();
 
         // Open layers panel
         $('.open-layers-panel').trigger("click");
@@ -595,25 +657,25 @@ $(document).ready(function () {
         $('.close-settings-panel').trigger("click");
 
         // Context menu
-        iframe.contextMenu({
-            selector: '.has-context-menu',
-            position: function (opt, x, y) {
-                opt.$menu.css({top: y + 95, left: x});
-            },
-            items: {
-                "edit": {name: "Edit", icon: "edit"},
-                "cut": {name: "Cut", icon: "cut"},
-                copy: {name: "Copy", icon: "copy"},
-                "paste": {name: "Paste", icon: "paste"},
-                "delete": {name: "Delete", icon: "delete"},
-                "sep1": "---------",
-                "quit": {
-                    name: "Quit", icon: function () {
-                        return 'context-menu-icon context-menu-icon-quit';
-                    }
-                }
-            }
-        });
+        // iframe.contextMenu({
+        //     selector: 'div',
+        //     position: function (opt, x, y) {
+        //         opt.$menu.css({top: y + 95, left: x});
+        //     },
+        //     items: {
+        //         "edit": {name: "Edit", icon: "edit"},
+        //         "cut": {name: "Cut", icon: "cut"},
+        //         copy: {name: "Copy", icon: "copy"},
+        //         "paste": {name: "Paste", icon: "paste"},
+        //         "delete": {name: "Delete", icon: "delete"},
+        //         "sep1": "---------",
+        //         "quit": {
+        //             name: "Quit", icon: function () {
+        //                 return 'context-menu-icon context-menu-icon-quit';
+        //             }
+        //         }
+        //     }
+        // });
 
         // Activate sortable
         activateSortable();
@@ -788,7 +850,7 @@ $(document).ready(function () {
 
                 var nodeType = getNodeGroup(this);
                 // editNode(nodeType.toLowerCase(), $(this).attr("data-bb-id"));
-                hoverNode($(this));
+                // hoverNode($(this));
             })
             .bind('scroll', function () {
                 console.log("Ok");
@@ -812,8 +874,8 @@ $(document).ready(function () {
 
         nodeActionMenu
             .css({
-                left: left + width - nodeActionMenu.outerWidth(),
-                top: (top + iframeTopFixer) - nodeActionMenu.outerHeight()
+                left: left + width - nodeActionMenu.outerWidth() + 2,
+                top: (top + iframeTopFixer) - nodeActionMenu.outerHeight() - 2
             })
             .attr("data-selected-node", $this.attr("data-bb-id"));
 
@@ -825,8 +887,8 @@ $(document).ready(function () {
         });
 
         $('.bb-node-active-title').css({
-            left: left,
-            top: (top + iframeTopFixer) - nodeActionMenu.outerHeight()
+            left: left - 2,
+            top: (top + iframeTopFixer) - nodeActionMenu.outerHeight() - 2
         }).text(nodePath);
     }
 
@@ -840,6 +902,9 @@ $(document).ready(function () {
         var nodePath = cssPath($this.get(0));
 
         drawActiveHelpers($this);
+
+        // Load edit options
+        loadEditOptions($this);
 
         // Add resize handler for columns
         var columnResizeHandler = $('.bb-column-resize-handler');
@@ -1201,8 +1266,6 @@ $(document).ready(function () {
                 toDrop = whereToDrop(el);
                 toDropElement = el;
 
-                console.log(el, toDrop);
-
                 if(toDrop){
                     var elTop = el.offset().top + iframeTopFixer,
                         elLeft = el.offset().left,
@@ -1254,7 +1317,8 @@ $(document).ready(function () {
                     removeActiveElement = false;
                 }
 
-                console.log(getNodeGroup($(activeElement).get(0)));
+                var nodeGroup = getNodeGroup($(activeElement).get(0)).toLowerCase(),
+                    toDropGroup = getNodeGroup(toDropElement.get(0)).toLowerCase();
 
                 // Move element
                 if(toDrop === "above"){
@@ -1266,6 +1330,9 @@ $(document).ready(function () {
                 }
 
                 if(toDrop === "inside"){
+                    if(nodeGroup === "column" && toDropGroup !== "row") return;
+                    if(nodeGroup === "container" && toDropGroup !== "wrapper") return;
+                    if(nodeGroup === "row" && $.inArray(toDropGroup, ["row", "wrapper"]) !== -1) return;
                     toDropElement.append(activeElement);
                 }
 

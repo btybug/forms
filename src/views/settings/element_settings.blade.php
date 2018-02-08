@@ -149,23 +149,55 @@
     </div>
 </script>
 
-<script type="template/html" id="bbt-text-style">
-    <div class="form-group">
-        <label>Text Class</label>
-        <select name="" id="" class="form-control">
-            <option value="">Select Class</option>
-            <option value="">Custom Style</option>
-            <option value="">Studio</option>
-        </select>
-    </div>
-
-    <div class="form-group">
-        <label>Available Classes</label>
-        <div class="html-elements-list">
-            <div class="html-element-item">Class 1</div>
-            <div class="html-element-item">Class 2</div>
-            <div class="html-element-item">Class 3</div>
+<!-- Edit Element Panel -->
+<script type="template/html" id="bbt-edit-panel">
+    <div class="p-2" id="element-edit-panel">
+        <div class="card mb-2">
+            <div class="card-body p-2">
+                <input type="text" class="element-classes" />
+            </div>
         </div>
+
+        <div class="card mb-2">
+            <div class="card-header p-2"><strong>Add Classes</strong></div>
+            <div class="card-body p-2">
+                <select id="bb-new-class-type" class="form-control">
+                    <option>SELECT TYPE</option>
+                    <option value="select">Select Class</option>
+                    <option value="custom">Custom Style</option>
+                    <option value="studio">Studio</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Available Classes -->
+        <div class="card bb-type-panel mb-2" data-type="select">
+            <div class="card-header p-2"><strong>Available Classes</strong></div>
+            <div class="card-body p-2">
+                <div class="class-list">
+                    <div class="class-item badge badge-warning" data-class="class-1">Class 1</div>
+                    <div class="class-item badge badge-warning" data-class="class-2">Class 2</div>
+                    <div class="class-item badge badge-warning" data-class="class-3">Class 3</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CSS Editor -->
+        <div class="card bb-type-panel mb-2" data-type="custom">
+            <div class="card-header p-2"><strong>CSS Editor</strong></div>
+            <div class="card-body p-2">
+                <div id="css-editor"></div>
+            </div>
+        </div>
+
+        <!-- Class Studio -->
+        <div class="card bb-type-panel mb-2" data-type="studio">
+            <div class="card-header p-2"><strong>Class Studio</strong></div>
+            <div class="card-body p-2">
+                Loading studio...
+            </div>
+        </div>
+
     </div>
 </script>
 
