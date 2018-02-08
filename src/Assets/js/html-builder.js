@@ -795,11 +795,7 @@ $(document).ready(function () {
             });
     });
 
-    // Activate selected node
-    function activateNode($this) {
-
-        if(!$this.offset()) return;
-
+    function drawActiveHelpers($this){
         var iframe = $('#unit-iframe');
         var scrollTop = iframe.contents().scrollTop();
         var iframeTopFixer = iframe.offset().top - scrollTop;
@@ -832,6 +828,18 @@ $(document).ready(function () {
             left: left,
             top: (top + iframeTopFixer) - nodeActionMenu.outerHeight()
         }).text(nodePath);
+    }
+
+    // Activate selected node
+    function activateNode($this) {
+
+        if(!$this.offset()) return;
+
+        // Activate node
+        var nodeActionSize = $('.bb-node-action-size');
+        var nodePath = cssPath($this.get(0));
+
+        drawActiveHelpers($this);
 
         // Add resize handler for columns
         var columnResizeHandler = $('.bb-column-resize-handler');
@@ -846,8 +854,6 @@ $(document).ready(function () {
             // Column resize
             var rowWidth = getActiveNodeEl().parent('.row').outerWidth(),
                 columnWidth = rowWidth/12;
-
-            console.log(columnWidth);
 
             var columnResize = $('.bb-node-action-size');
 
@@ -873,7 +879,21 @@ $(document).ready(function () {
                 },
                 resize: function (event,ui){
                     hideHoverNode();
-                    console.log("Resize");
+                    var columns,
+                        width = ui.size.width;
+
+                    columns = Math.round(width/columnWidth);
+
+                    // Remove column classes
+                    getActiveNodeEl().removeClass (function (index, className) {
+                        return (className.match (/(^|\s)col-md-\S+/g) || []).join(' ');
+                    });
+
+                    // Add new column class
+                    getActiveNodeEl().addClass("col-md-" + columns);
+
+                    // Redraw active helpers
+                    drawActiveHelpers(getActiveNodeEl());
                 }
             });
 
