@@ -279,8 +279,10 @@ $(document).ready(function () {
         .on("click", '.bb-node-delete', function () {
             var iframe = getIframeContent();
 
-            var nodeID = $(this).data("id"),
-                node = iframe.find("[data-bb-id=" + nodeID + "]");
+            var nodeID = $(this).data("id");
+            if(!nodeID) nodeID = $('.bb-node-action-menu').attr("data-selected-node");
+
+            var node = iframe.find("[data-bb-id=" + nodeID + "]");
 
             node.remove();
             generateDOMTree();
