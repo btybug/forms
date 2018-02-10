@@ -275,7 +275,11 @@ $(document).ready(function () {
         .on("click", '.bb-node-edit', function () {
             editNode($(this).data("id"));
         })
-        // Node edit
+        // Open add class panel
+        .on("click", '.open-add-class-panel', function () {
+            toggleAddClassPanel("show");
+        })
+        // Node delete
         .on("click", '.bb-node-delete', function () {
             var iframe = getIframeContent();
 
@@ -475,6 +479,16 @@ $(document).ready(function () {
         iframe.attr("src", ajaxLinks.changeLayout + layout);
     });
 
+    // Show/hide add class panel
+    function toggleAddClassPanel(status){
+        var panel = $('.bb-add-class-panel');
+        if(status === "hide") {
+            panel.attr("hidden", true);
+            $('.bb-type-panel').hide();
+        }
+        if(status === "show") panel.removeAttr("hidden");
+    }
+
     // Edit node
     function editNode(nodeID) {
         var iframe = getIframeContent();
@@ -576,6 +590,7 @@ $(document).ready(function () {
                 $('.apply-custom-class').click(function (e){
                     e.preventDefault();
                     $('.element-classes').tagsinput('add', 'bbcc-' + getActiveNodeEl().attr("data-bb-id"));
+                    toggleAddClassPanel("hide");
                 });
 
                 // Custom style change
@@ -643,6 +658,7 @@ $(document).ready(function () {
         // Class Selector
         $('.class-item').click(function (){
             classesInput.tagsinput('add', $(this).attr("data-class"));
+            toggleAddClassPanel("hide");
         });
 
         // On class add / remove
