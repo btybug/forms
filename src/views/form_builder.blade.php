@@ -262,7 +262,6 @@
 
         .bb-placeholder-area {
             min-height: 100px;
-            width: 100%;
             box-shadow: 0 0 0 1px rgba(0,0,0,0.15);
             background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAADklEQVQIW2NgQAXGZHAAGioAza6+Hk0AAAAASUVORK5CYII=);
         }

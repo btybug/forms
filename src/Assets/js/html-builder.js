@@ -593,7 +593,6 @@ $(document).ready(function () {
                         var cssString = editorValue.replace(className + "{", "");
                         cssString = cssString.replace("}", "");
                         newCSS = currentCSS.replace(new RegExp(className + '{[^}]+}', 'mg'), className + '{' + cssString + '}');
-                        console.log(newCSS);
                         customStyleEl.html(newCSS);
                     }
                     else{
