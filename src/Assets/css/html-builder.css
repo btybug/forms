@@ -290,4 +290,8 @@ div#element-edit-panel {
   height: 100%;
   overflow-y: scroll; }
 
+.apply-custom-class {
+  line-height: 1;
+  margin-top: -3px; }
+
 /*# sourceMappingURL=html-builder.css.map */

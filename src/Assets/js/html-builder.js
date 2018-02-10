@@ -441,23 +441,9 @@ $(document).ready(function () {
             $("#field-settings").addClass("hidden");
             iframe.find('.previewcontent').addClass('activeprevew');
         })
-        // Add field to form
-        .on("click", ".add-to-form", function () {
-            var fields = [];
-            var iframe = getIframeContent();
-
-            $('[name=types]:checked').each(function () {
-                fields.push($(this).val());
-            });
-
-            if (fields.length < 1) {
-                alert("Please select at least one field type");
-                return;
-            }
-
-            addFieldsToFormArea(fields);
-            $("#select-fields").addClass("hidden");
-            iframe.find('.previewcontent').addClass('activeprevew');
+        // UnLock active column
+        .on("dblclick", ".bb-node-action-size", function () {
+            hideActiveNode();
         })
         // Change field settings
         .on('change', '[name=settings]', function () {
@@ -562,9 +548,11 @@ $(document).ready(function () {
             theme: 'primary',
             headerTitle: 'Edit',
             position: 'right-bottom -5 -20',
-            contentSize: '450 350',
+            contentSize: '450 450',
             content: loadTemplate('bbt-edit-panel'),
             callback: function () {
+                var iframe = getIframeContent();
+
                 // Tags input
                 $('.element-classes').tagsinput({
                     tagClass: 'badge badge-dark'
@@ -583,6 +571,35 @@ $(document).ready(function () {
                         e.stopPropagation();
                     }
                 });
+
+                // Apply custom class
+                $('.apply-custom-class').click(function (){
+                    $('.element-classes').tagsinput('add', 'bbcc-' + getActiveNodeEl().attr("data-bb-id"));
+                });
+
+                // Custom style change
+                editor.getSession().on('change', function() {
+                    var editorValue = editor.getSession().getValue(),
+                        className = ".bbcc-"+getActiveNodeEl().attr("data-bb-id"),
+                        newCSS = "",
+                        customStyleEl = iframe.find("#bb-custom-style"),
+                        currentCSS = customStyleEl.html();
+
+
+                    // Check if rule exists
+                    var ruleFound = currentCSS.indexOf(className);
+                    if(ruleFound !== -1) {
+                        // Clean css rule
+                        var cssString = editorValue.replace(className + "{", "");
+                        cssString = cssString.replace("}", "");
+                        newCSS = currentCSS.replace(new RegExp(className + '{[^}]+}', 'mg'), className + '{' + cssString + '}');
+                        console.log(newCSS);
+                        customStyleEl.html(newCSS);
+                    }
+                    else{
+                        customStyleEl.append(editorValue + '\n');
+                    }
+                });
             },
             close: function () {
 
@@ -591,12 +608,17 @@ $(document).ready(function () {
     }
 
     function loadEditOptions($this){
-        var editPanel = $('#element-edit-panel'),
+        var editPanel = $('#edit-panel')[0],
             classesInput = $('.element-classes');
 
         // Off all events
         classesInput.off("itemAdded");
         classesInput.off("itemRemoved");
+
+        // Set panel title
+        if(editPanel){
+            editPanel.setHeaderTitle(getNodeGroup($this.get(0)));
+        }
 
         // Load classes
         var elementClasses = Array.prototype.slice.call($this.get(0).classList,0);
@@ -657,6 +679,9 @@ $(document).ready(function () {
 
         // Close settings panel
         $('.close-settings-panel').trigger("click");
+
+        // Insert custom style tag
+        iframe.prepend('<style id="bb-custom-style"/>');
 
         // Context menu
         // iframe.contextMenu({
@@ -1077,14 +1102,14 @@ $(document).ready(function () {
     }
 
     function hideActiveNode() {
-        $('.bb-node-action-menu').css({
-            left: -200
+        $('.bb-node-action-menu, .bb-node-active-title').css({
+            left: -2000
         });
 
         $('.bb-node-action-size').css({
             width: 0,
             height: 0,
-            left: -200
+            left: -2000
         });
     }
 

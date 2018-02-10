@@ -184,7 +184,11 @@
 
         <!-- CSS Editor -->
         <div class="card bb-type-panel mb-2" data-type="custom">
-            <div class="card-header p-2"><strong>CSS Editor</strong></div>
+            <div class="card-header p-2">
+                <strong>CSS Editor</strong>
+
+                <a href="#" class="btn btn-primary btn-sm float-right apply-custom-class">Apply Class</a>
+            </div>
             <div class="card-body p-2">
                 <div id="css-editor"></div>
             </div>
