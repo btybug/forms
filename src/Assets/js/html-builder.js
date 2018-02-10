@@ -573,7 +573,8 @@ $(document).ready(function () {
                 });
 
                 // Apply custom class
-                $('.apply-custom-class').click(function (){
+                $('.apply-custom-class').click(function (e){
+                    e.preventDefault();
                     $('.element-classes').tagsinput('add', 'bbcc-' + getActiveNodeEl().attr("data-bb-id"));
                 });
 
