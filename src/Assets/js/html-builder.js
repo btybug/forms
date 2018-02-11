@@ -487,6 +487,7 @@ $(document).ready(function () {
             $('.bb-type-panel').hide();
         }
         if(status === "show") panel.removeAttr("hidden");
+        $('#bb-new-class-type').val("");
     }
 
     // Edit node
@@ -590,7 +591,6 @@ $(document).ready(function () {
                 $('.apply-custom-class').click(function (e){
                     e.preventDefault();
                     $('.element-classes').tagsinput('add', 'bbcc-' + getActiveNodeEl().attr("data-bb-id"));
-                    toggleAddClassPanel("hide");
                 });
 
                 // Custom style change
@@ -608,12 +608,41 @@ $(document).ready(function () {
                         // Clean css rule
                         var cssString = editorValue.replace(className + "{", "");
                         cssString = cssString.replace("}", "");
-                        newCSS = currentCSS.replace(new RegExp(className + '{[^}]+}', 'mg'), className + '{' + cssString + '}');
+                        cssString = cssString.trim();
+
+                        newCSS = currentCSS.replace(new RegExp(className + '{[^}]+}', 'mg'), className + "{\n" + cssString + "\n}");
                         customStyleEl.html(newCSS);
                     }
                     else{
                         customStyleEl.append(editorValue + '\n');
                     }
+                });
+
+                // On class click
+                $('body').on('click', '.bootstrap-tagsinput .tag', function (){
+                    var selectedClass = "."+$(this).text(),
+                        classRules = "";
+
+                    $('.bb-type-panel[data-type="custom"]').show();
+
+                    // cssText: cssText,
+                    //                 cssRule: cssRule,
+                    //                 cssValue: cssValue
+
+                    var db = PouchDB('css');
+                    db.find({
+                        selector: {cssRule: {$regex: selectedClass}}
+                    }).then(function (result) {
+                        console.log(result);
+                        if(result.docs.length > 0){
+                            var rules = result.docs[0].cssValue;
+                            rules = rules.replace(/;/g, ";\n");
+                            editor.setValue(selectedClass+"{\n"+rules+"\n}");
+                        }
+                    }).catch(function (err) {
+                        console.log(err);
+                    });
+
                 });
             },
             close: function () {
@@ -623,6 +652,7 @@ $(document).ready(function () {
     }
 
     function loadEditOptions($this){
+        var iframe = getIframeContent();
         var editPanel = $('#edit-panel')[0],
             classesInput = $('.element-classes');
 
@@ -645,7 +675,20 @@ $(document).ready(function () {
 
         // Set editor value
         if(editor){
-            editor.setValue(".bbcc-"+$this.attr("data-bb-id")+"{\n\n}");
+            var currentRules,
+                customStyleEl = iframe.find("#bb-custom-style").html(),
+                className = ".bbcc-"+$this.attr("data-bb-id");
+
+            currentRules = customStyleEl.match(new RegExp(className + '{[^}]+}', 'mg'));
+
+            if(currentRules && currentRules.length > 0){
+                currentRules = currentRules[0].replace(className + '{', "");
+                currentRules = currentRules.replace('}', "");
+
+                currentRules = currentRules.trim();
+            }
+
+            editor.setValue(className+"{\n"+(currentRules ? currentRules : "")+"\n}");
         }
 
         // Types panels
@@ -660,6 +703,9 @@ $(document).ready(function () {
             classesInput.tagsinput('add', $(this).attr("data-class"));
             toggleAddClassPanel("hide");
         });
+
+        applyClassBtnState($this, elementClasses.join(","));
+        toggleAddClassPanel("hide");
 
         // On class add / remove
         classesInput.on('itemAdded', function() {
@@ -684,6 +730,20 @@ $(document).ready(function () {
     function applyClassOnElement($this, classes){
         $this.attr("class", classes.replace(/,/g, " "));
         drawActiveHelpers($this);
+
+        applyClassBtnState($this, classes);
+    }
+
+    function applyClassBtnState($this, classes){
+        // Check if custom class applied
+        var applyClassButton = $('.apply-custom-class'),
+            customClass = "bbcc-"+$this.attr("data-bb-id");
+
+        if(classes.indexOf(customClass) !== -1) {
+            applyClassButton.hide();
+        }else{
+            applyClassButton.show();
+        }
     }
 
     // On iFrame complete load
@@ -722,6 +782,47 @@ $(document).ready(function () {
 
         // Activate sortable
         activateSortable();
+
+        // DB work
+        PouchDB('css').createIndex({
+            index: {
+                fields: ['cssRule']
+            }
+        }).then(function (result) {
+            // handle result
+        }).catch(function (err) {
+            console.log(err);
+        });
+        
+        // PouchDB.debug.disable();
+
+        PouchDB('css').destroy().then(function (){
+            var db = new PouchDB('css');
+
+            // Get stylesheets
+            var stylesheets = $('#unit-iframe').get(0).contentWindow.document.styleSheets;
+            $.each(stylesheets, function (i, stylesheet){
+                var rules = stylesheet.cssRules;
+                $.each(rules, function (i, rule){
+                    var cssText = rule.cssText,
+                        cssTextParts = cssText.split("{"),
+                        cssRule = cssTextParts[0],
+                        cssValue = "";
+
+                    if(cssTextParts[1]){
+                        cssValue = cssTextParts[1].replace("}", "");
+                    }
+
+                    db.post({
+                        cssText: cssText,
+                        cssRule: cssRule,
+                        cssValue: cssValue
+                    });
+                });
+            });
+        });
+
+
     }
 
     // iFrame functions

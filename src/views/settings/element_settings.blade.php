@@ -156,7 +156,6 @@
             <div class="card-body p-2">
                 <input type="text" class="element-classes" />
                 <a href="#" class="btn btn-primary btn-sm float-right open-add-class-panel"><i class="fa fa-plus"></i></a>
-                <a href="#" class="btn btn-primary btn-sm float-right"><i class="fa fa-pencil"></i></a>
             </div>
         </div>
 
@@ -164,7 +163,7 @@
             <div class="card-header p-2"><strong>Add Classes</strong></div>
             <div class="card-body p-2">
                 <select id="bb-new-class-type" class="form-control">
-                    <option>SELECT TYPE</option>
+                    <option value="">SELECT TYPE</option>
                     <option value="select">Select Class</option>
                     <option value="custom">Custom Style</option>
                     <option value="studio">Studio</option>
@@ -188,11 +187,11 @@
         <div class="card bb-type-panel mb-2" data-type="custom">
             <div class="card-header p-2">
                 <strong>CSS Editor</strong>
+
+                <a href="#" class="btn btn-primary btn-sm float-right apply-custom-class">Apply Class</a>
             </div>
             <div class="card-body p-2">
                 <div id="css-editor"></div>
-
-                <a href="#" class="btn btn-primary btn-sm float-right apply-custom-class">Apply Class</a>
             </div>
         </div>
 

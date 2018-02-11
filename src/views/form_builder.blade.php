@@ -26,6 +26,10 @@
     {!! HTML::script('public/js/jquery-ui/jquery-ui.min.js') !!}
     {!! HTML::script("/public/js/UiElements/bb_styles.js?v.5") !!}
 
+    <!-- DB -->
+    {!! HTML::script("http://cdn.jsdelivr.net/npm/pouchdb@6.4.2/dist/pouchdb.min.js") !!}
+    {!! HTML::script("https://unpkg.com/pouchdb@6.4.2/dist/pouchdb.find.min.js") !!}
+
     <script>
         var ajaxLinks = {
             baseUrl: "{!! url('admin/forms') !!}/",
