@@ -155,51 +155,39 @@
         <div class="card mb-2">
             <div class="card-body p-2">
                 <input type="text" class="element-classes" />
-                <a href="#" class="btn btn-primary btn-sm float-right open-add-class-panel"><i class="fa fa-plus"></i></a>
-            </div>
-        </div>
 
-        <div class="card mb-2 bb-add-class-panel" hidden>
-            <div class="card-header p-2"><strong>Add Classes</strong></div>
-            <div class="card-body p-2">
-                <select id="bb-new-class-type" class="form-control">
-                    <option value="">SELECT TYPE</option>
-                    <option value="select">Select Class</option>
-                    <option value="custom">Custom Style</option>
-                    <option value="studio">Studio</option>
-                </select>
+                <a href="#" class="btn btn-primary btn-sm ml-1 float-right open-add-class-panel"><i class="fa fa-plus"></i></a>
+
+                <a href="#" class="btn btn-primary btn-sm float-right open-edit-class-panel"><i class="fa fa-pencil"></i></a>
             </div>
         </div>
 
         <!-- Available Classes -->
-        <div class="card bb-type-panel mb-2" data-type="select">
-            <div class="card-header p-2"><strong>Available Classes</strong></div>
-            <div class="card-body p-2">
-                <div class="class-list">
-                    <div class="class-item badge badge-warning" data-class="class-1">Class 1</div>
-                    <div class="class-item badge badge-warning" data-class="class-2">Class 2</div>
-                    <div class="class-item badge badge-warning" data-class="class-3">Class 3</div>
-                </div>
+        <div class="bb-type-panel mb-2 bb-css-add-panel">
+            <input type="text" class="form-control form-control-sm mb-2" placeholder="Search Available Classes" />
+
+            <div class="class-list">
+                <div class="class-item badge badge-warning" data-class="class-1">Class 1</div>
+                <div class="class-item badge badge-warning" data-class="class-2">Class 2</div>
+                <div class="class-item badge badge-warning" data-class="class-3">Class 3</div>
             </div>
         </div>
 
         <!-- CSS Editor -->
-        <div class="card bb-type-panel mb-2" data-type="custom">
+        <div class="card bb-type-panel mb-2 bb-css-edit-panel">
             <div class="card-header p-2">
-                <strong>CSS Editor</strong>
+                <select id="bb-new-class-type">
+                    <option value="css-editor">CSS Editor</option>
+                    <option value="css-studio">Studio</option>
+                </select>
 
                 <a href="#" class="btn btn-primary btn-sm float-right apply-custom-class">Apply Class</a>
             </div>
             <div class="card-body p-2">
-                <div id="css-editor"></div>
-            </div>
-        </div>
-
-        <!-- Class Studio -->
-        <div class="card bb-type-panel mb-2" data-type="studio">
-            <div class="card-header p-2"><strong>Class Studio</strong></div>
-            <div class="card-body p-2">
-                Loading studio...
+                <div id="css-editor" class="css-edit-option"></div>
+                <div id="css-studio" class="css-edit-option">
+                    Loading studio...
+                </div>
             </div>
         </div>
 

@@ -34,7 +34,7 @@
         var ajaxLinks = {
             baseUrl: "{!! url('admin/forms') !!}/",
             getFields: "{!! url('admin/forms/get-fields') !!}",
-            changeLayout: "{!! url("/admin/uploads/gears/settings-iframe/") !!}/",
+            changeLayout: "{!! url("/admin/uploads/gears/html-iframe/") !!}/",
             renderFields:  "{!! url('admin/forms/render-field-types') !!}"
         };
     </script>
@@ -76,25 +76,24 @@
         </div>
         <div class="col-md-4">
             <button type="submit" class="form-save pull-right"><span>Save</span></button>
+
+            <div class="pull-right mr-3 mt-1">
+                <a class="btn btn-success btn-sm add-item-trigger">
+                    <i class="fa fa-plus"></i> Add Item
+                </a>
+                <a class="btn btn-info btn-sm open-layers-panel">
+                    <i class="glyphicon glyphicon-tasks"></i> Layers
+                </a>
+                <a class="btn btn-warning btn-sm open-settings-panel">
+                    <i class="fa fa-gear"></i> Settings
+                </a>
+            </div>
         </div>
     </div>
 </div>
 
 <div class="bb-form-options">
-
-    <span class="form-preview">FORM PREVIEW</span>
-
-    <div class="pull-right">
-        <a class="btn btn-success add-item-trigger">
-            <i class="fa fa-plus"></i> Add Item
-        </a>
-        <a class="btn btn-info open-layers-panel">
-            <i class="glyphicon glyphicon-tasks"></i> Layers
-        </a>
-        <a class="btn btn-warning open-settings-panel">
-            <i class="fa fa-gear"></i> Settings
-        </a>
-    </div>
+    <ul id="breadcrumb"></ul>
 </div>
 
 <div class="">
@@ -110,7 +109,8 @@
 <div class="select-fields-container" id="settings-panel" data-state="open">
     <div class="setting-nav">
         Settings
-        <button class="btn btn-danger pull-right close-settings-panel">Close</button>
+
+        <button class="btn btn-danger btn-sm mt-1 pull-right close-settings-panel"><i class="fa fa-close"></i></button>
     </div>
 
     <div class="settings-panel-content">

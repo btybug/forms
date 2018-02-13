@@ -246,6 +246,7 @@ function DOMtoJSON(node) {
     return obj;
 }
 
+
 var fieldsJSON;
 
 $(document).ready(function () {
@@ -276,8 +277,16 @@ $(document).ready(function () {
             editNode($(this).data("id"));
         })
         // Open add class panel
-        .on("click", '.open-add-class-panel', function () {
-            toggleAddClassPanel("show");
+        .on("click", '.open-add-class-panel', function (e) {
+            e.preventDefault();
+            toggleAddClassPanel("hide");
+            $('.bb-css-add-panel').show();
+        })
+        // Open edit class panel
+        .on("click", '.open-edit-class-panel', function (e) {
+            e.preventDefault();
+            toggleAddClassPanel("hide");
+            $('.bb-css-edit-panel').show();
         })
         // Node delete
         .on("click", '.bb-node-delete', function () {
@@ -445,9 +454,31 @@ $(document).ready(function () {
             $("#field-settings").addClass("hidden");
             iframe.find('.previewcontent').addClass('activeprevew');
         })
+        // Click on class item
+        .on("click", ".class-item", function () {
+            $('.element-classes').tagsinput('add', $(this).attr("data-class"));
+            toggleAddClassPanel("hide");
+        })
         // UnLock active column
         .on("dblclick", ".bb-node-action-size", function () {
             hideActiveNode();
+        })
+        // Click on breadcrumb
+        .on("click", "#breadcrumb a", function (e) {
+            e.preventDefault();
+
+            var nodeID = $(this).attr("data-id"),
+                layersTree = $('#layers-tree');
+
+            layersTree.jstree("deselect_all");
+            layersTree.jstree(true).select_node("j-node-" + nodeID);
+        })
+        // Hover on breadcrumb
+        .on("mouseover", "#breadcrumb a", function () {
+            var iframe = getIframeContent();
+            var nodeID = $(this).attr("data-id");
+
+            hoverNode(iframe.find('[data-bb-id='+nodeID+']'));
         })
         // Change field settings
         .on('change', '[name=settings]', function () {
@@ -487,7 +518,6 @@ $(document).ready(function () {
             $('.bb-type-panel').hide();
         }
         if(status === "show") panel.removeAttr("hidden");
-        $('#bb-new-class-type').val("");
     }
 
     // Edit node
@@ -545,6 +575,9 @@ $(document).ready(function () {
                 // Activate node
                 var domNode = iframe.find('[data-bb-id="' + data.node.original.bbID + '"]');
                 activateNode(domNode);
+
+                // Node breadcrumb
+                generateNodeBreadCrumb(data);
             });
     }
 
@@ -619,25 +652,31 @@ $(document).ready(function () {
                 });
 
                 // On class click
-                $('body').on('click', '.bootstrap-tagsinput .tag', function (){
-                    var selectedClass = "."+$(this).text(),
-                        classRules = "";
-
-                    $('.bb-type-panel[data-type="custom"]').show();
-
-                    // cssText: cssText,
-                    //                 cssRule: cssRule,
-                    //                 cssValue: cssValue
+                $('body').on('input', '.bb-css-add-panel>input[type=text]', function (){
+                    var $this = $(this);
 
                     var db = PouchDB('css');
                     db.find({
-                        selector: {cssRule: {$regex: selectedClass}}
+                        selector: {cssRule: {$regex: $this.val()}}
                     }).then(function (result) {
-                        console.log(result);
+                        var classesList= $('.class-list');
+                        classesList.html("");
+
                         if(result.docs.length > 0){
-                            var rules = result.docs[0].cssValue;
-                            rules = rules.replace(/;/g, ";\n");
-                            editor.setValue(selectedClass+"{\n"+rules+"\n}");
+                            var classes = result.docs;
+                            $.each(classes, function (i, classObj){
+                                var rule = classObj.cssRule;
+                                rule = rule.trim();
+
+                                if(rule.indexOf(":") === -1 && rule.indexOf(",") === -1 && rule.indexOf(" ") === -1){
+                                    var multipleClasses = rule.split(".");
+                                    if(multipleClasses.length === 2){
+                                        rule = rule.replace(".", "");
+
+                                        classesList.append('<div class="class-item badge badge-warning" data-class="'+rule+'">'+rule+'</div>');
+                                    }
+                                }
+                            });
                         }
                     }).catch(function (err) {
                         console.log(err);
@@ -694,14 +733,8 @@ $(document).ready(function () {
         // Types panels
         $('#bb-new-class-type').change(function (){
             var selectedType = $(this).val();
-            $('.bb-type-panel').hide();
-            $('[data-type="'+selectedType+'"]').show();
-        });
-
-        // Class Selector
-        $('.class-item').click(function (){
-            classesInput.tagsinput('add', $(this).attr("data-class"));
-            toggleAddClassPanel("hide");
+            $('.css-edit-option').hide();
+            $('#'+selectedType).show();
         });
 
         applyClassBtnState($this, elementClasses.join(","));
@@ -760,41 +793,41 @@ $(document).ready(function () {
         iframe.prepend('<style id="bb-custom-style"/>');
 
         // Context menu
-        // iframe.contextMenu({
-        //     selector: 'div',
-        //     position: function (opt, x, y) {
-        //         opt.$menu.css({top: y + 95, left: x});
-        //     },
-        //     items: {
-        //         "edit": {name: "Edit", icon: "edit"},
-        //         "cut": {name: "Cut", icon: "cut"},
-        //         copy: {name: "Copy", icon: "copy"},
-        //         "paste": {name: "Paste", icon: "paste"},
-        //         "delete": {name: "Delete", icon: "delete"},
-        //         "sep1": "---------",
-        //         "quit": {
-        //             name: "Quit", icon: function () {
-        //                 return 'context-menu-icon context-menu-icon-quit';
-        //             }
-        //         }
-        //     }
-        // });
+        iframe.contextMenu({
+            selector: 'div',
+            position: function (opt, x, y) {
+                opt.$menu.css({top: y + 95, left: x});
+            },
+            items: {
+                "edit": {name: "Edit", icon: "edit"},
+                "cut": {name: "Cut", icon: "cut"},
+                copy: {name: "Copy", icon: "copy"},
+                "paste": {name: "Paste", icon: "paste"},
+                "delete": {name: "Delete", icon: "delete"},
+                "sep1": "---------",
+                "quit": {
+                    name: "Quit", icon: function () {
+                        return 'context-menu-icon context-menu-icon-quit';
+                    }
+                }
+            }
+        });
 
         // Activate sortable
         activateSortable();
 
         // DB work
-        PouchDB('css').createIndex({
-            index: {
-                fields: ['cssRule']
-            }
-        }).then(function (result) {
-            // handle result
-        }).catch(function (err) {
-            console.log(err);
-        });
-        
-        // PouchDB.debug.disable();
+        // PouchDB('css').createIndex({
+        //     index: {
+        //         fields: ['cssRule']
+        //     }
+        // }).then(function (result) {
+        //     // handle result
+        // }).catch(function (err) {
+        //     console.log(err);
+        // });
+
+        PouchDB.debug.disable();
 
         PouchDB('css').destroy().then(function (){
             var db = new PouchDB('css');
@@ -1001,6 +1034,49 @@ $(document).ready(function () {
             });
     });
 
+    // Generate node breadcrumb
+    function generateNodeBreadCrumb(data){
+        var iframe = getIframeContent();
+        var breadcrumbEl = $('#breadcrumb');
+        var parents = data.node.parents,
+            breadcrumbHTML = '',
+            currentNodeID = $('#' + data.selected[0]).attr("id").replace("j-node-", "");
+
+        if(parents[0] !== '#') parents.reverse();
+
+        $.each(parents, function (i, parentID){
+            if(parentID !== '#'){
+                var parentEl = $('#' + parentID),
+                    nodeID = parseInt(parentEl.attr("id").replace("j-node-", "")),
+                    nodeEl = iframe.find('[data-bb-id='+nodeID+']');
+
+                // Get node children
+                var children = nodeEl.parent().children(),
+                    childrenList = '';
+                if(children.length > 1){
+                    childrenList = '<i class="fa fa-caret-down"></i><ul class="node-children">';
+
+                    $.each(children, function (i, child){
+                        if(nodeEl.attr("data-bb-id") !== $(child).attr('data-bb-id')){
+                            childrenList += '<li><a href="#" data-id="'+$(child).attr('data-bb-id')+'">'+getNodeGroup($(child).get(0))+' #'+$(child).attr('data-bb-id')+'</a></li>';
+                        }
+                    });
+
+                    childrenList += '</ul>';
+                }
+
+                breadcrumbHTML += '<li><a href="#" data-id="'+nodeID+'">'+getNodeGroup(nodeEl.get(0))+'</a>'+childrenList+'</li>';
+            }
+        });
+
+        var currentNode = iframe.find('[data-bb-id='+currentNodeID+']').get(0);
+        breadcrumbHTML += '<li><a href="#" data-id="'+currentNodeID+'">'+getNodeGroup(currentNode)+' #'+currentNodeID+'</a></li>';
+
+        // Add HTML to top bar
+        breadcrumbEl.html("");
+        breadcrumbEl.append(breadcrumbHTML);
+    }
+
     function drawActiveHelpers($this){
         var iframe = $('#unit-iframe');
         var scrollTop = iframe.contents().scrollTop();
@@ -1025,9 +1101,9 @@ $(document).ready(function () {
 
         nodeActionSize.css({
             width: parseFloat(window.getComputedStyle($this.get(0)).width),
-            height: height + 4,
+            height: height,
             left: left,
-            top: (top + iframeTopFixer) - 2
+            top: (top + iframeTopFixer)
         });
 
         $('.bb-node-active-title').css({
