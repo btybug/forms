@@ -794,7 +794,7 @@ $(document).ready(function () {
 
         // Context menu
         iframe.contextMenu({
-            selector: 'div',
+            selector: '*',
             position: function (opt, x, y) {
                 opt.$menu.css({top: y + 95, left: x});
             },
@@ -1025,9 +1025,18 @@ $(document).ready(function () {
             .on('dblclick', '[data-bb-id]', function (e) {
                 e.stopPropagation();
 
-                var nodeType = getNodeGroup(this);
-                // editNode(nodeType.toLowerCase(), $(this).attr("data-bb-id"));
-                // hoverNode($(this));
+                var nodeType = getNodeGroup($(this).get(0));
+                if(nodeType === "Text") {
+                    $(this).addClass("editable");
+
+                    var iframe = $('#unit-iframe')[0];
+                    var iWin = iframe.contentWindow;
+                    var editor = new MediumEditor('.editable', {
+                        contentWindow: iWin,
+                        ownerDocument: iWin.document,
+                        elementsContainer: document.body
+                    });
+                }
             })
             .bind('scroll', function () {
                 console.log("Ok");
@@ -1094,7 +1103,7 @@ $(document).ready(function () {
 
         nodeActionMenu
             .css({
-                left: left + width - nodeActionMenu.outerWidth() + 2,
+                left: left - 2,
                 top: (top + iframeTopFixer) - nodeActionMenu.outerHeight() - 2
             })
             .attr("data-selected-node", $this.attr("data-bb-id"));
@@ -1106,10 +1115,10 @@ $(document).ready(function () {
             top: (top + iframeTopFixer)
         });
 
-        $('.bb-node-active-title').css({
-            left: left - 2,
-            top: (top + iframeTopFixer) - nodeActionMenu.outerHeight() - 2
-        }).text(nodePath);
+        // $('.bb-node-active-title').css({
+        //     left: left - 2,
+        //     top: (top + iframeTopFixer) - nodeActionMenu.outerHeight() - 2
+        // }).text(nodePath);
     }
 
     // Activate selected node
@@ -1194,6 +1203,9 @@ $(document).ready(function () {
         var scrollTop = iframe.contents().scrollTop();
         var iframeTopFixer = iframe.offset().top - scrollTop;
 
+        var nodeID = $this.attr('data-bb-id'),
+            selectedNodeID = $('.bb-node-action-menu').attr('data-selected-node');
+
         var width = $this.outerWidth(),
             height = $this.outerHeight(),
             left = $this.offset().left,
@@ -1207,12 +1219,17 @@ $(document).ready(function () {
             marginTop = $this.pixels("margin-top"),
             marginBottom = $this.pixels("margin-bottom");
 
+        var markerTop = (top + iframeTopFixer) - 18;
+        if(nodeID === selectedNodeID){
+            markerTop += height + 18;
+        }
+
         // Element path
         $('.bb-hover-marker-element')
-            .text(cssPath($this.get(0)))
+            .text(cssPath($this.get(0)).replace(".bb-placeholder-area", ""))
             .css({
                 left: left - 2,
-                top: (top + iframeTopFixer) - 18
+                top: markerTop
             });
 
         // Element Size
