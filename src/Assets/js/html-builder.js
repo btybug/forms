@@ -147,6 +147,7 @@ function getNodeGroup(node) {
 }
 
 var DOMCounter = 0;
+var MediumEditorInstance;
 
 function DOMtoJSON(node) {
     node = node || this;
@@ -300,6 +301,20 @@ $(document).ready(function () {
             node.remove();
             generateDOMTree();
             hideActiveNode();
+            hideHoverNode();
+        })
+        // Node duplicate
+        .on("click", '.bb-node-duplicate', function () {
+            var iframe = getIframeContent();
+
+            var nodeID = $('.bb-node-action-menu').attr("data-selected-node");
+            var node = iframe.find("[data-bb-id=" + nodeID + "]");
+
+            node.clone().insertAfter(node);
+
+            generateDOMTree();
+            hideActiveNode();
+            hideHoverNode();
         })
         // Column Content
         .on("click", '.bb-column-content', function () {
@@ -462,6 +477,22 @@ $(document).ready(function () {
         // UnLock active column
         .on("dblclick", ".bb-node-action-size", function () {
             hideActiveNode();
+        })
+        // Edit Text
+        .on("click", ".bb-edit-text", function () {
+            var iframe = $('#unit-iframe')[0].contentWindow;
+            iframe.initEditor();
+
+            $(this).html("Done").addClass('bb-destroy-edit-text');
+        })
+        // Destroy Edit Text
+        .on("click", ".bb-destroy-edit-text", function () {
+            var iframe = $('#unit-iframe')[0].contentWindow;
+            iframe.destroyEditor();
+
+            $(this)
+                .html('<i class="fa fa-font"></i> Edit Text')
+                .removeClass('bb-destroy-edit-text');
         })
         // Click on breadcrumb
         .on("click", "#breadcrumb a", function (e) {
@@ -1025,18 +1056,8 @@ $(document).ready(function () {
             .on('dblclick', '[data-bb-id]', function (e) {
                 e.stopPropagation();
 
-                var nodeType = getNodeGroup($(this).get(0));
-                if(nodeType === "Text") {
-                    $(this).addClass("editable");
+                // var nodeType = getNodeGroup($(this).get(0));
 
-                    var iframe = $('#unit-iframe')[0];
-                    var iWin = iframe.contentWindow;
-                    var editor = new MediumEditor('.editable', {
-                        contentWindow: iWin,
-                        ownerDocument: iWin.document,
-                        elementsContainer: document.body
-                    });
-                }
             })
             .bind('scroll', function () {
                 console.log("Ok");
@@ -1084,6 +1105,15 @@ $(document).ready(function () {
         // Add HTML to top bar
         breadcrumbEl.html("");
         breadcrumbEl.append(breadcrumbHTML);
+
+        // Breadcrumb menu
+        var nodeBreadcrumbMenu = $('.bb-breadcrumb-action-menu'),
+            breadcrumbActiveEl = breadcrumbEl.find('li').last();
+
+        nodeBreadcrumbMenu.css({
+            left: breadcrumbActiveEl.offset().left + breadcrumbActiveEl.width() - 10,
+            top: breadcrumbActiveEl.offset().top
+        });
     }
 
     function drawActiveHelpers($this){
