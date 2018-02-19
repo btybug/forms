@@ -46,7 +46,7 @@ $elementsGroups = [
         "abbreviation" => '<abbr>Sample text...</abbr>',
     ],
     "Bootstrap Components" => [
-        'jumbotron' => '<div class="jumbotron"> <h1>Hello, world!</h1> <p>This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p> <p><a href="#" class="btn btn-primary btn-lg" role="button">Learn more</a></p> </div>',
+        'jumbotron' => '<div class="jumbotron" grouped> <h1>Hello, world!</h1> <p>This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p> <p><a href="#" class="btn btn-primary btn-lg" role="button">Learn more</a></p> </div>',
 
         'page header' => '<div class="page-header">
   <h1>Example page header <small>Subtext for header</small></h1>

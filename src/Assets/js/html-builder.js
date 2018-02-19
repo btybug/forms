@@ -249,6 +249,7 @@ function DOMtoJSON(node) {
 
 
 var fieldsJSON;
+var disableActiveHoverNode;
 
 $(document).ready(function () {
     $("body")
@@ -478,21 +479,22 @@ $(document).ready(function () {
         .on("dblclick", ".bb-node-action-size", function () {
             hideActiveNode();
         })
-        // Edit Text
-        .on("click", ".bb-edit-text", function () {
+        // Edit text content
+        .on("click", ".bb-node-content", function () {
+            if($('body').hasClass("disable-hover")) {
+                $.fn.toast({
+                    content: "Close opened editor first",
+                    delay: 3000,
+                    position: "top-right"
+                });
+                return;
+            }
+
+            getActiveNodeEl().addClass("editable");
             var iframe = $('#unit-iframe')[0].contentWindow;
             iframe.initEditor();
 
-            $(this).html("Done").addClass('bb-destroy-edit-text');
-        })
-        // Destroy Edit Text
-        .on("click", ".bb-destroy-edit-text", function () {
-            var iframe = $('#unit-iframe')[0].contentWindow;
-            iframe.destroyEditor();
-
-            $(this)
-                .html('<i class="fa fa-font"></i> Edit Text')
-                .removeClass('bb-destroy-edit-text');
+            disableActiveHoverNode(true);
         })
         // Click on breadcrumb
         .on("click", "#breadcrumb a", function (e) {
@@ -610,6 +612,14 @@ $(document).ready(function () {
                 // Node breadcrumb
                 generateNodeBreadCrumb(data);
             });
+
+        // Protect grouped elements
+        iframe.find('[grouped]').each(function (){
+            console.log($(this));
+            $(this).find('*').each(function (){
+                $(this).attr("protected", true);
+            });
+        });
     }
 
     // Load inline template
@@ -1139,7 +1149,8 @@ $(document).ready(function () {
             .attr("data-selected-node", $this.attr("data-bb-id"));
 
         nodeActionSize.css({
-            width: parseFloat(window.getComputedStyle($this.get(0)).width),
+            // width: parseFloat(window.getComputedStyle($this.get(0)).width),
+            width: width,
             height: height,
             left: left,
             top: (top + iframeTopFixer)
@@ -1151,10 +1162,26 @@ $(document).ready(function () {
         // }).text(nodePath);
     }
 
+    // Disable/Enable activate/hover node
+    disableActiveHoverNode = function (disable){
+
+        if(disable){
+            hideActiveNode();
+            hideHoverNode();
+
+            $('body').addClass("disable-hover disable-activate");
+        }else{
+            $('body').removeClass("disable-hover disable-activate");
+            drawActiveHelpers(getActiveNodeEl());
+            generateDOMTree();
+        }
+    };
+
     // Activate selected node
     function activateNode($this) {
 
         if(!$this.offset()) return;
+        if($('body').hasClass('disable-activate')) return;
 
         // Activate node
         var nodeActionSize = $('.bb-node-action-size');
@@ -1228,6 +1255,7 @@ $(document).ready(function () {
     function hoverNode($this) {
 
         if(!$this.offset()) return;
+        if($('body').hasClass('disable-hover')) return;
 
         var iframe = $('#unit-iframe');
         var scrollTop = iframe.contents().scrollTop();
@@ -1576,12 +1604,10 @@ $(document).ready(function () {
                 hideDropPlaceholder();
                 $('.bb-hover-marker, .bb-hover-marker-element').show();
 
-                var activeElement = getActiveNodeEl(),
-                    removeActiveElement = true;
+                var activeElement = getActiveNodeEl();
 
                 if($(this).hasClass("draggable-element")){
                     activeElement = $(this).find('.html-element-item-sample').html();
-                    removeActiveElement = false;
                 }
 
                 var nodeGroup = getNodeGroup($(activeElement).get(0)).toLowerCase(),
@@ -1602,8 +1628,6 @@ $(document).ready(function () {
                     if(nodeGroup === "row" && $.inArray(toDropGroup, ["row", "wrapper"]) !== -1) return;
                     toDropElement.append(activeElement);
                 }
-
-                // if(removeActiveElement) getActiveNodeEl().remove();
 
                 generateDOMTree();
             });

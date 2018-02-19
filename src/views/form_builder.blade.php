@@ -48,6 +48,9 @@
     {!! HTML::style("public/libs/jspanel/jspanel.min.css") !!}
     {!! HTML::script("public/libs/jspanel/jspanel.min.js") !!}
 
+    {!! HTML::style("public/libs/toast/jquery-toast.css") !!}
+    {!! HTML::script("public/libs/toast/jquery-toast.js") !!}
+
     {!! HTML::style("public/libs/tagsinput/bootstrap-tagsinput.css") !!}
     {!! HTML::script("public/libs/tagsinput/bootstrap-tagsinput.min.js") !!}
 
@@ -94,11 +97,6 @@
 
 <div class="bb-form-options">
     <ul id="breadcrumb"></ul>
-
-    <a href="#" class="bb-edit-text float-right">
-        <i class="fa fa-font"></i>
-        Edit Text
-    </a>
 </div>
 
 <div class="">
@@ -177,6 +175,14 @@
 <!-- Injected templates to iframe -->
 <script type="template/html" id="iframe-inject-head">
     <style>
+        body{
+            padding-top: 30px;
+        }
+
+        .medium-editor-element {
+            outline: -webkit-focus-ring-color auto 5px;
+        }
+
         [data-bb-hovered] {
             outline: 2px dashed #ff0707!important;
             cursor: pointer;

@@ -64,8 +64,7 @@ button.form-save {
 #unit-iframe {
   width: 100%;
   border: none;
-  height: calc(100vh - 130px);
-  margin-top: 30px; }
+  height: calc(100vh - 130px); }
 
 .select-fields-container {
   position: absolute;
