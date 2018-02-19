@@ -512,7 +512,7 @@ div#element-edit-panel {
   color: #fff;
 }
 
-#breadcrumb > li i {
+#breadcrumb > li i.fa-caret-down {
   position: absolute;
   top: 5px;
   right: 20px;
@@ -544,4 +544,8 @@ a.bb-edit-text {
 
 a.bb-edit-text i {
   color: #e5d802;
+}
+
+#code-editor{
+  height: 100%;
 }

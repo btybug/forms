@@ -192,13 +192,18 @@ function DOMtoJSON(node) {
     obj.icon = "fa " + nodeIcon;
 
     var nodeGroupID = nodeGroup + " #" + DOMCounter;
+
+    // Add lock icon to protected elements
+    if(node.hasAttribute("protected")){
+        nodeGroupID = '<i class="fa fa-lock mr-1"></i> ' + nodeGroup + " #" + DOMCounter;
+    }
     var nodeGroupType = nodeGroup.toLowerCase().replace(" ", "-");
 
     if (nodeGroup !== "NODE") {
         nodeGroupID += '<a href="#" class="bb-node-btn bb-node-edit" data-type="' + nodeGroupType + '" data-id="' + DOMCounter + '"><i class="fa fa-pencil"></i></a>';
     }
 
-    if (nodeGroup !== "Wrapper") {
+    if (nodeGroup !== "Wrapper" && !node.hasAttribute("protected")) {
         nodeGroupID += '<a href="#" class="bb-node-btn bb-node-delete" data-id="' + DOMCounter + '"><i class="fa fa-trash"></i></a>';
     }
 
@@ -479,6 +484,32 @@ $(document).ready(function () {
         .on("dblclick", ".bb-node-action-size", function () {
             hideActiveNode();
         })
+        // Edit code
+        .on("click", ".bb-node-code", function () {
+            jsPanel.create({
+                id: 'code-editor-panel',
+                container: 'body',
+                theme: 'primary',
+                headerTitle: 'Code Editor',
+                position: 'center-bottom 5 -20',
+                contentSize: '600 250',
+                content: '<div id="code-editor"></div>',
+                callback: function () {
+                    // Code editor
+                    var codeEditor = ace.edit("code-editor");
+                    codeEditor.setTheme("ace/theme/monokai");
+                    codeEditor.session.setMode("ace/mode/html");
+
+                    var nodeCode = getActiveNodeEl().get(0).outerHTML;
+                    nodeCode = nodeCode.replace(" bb-placeholder-area", "");
+
+                    codeEditor.setValue(nodeCode);
+                },
+                onclosed: function () {
+
+                }
+            });
+        })
         // Edit text content
         .on("click", ".bb-node-content", function () {
             if($('body').hasClass("disable-hover")) {
@@ -571,6 +602,13 @@ $(document).ready(function () {
 
         var iframe = getIframeContent();
 
+        // Protect grouped elements
+        iframe.find('[grouped]').each(function (){
+            $(this).find('*').each(function (){
+                $(this).attr("protected", true);
+            });
+        });
+
         // Remove placeholder
         iframe.find('.bb-placeholder-area').removeClass("bb-placeholder-area");
 
@@ -612,14 +650,6 @@ $(document).ready(function () {
                 // Node breadcrumb
                 generateNodeBreadCrumb(data);
             });
-
-        // Protect grouped elements
-        iframe.find('[grouped]').each(function (){
-            console.log($(this));
-            $(this).find('*').each(function (){
-                $(this).attr("protected", true);
-            });
-        });
     }
 
     // Load inline template
@@ -1110,7 +1140,14 @@ $(document).ready(function () {
         });
 
         var currentNode = iframe.find('[data-bb-id='+currentNodeID+']').get(0);
-        breadcrumbHTML += '<li><a href="#" data-id="'+currentNodeID+'">'+getNodeGroup(currentNode)+' #'+currentNodeID+'</a></li>';
+
+        // Mark protected element
+        var protectedIcon = '';
+        if(currentNode.hasAttribute("protected")){
+            protectedIcon = '<i class="fa fa-lock mr-1"></i>';
+        }
+
+        breadcrumbHTML += '<li><a href="#" data-id="'+currentNodeID+'">'+ protectedIcon + getNodeGroup(currentNode)+' #'+currentNodeID+'</a></li>';
 
         // Add HTML to top bar
         breadcrumbEl.html("");
@@ -1141,13 +1178,6 @@ $(document).ready(function () {
         var nodeActionMenu = $('.bb-node-action-menu'),
             nodeActionSize = $('.bb-node-action-size');
 
-        nodeActionMenu
-            .css({
-                left: left - 2,
-                top: (top + iframeTopFixer) - nodeActionMenu.outerHeight() - 2
-            })
-            .attr("data-selected-node", $this.attr("data-bb-id"));
-
         nodeActionSize.css({
             // width: parseFloat(window.getComputedStyle($this.get(0)).width),
             width: width,
@@ -1156,10 +1186,23 @@ $(document).ready(function () {
             top: (top + iframeTopFixer)
         });
 
-        // $('.bb-node-active-title').css({
-        //     left: left - 2,
-        //     top: (top + iframeTopFixer) - nodeActionMenu.outerHeight() - 2
-        // }).text(nodePath);
+        // Disable move for protected elements
+        var deleteEditIcons = $('.bb-breadcrumb-action-menu .bb-node-duplicate, .bb-breadcrumb-action-menu .bb-node-delete');
+        if($this[0].hasAttribute("protected")) {
+            deleteEditIcons.hide();
+            nodeActionMenu.hide();
+            return;
+        }
+
+        deleteEditIcons.show();
+        nodeActionMenu.show();
+
+        nodeActionMenu
+            .css({
+                left: left - 2,
+                top: (top + iframeTopFixer) - nodeActionMenu.outerHeight() - 2
+            })
+            .attr("data-selected-node", $this.attr("data-bb-id"));
     }
 
     // Disable/Enable activate/hover node

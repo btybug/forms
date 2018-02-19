@@ -55,6 +55,7 @@
     {!! HTML::script("public/libs/tagsinput/bootstrap-tagsinput.min.js") !!}
 
     {!! HTML::script("public/libs/ace/ace.js") !!}
+    {!! HTML::script("public/libs/ace/ext-beautify.js") !!}
 
     {!! BBstyle(plugins_path("vendor/sahak.avatar/forms/src/Assets/css/html-builder.css")) !!}
     {!! BBscript(plugins_path("vendor/sahak.avatar/forms/src/Assets/js/jquery-ui-droppable-iframe.js")) !!}
@@ -352,6 +353,7 @@
     <i class="fa fa-trash bb-node-delete"></i>
     <i class="fa fa-paint-brush bb-node-edit"></i>
     <i class="fa fa-font bb-node-content"></i>
+    <i class="fa fa-code bb-node-code"></i>
     <i class="fa fa-copy bb-node-duplicate"></i>
 </div>
 
