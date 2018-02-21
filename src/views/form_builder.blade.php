@@ -57,6 +57,8 @@
     {!! HTML::script("public/libs/ace/ace.js") !!}
     {!! HTML::script("public/libs/ace/ext-beautify.js") !!}
 
+    {!! HTML::script("public/libs/beautify/beautify-html.js") !!}
+
     {!! BBstyle(plugins_path("vendor/sahak.avatar/forms/src/Assets/css/html-builder.css")) !!}
     {!! BBscript(plugins_path("vendor/sahak.avatar/forms/src/Assets/js/jquery-ui-droppable-iframe.js")) !!}
     {!! BBscript(plugins_path("vendor/sahak.avatar/forms/src/Assets/js/field-builder.js")) !!}

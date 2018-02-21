@@ -25,8 +25,8 @@
 
                 @foreach($layouts as $layout)
                     <label>
-                        <input type="radio" value="{{$layout}}" name="bb-layout-select" />
-                        <img src="{!! url('public/images/layouts/cols-'.$layout.'.png') !!}" />
+                        <input type="radio" value="{{$layout}}" name="bb-layout-select"/>
+                        <img src="{!! url('public/images/layouts/cols-'.$layout.'.png') !!}"/>
                     </label>
                 @endforeach
 
@@ -93,13 +93,16 @@
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item">
-                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#elements" role="tab" aria-controls="home" aria-selected="true">HTML Elements</a>
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#elements" role="tab"
+                   aria-controls="home" aria-selected="true">HTML Elements</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#fields" role="tab" aria-controls="profile" aria-selected="false">Fields</a>
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#fields" role="tab" aria-controls="profile"
+                   aria-selected="false">Fields</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#units" role="tab" aria-controls="contact" aria-selected="false">Units</a>
+                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#units" role="tab" aria-controls="contact"
+                   aria-selected="false">Units</a>
             </li>
         </ul>
 
@@ -154,17 +157,19 @@
     <div class="p-2" id="element-edit-panel">
         <div class="card mb-2">
             <div class="card-body p-2">
-                <input type="text" class="element-classes" />
+                <input type="text" class="element-classes"/>
 
-                <a href="#" class="btn btn-primary btn-sm ml-1 float-right open-add-class-panel"><i class="fa fa-plus"></i></a>
+                <a href="#" class="btn btn-primary btn-sm ml-1 float-right open-add-class-panel"><i
+                            class="fa fa-plus"></i></a>
 
-                <a href="#" class="btn btn-primary btn-sm float-right open-edit-class-panel"><i class="fa fa-pencil"></i></a>
+                <a href="#" class="btn btn-primary btn-sm float-right open-edit-class-panel"><i
+                            class="fa fa-pencil"></i></a>
             </div>
         </div>
 
         <!-- Available Classes -->
         <div class="bb-type-panel mb-2 bb-css-add-panel">
-            <input type="text" class="form-control form-control-sm mb-2" placeholder="Search Available Classes" />
+            <input type="text" class="form-control form-control-sm mb-2" placeholder="Search Available Classes"/>
 
             <div class="class-list">
                 <div class="class-item badge badge-warning" data-class="class-1">Class 1</div>
@@ -192,6 +197,43 @@
         </div>
 
     </div>
+</script>
+
+<script type="template/html" id="bbt-code-editor-bar">
+    <select id="code-editor-theme">
+        <option value="chrome">chrome</option>
+        <option value="clouds">clouds</option>
+        <option value="crimson_editor">crimson_editor</option>
+        <option value="tomorrow_night"selected="selected">tomorrow_night</option>
+        <option value="dawn">dawn</option>
+        <option value="dreamweaver">dreamweaver</option>
+        <option value="eclipse">eclipse</option>
+        <option value="github">github</option>
+        <option value="solarized_light">solarized_light</option>
+        <option value="textmate">textmate</option>
+        <option value="tomorrow">tomorrow</option>
+        <option value="xcode">xcode</option>
+        <option value="kuroir">kuroir</option>
+        <option value="katzen_milch">katzen_milch</option>
+        <option value="ambiance">ambiance</option>
+        <option value="chaos">chaos</option>
+        <option value="clouds_midnight">clouds_midnight</option>
+        <option value="cobalt">cobalt</option>
+        <option value="idle_fingers">idle_fingers</option>
+        <option value="kr_theme">kr_theme</option>
+        <option value="merbivore">merbivore</option>
+        <option value="merbivore_soft">merbivore_soft</option>
+        <option value="mono_industrial">mono_industrial</option>
+        <option value="monokai">monokai</option>
+        <option value="pastel_on_dark">pastel_on_dark</option>
+        <option value="solarized_light">solarized_light</option>
+        <option value="terminal">terminal</option>
+        <option value="tomorrow_night_blue">tomorrow_night_blue</option>
+        <option value="tomorrow_night_bright">tomorrow_night_bright</option>
+        <option value="tomorrow_night_80s">tomorrow_night_80s</option>
+        <option value="twilight">twilight</option>
+        <option value="vibrant_ink">vibrant_ink</option>
+    </select>
 </script>
 
 <script type="template/html" id="bbt-container-style">

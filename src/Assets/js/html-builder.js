@@ -147,7 +147,7 @@ function getNodeGroup(node) {
 }
 
 var DOMCounter = 0;
-var MediumEditorInstance;
+var codeEditor;
 
 function DOMtoJSON(node) {
     node = node || this;
@@ -486,29 +486,39 @@ $(document).ready(function () {
         })
         // Edit code
         .on("click", ".bb-node-code", function () {
-            jsPanel.create({
-                id: 'code-editor-panel',
-                container: 'body',
-                theme: 'primary',
-                headerTitle: 'Code Editor',
-                position: 'center-bottom 5 -20',
-                contentSize: '600 250',
-                content: '<div id="code-editor"></div>',
-                callback: function () {
-                    // Code editor
-                    var codeEditor = ace.edit("code-editor");
-                    codeEditor.setTheme("ace/theme/monokai");
-                    codeEditor.session.setMode("ace/mode/html");
+            if($('#code-editor-panel').length > 0){
+                // Add code content
+                codeEditorContent();
+            }else{
+                jsPanel.create({
+                    id: 'code-editor-panel',
+                    container: 'body',
+                    theme: 'primary',
+                    headerTitle: 'Code Editor',
+                    position: 'center-bottom',
+                    contentSize: '600 350',
+                    content: '<div id="code-editor"></div>',
+                    headerToolbar: loadTemplate('bbt-code-editor-bar'),
+                    callback: function () {
+                        // Code editor
+                        codeEditor = ace.edit("code-editor");
+                        codeEditor.setTheme("ace/theme/monokai");
+                        codeEditor.session.setMode("ace/mode/html");
 
-                    var nodeCode = getActiveNodeEl().get(0).outerHTML;
-                    nodeCode = nodeCode.replace(" bb-placeholder-area", "");
+                        // Add code content
+                        codeEditorContent();
 
-                    codeEditor.setValue(nodeCode);
-                },
-                onclosed: function () {
+                        $('#code-editor-theme').on('change', function (){
+                            var themeName = $(this).val();
+                            $('head').append('<script src="public/libs/ace/theme-'+themeName+'.js"></script>');
+                            codeEditor.setTheme("ace/theme/" + themeName);
+                        });
+                    },
+                    onclosed: function () {
 
-                }
-            });
+                    }
+                });
+            }
         })
         // Edit text content
         .on("click", ".bb-node-content", function () {
@@ -573,6 +583,16 @@ $(document).ready(function () {
 
         iframe.attr("src", ajaxLinks.changeLayout + layout);
     });
+
+    // Add content to code editor
+    function codeEditorContent(){
+        if(codeEditor){
+            var nodeCode = getActiveNodeEl().get(0).outerHTML;
+            nodeCode = nodeCode.replace(" bb-placeholder-area", "");
+
+            codeEditor.setValue(style_html(nodeCode));
+        }
+    }
 
     // Show/hide add class panel
     function toggleAddClassPanel(status){
@@ -931,6 +951,8 @@ $(document).ready(function () {
 
     // iFrame functions
     $('#unit-iframe').load(function () {
+        if($(this).attr("src") === "") return;
+
         var headHTML = $('#iframe-inject-head').html();
         var iframe = getIframeContent();
         iframe.prepend(headHTML);
@@ -1293,6 +1315,9 @@ $(document).ready(function () {
 
             columnResizeHandler.show();
         }
+
+        // Add code content
+        codeEditorContent();
     }
 
     function hoverNode($this) {

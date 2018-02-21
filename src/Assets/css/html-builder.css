@@ -454,4 +454,9 @@ a.bb-edit-text i {
 #code-editor {
   height: 100%; }
 
+select#code-editor-theme {
+  background: transparent;
+  border: 0;
+  font-size: 12px; }
+
 /*# sourceMappingURL=html-builder.css.map */
