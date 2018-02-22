@@ -513,6 +513,12 @@ $(document).ready(function () {
                             $('head').append('<script src="public/libs/ace/theme-'+themeName+'.js"></script>');
                             codeEditor.setTheme("ace/theme/" + themeName);
                         });
+
+                        codeEditor.getSession().on('change', function() {
+                            var editorValue = codeEditor.getSession().getValue();
+                            console.log(editorValue);
+                            getActiveNodeEl().replaceWith(editorValue);
+                        });
                     },
                     onclosed: function () {
 
