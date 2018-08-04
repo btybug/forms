@@ -16,6 +16,7 @@ class IndexConroller extends Controller
 {
     public function getIndex()
     {
+        dd(1);
         return view('forms::index');
     }
 
